@@ -1,6 +1,6 @@
 --- 
 title: "Intro to Bayesian Addictive Regression Trees (BART)"
-author: "Jingyi Guan, Alayana Joshson, Wenxuan Zhu"
+author: "Jingyi Guan, Alayna Johnson, Wenxuan Zhu"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
