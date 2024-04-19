@@ -6,15 +6,14 @@ editor_options:
 
 # The Methodology
 
-## Setting up:
+## Setting up
 
 We consider the fundamental problem of making inference about an unknown
 function f that predicts an output Y using a $p$-dimensional vector of
 inputs $x = (x_1, ..., x_p)$ when
-$$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$
-To do this, we consider modeling or at least approximating
-$f(x) = E(Y | x)$, the mean of $Y$ given $x$, by a sum of $m$ regression
-trees
+$$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$ To do
+this, we consider modeling or at least approximating $f(x) = E(Y | x)$,
+the mean of $Y$ given $x$, by a sum of $m$ regression trees
 $$f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}$$
 Thus, we approximate $Y = f(x) + \epsilon$, with
 $\epsilon \sim N(0, \sigma^2)$ by a sum-of-trees model
@@ -33,24 +32,21 @@ denote the parameters for those $b$ terminal nodes of this tree $T_j$.
 Under this setting,
 $$ \begin{align*} Y & = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ & = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} $$
 where $g(x; T_j, M_j)$ is a function that assigns $\mu_{ij}\in M_j$ to
-$x$.
-The expected value of the output $Y$ given $x$, $E(Y | x)$, is the sum
-of all the $\mu_{ij}$ values assigned to $x$ by the functions
-$g(x; T_j, M_j)$.
-When there are multiple trees ($m > 1$), each $\mu_{ij}$ contributes
-only a part of $E(Y | x)$, which is different from a single tree model.
-Each $\mu_{ij}$ represents a “main effect” if $g(x; T_j, M_j)$ depends
-on only one component of $x$ (a single variable), and an interaction
-effect if it depends on more than one component (more than one
-variable).
-Therefore, the sum-of-trees model can capture both main effects and
-interaction effects, with interaction effects of varying orders
-depending on the sizes of the trees. In the special case where every
-terminal node assignment depends on just a single component of $x$, the
-sum-of-trees model simplifies to a simple additive model.
-Let $m$ denote the number of trees we will build in a sum-of-trees
-model. For a fixed $m$ , a sum of tree model is determined by
-$T = \{T_1, T_2, T_3, ...\}$,$M_j = \{M_1, M_2, M_3, ..., M_b\}$, and
+$x$. The expected value of the output $Y$ given $x$, $E(Y | x)$, is the
+sum of all the $\mu_{ij}$ values assigned to $x$ by the functions
+$g(x; T_j, M_j)$. When there are multiple trees ($m > 1$), each
+$\mu_{ij}$ contributes only a part of $E(Y | x)$, which is different
+from a single tree model. Each $\mu_{ij}$ represents a “main effect” if
+$g(x; T_j, M_j)$ depends on only one component of $x$ (a single
+variable), and an interaction effect if it depends on more than one
+component (more than one variable). Therefore, the sum-of-trees model
+can capture both main effects and interaction effects, with interaction
+effects of varying orders depending on the sizes of the trees. In the
+special case where every terminal node assignment depends on just a
+single component of $x$, the sum-of-trees model simplifies to a simple
+additive model. Let $m$ denote the number of trees we will build in a
+sum-of-trees model. For a fixed $m$ , a sum of tree model is determined
+by $T = \{T_1, T_2, T_3, ...\}$,$M_j = \{M_1, M_2, M_3, ..., M_b\}$, and
 $\sigma$. Thus, all the priors that we need in this setting would be:
 Prior over $(T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)$ Prior
 over $\sigma$ For all those priors, we have their joint probability
@@ -82,6 +78,10 @@ $$
 
 In order to keep the m trees small so they can be summed, we can choose
 to use values $\alpha = 0.95$ and $\beta = 2$
+
+```{r, echo=FALSE, fig.cap="A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/single_tree.jpeg")
+```
 
 ### The $\mu_{ij} | T_j$ prior
 
@@ -148,7 +148,7 @@ trees.
 \
 \
 
-## Backfitting with MCMC
+## Backfitting with MCMC Algorithm
 
 Coming soon... need to go over and type up
 
@@ -204,3 +204,8 @@ $m$ is increased, this prior will become tighter, leading to greater
 shrinkage applied to the $\mu_{ij}$. When choosing $k$, statisticians
 found that values between 1 and 3 work well and they suggest using
 $k = 2$ as the default choice, or determine it through cross-validation.
+
+## References
+
+-   Chipman, H. A., George, E. I., & McCulloch, R. E. (2010). BART:
+    Bayesian additive regression trees.

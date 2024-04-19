@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="example.html"/>
+<link rel="next" href="example-1.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -73,13 +73,13 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">SHORT TITLE HERE</a></li>
+<li><a href="./">BART</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="the-methodology.html"><a href="the-methodology.html"><i class="fa fa-check"></i><b>2</b> The Methodology</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="the-methodology.html"><a href="the-methodology.html#setting-up"><i class="fa fa-check"></i><b>2.1</b> Setting up:</a></li>
+<li class="chapter" data-level="2.1" data-path="the-methodology.html"><a href="the-methodology.html#setting-up"><i class="fa fa-check"></i><b>2.1</b> Setting up</a></li>
 <li class="chapter" data-level="2.2" data-path="the-methodology.html"><a href="the-methodology.html#prior-models-and-tuning"><i class="fa fa-check"></i><b>2.2</b> Prior models and tuning</a>
 <ul>
 <li class="chapter" data-level="2.2.1" data-path="the-methodology.html"><a href="the-methodology.html#the-t_j-prior"><i class="fa fa-check"></i><b>2.2.1</b> The <span class="math inline">\(T_j\)</span> Prior</a></li>
@@ -87,17 +87,22 @@
 <li class="chapter" data-level="2.2.3" data-path="the-methodology.html"><a href="the-methodology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
 <li class="chapter" data-level="2.2.4" data-path="the-methodology.html"><a href="the-methodology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC</a></li>
+<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a></li>
 <li class="chapter" data-level="2.4" data-path="the-methodology.html"><a href="the-methodology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
 <ul>
 <li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
 <li class="chapter" data-level="2.4.2" data-path="the-methodology.html"><a href="the-methodology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
 <li class="chapter" data-level="2.4.3" data-path="the-methodology.html"><a href="the-methodology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
 </ul></li>
+<li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i><b>3</b> Example</a></li>
+<li class="chapter" data-level="3" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>3</b> Example 1</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="example-1.html"><a href="example-1.html#reference"><i class="fa fa-check"></i><b>3.1</b> Reference</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
 </ul>
 
       </nav>
@@ -118,14 +123,13 @@
 <div id="the-methodology" class="section level1 hasAnchor" number="2">
 <h1><span class="header-section-number">Chapter 2</span> The Methodology<a href="the-methodology.html#the-methodology" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="setting-up" class="section level2 hasAnchor" number="2.1">
-<h2><span class="header-section-number">2.1</span> Setting up:<a href="the-methodology.html#setting-up" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">2.1</span> Setting up<a href="the-methodology.html#setting-up" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We consider the fundamental problem of making inference about an unknown
 function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of
 inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
-<span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span>
-To do this, we consider modeling or at least approximating
-<span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression
-trees
+<span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span> To do
+this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
+the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
 <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span>
 Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with
 <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> by a sum-of-trees model
@@ -144,24 +148,21 @@ denote the parameters for those <span class="math inline">\(b\)</span> terminal 
 Under this setting,
 <span class="math display">\[ \begin{align*} Y &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ &amp; = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} \]</span>
 where <span class="math inline">\(g(x; T_j, M_j)\)</span> is a function that assigns <span class="math inline">\(\mu_{ij}\in M_j\)</span> to
-<span class="math inline">\(x\)</span>.
-The expected value of the output <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, <span class="math inline">\(E(Y | x)\)</span>, is the sum
-of all the <span class="math inline">\(\mu_{ij}\)</span> values assigned to <span class="math inline">\(x\)</span> by the functions
-<span class="math inline">\(g(x; T_j, M_j)\)</span>.
-When there are multiple trees (<span class="math inline">\(m &gt; 1\)</span>), each <span class="math inline">\(\mu_{ij}\)</span> contributes
-only a part of <span class="math inline">\(E(Y | x)\)</span>, which is different from a single tree model.
-Each <span class="math inline">\(\mu_{ij}\)</span> represents a “main effect” if <span class="math inline">\(g(x; T_j, M_j)\)</span> depends
-on only one component of <span class="math inline">\(x\)</span> (a single variable), and an interaction
-effect if it depends on more than one component (more than one
-variable).
-Therefore, the sum-of-trees model can capture both main effects and
-interaction effects, with interaction effects of varying orders
-depending on the sizes of the trees. In the special case where every
-terminal node assignment depends on just a single component of <span class="math inline">\(x\)</span>, the
-sum-of-trees model simplifies to a simple additive model.
-Let <span class="math inline">\(m\)</span> denote the number of trees we will build in a sum-of-trees
-model. For a fixed <span class="math inline">\(m\)</span> , a sum of tree model is determined by
-<span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
+<span class="math inline">\(x\)</span>. The expected value of the output <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, <span class="math inline">\(E(Y | x)\)</span>, is the
+sum of all the <span class="math inline">\(\mu_{ij}\)</span> values assigned to <span class="math inline">\(x\)</span> by the functions
+<span class="math inline">\(g(x; T_j, M_j)\)</span>. When there are multiple trees (<span class="math inline">\(m &gt; 1\)</span>), each
+<span class="math inline">\(\mu_{ij}\)</span> contributes only a part of <span class="math inline">\(E(Y | x)\)</span>, which is different
+from a single tree model. Each <span class="math inline">\(\mu_{ij}\)</span> represents a “main effect” if
+<span class="math inline">\(g(x; T_j, M_j)\)</span> depends on only one component of <span class="math inline">\(x\)</span> (a single
+variable), and an interaction effect if it depends on more than one
+component (more than one variable). Therefore, the sum-of-trees model
+can capture both main effects and interaction effects, with interaction
+effects of varying orders depending on the sizes of the trees. In the
+special case where every terminal node assignment depends on just a
+single component of <span class="math inline">\(x\)</span>, the sum-of-trees model simplifies to a simple
+additive model. Let <span class="math inline">\(m\)</span> denote the number of trees we will build in a
+sum-of-trees model. For a fixed <span class="math inline">\(m\)</span> , a sum of tree model is determined
+by <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
 <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be:
 Prior over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> Prior
 over <span class="math inline">\(\sigma\)</span> For all those priors, we have their joint probability
@@ -192,6 +193,12 @@ node, conditional on the splitting variable</li>
 \]</span></p>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
+<img src="image/single_tree.jpeg" alt="A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
+<p class="caption">
+Figure 2.1: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
+</p>
+</div>
 </div>
 <div id="the-mu_ij-t_j-prior" class="section level3 hasAnchor" number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior<a href="the-methodology.html#the-mu_ij-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -244,8 +251,8 @@ trees.</p>
 </p>
 </div>
 </div>
-<div id="backfitting-with-mcmc" class="section level2 hasAnchor" number="2.3">
-<h2><span class="header-section-number">2.3</span> Backfitting with MCMC<a href="the-methodology.html#backfitting-with-mcmc" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="backfitting-with-mcmc-algorithm" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Backfitting with MCMC Algorithm<a href="the-methodology.html#backfitting-with-mcmc-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Coming soon… need to go over and type up</p>
 <p><br />
 <br />
@@ -299,8 +306,15 @@ every small tree is a weak learner. As <span class="math inline">\(k\)</span> an
 shrinkage applied to the <span class="math inline">\(\mu_{ij}\)</span>. When choosing <span class="math inline">\(k\)</span>, statisticians
 found that values between 1 and 3 work well and they suggest using
 <span class="math inline">\(k = 2\)</span> as the default choice, or determine it through cross-validation.</p>
-
 </div>
+</div>
+<div id="references" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> References<a href="the-methodology.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Chipman, H. A., George, E. I., &amp; McCulloch, R. E. (2010). BART:
+Bayesian additive regression trees.</li>
+</ul>
+
 </div>
 </div>
             </section>
@@ -309,7 +323,7 @@ found that values between 1 and 3 work well and they suggest using
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="example-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

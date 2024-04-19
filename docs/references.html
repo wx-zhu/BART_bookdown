@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Intro to Bayesian Addictive Regression Trees (BART)</title>
-  <meta name="description" content="Intro to Bayesian Addictive Regression Trees (BART)" />
+  <title>Chapter 4 References | Intro to Bayesian Addictive Regression Trees (BART)</title>
+  <meta name="description" content="Chapter 4 References | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta property="og:title" content="Chapter 4 References | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta name="twitter:title" content="Chapter 4 References | Intro to Bayesian Addictive Regression Trees (BART)" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="example-1.html"/>
 
-<link rel="next" href="the-methodology.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -58,6 +58,28 @@
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -94,13 +116,11 @@
 <li class="chapter" data-level="2.4.2" data-path="the-methodology.html"><a href="the-methodology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
 <li class="chapter" data-level="2.4.3" data-path="the-methodology.html"><a href="the-methodology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>3</b> Example 1</a></li>
-<li class="chapter" data-level="4" data-path="example-2.html"><a href="example-2.html"><i class="fa fa-check"></i><b>4</b> Example 2</a></li>
+<li class="chapter" data-level="4" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>4</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
 </ul>
 
       </nav>
@@ -118,15 +138,11 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Intro to Bayesian Addictive Regression Trees (BART)</h1>
-<p class="author"><em>Jingyi Guan, Alayna Johnson, Wenxuan Zhu</em></p>
-<p class="date"><em>2024-04-19</em></p>
+<div id="references" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="refs">
+
 </div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>A sum-of-trees model is fundamentally an additive model with multivariate components. Compared to a single tree model, the sum-of-trees can more easily incorporate additive effects. Various methods which combine a set of tree models, so-called ensemble methods, have attracted much attention. These include boosting, bagging, and random forests, each of which uses different techniques to fit a linear combination of trees. Yet another approach that results in a linear combination of trees is Bayesian model averaging applied to the posterior arising from a Bayesian single-tree model.
-In this project, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate <span class="math inline">\(f(x) = E(Y | x)\)</span>. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the <span class="math inline">\(g_j\)</span>’s become a dimensional adaptive random basis of “weak learners.” By weakening the <span class="math inline">\(g_j\)</span> effects, BART ends up with a sum of trees, each of which explains a small and different portion of f.</p>
 
 </div>
             </section>
@@ -134,8 +150,8 @@ In this project, we study a Bayesian approach called BART (Bayesian Additive Reg
           </div>
         </div>
       </div>
+<a href="example-1.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="the-methodology.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -166,7 +182,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/index.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/04-reference.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -174,7 +190,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/index.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/04-reference.Rmd",
 "text": null
 },
 "download": null,

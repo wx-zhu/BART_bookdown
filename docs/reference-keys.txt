@@ -18,3 +18,9 @@ modification-of-regularization-priors
 the-methodology
 setting-up
 example-1
+references
+references-1
+example-2
+reference
+fig:unnamed-chunk-1
+backfitting-with-mcmc-algorithm
