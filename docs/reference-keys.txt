@@ -4,3 +4,16 @@ a-caucus-race-and-a-long-tale
 the-methology
 example
 introduction
+introduction-to-bart
+prior-models-and-tuning
+the-t_j-prior
+the-mu_ij-t_j-prior
+the-sigma-prior
+choosing-m
+backfitting-with-mcmc
+bart-probit-for-classification
+what-is-probitprobit-model
+setup-bart-for-classification
+modification-of-regularization-priors
+the-methodology
+setting-up

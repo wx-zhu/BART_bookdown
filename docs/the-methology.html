@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -77,7 +77,24 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="the-methology.html"><a href="the-methology.html"><i class="fa fa-check"></i><b>2</b> The Methology</a></li>
+<li class="chapter" data-level="2" data-path="the-methology.html"><a href="the-methology.html"><i class="fa fa-check"></i><b>2</b> The Methology</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="the-methology.html"><a href="the-methology.html#introduction-to-bart"><i class="fa fa-check"></i><b>2.1</b> Introduction to BART:</a></li>
+<li class="chapter" data-level="2.2" data-path="the-methology.html"><a href="the-methology.html#prior-models-and-tuning"><i class="fa fa-check"></i><b>2.2</b> Prior models and tuning</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="the-methology.html"><a href="the-methology.html#the-t_j-prior"><i class="fa fa-check"></i><b>2.2.1</b> The <span class="math inline">\(T_j\)</span> Prior</a></li>
+<li class="chapter" data-level="2.2.2" data-path="the-methology.html"><a href="the-methology.html#the-mu_ij-t_j-prior"><i class="fa fa-check"></i><b>2.2.2</b> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.3" data-path="the-methology.html"><a href="the-methology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.4" data-path="the-methology.html"><a href="the-methology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="the-methology.html"><a href="the-methology.html#backfitting-with-mcmc"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC</a></li>
+<li class="chapter" data-level="2.4" data-path="the-methology.html"><a href="the-methology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="the-methology.html"><a href="the-methology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
+<li class="chapter" data-level="2.4.2" data-path="the-methology.html"><a href="the-methology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
+<li class="chapter" data-level="2.4.3" data-path="the-methology.html"><a href="the-methology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i><b>3</b> Example</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -100,7 +117,112 @@
             <section class="normal" id="section-">
 <div id="the-methology" class="section level1 hasAnchor" number="2">
 <h1><span class="header-section-number">Chapter 2</span> The Methology<a href="the-methology.html#the-methology" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-to-bart" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction to BART:<a href="the-methology.html#introduction-to-bart" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A sum-of-trees model is fundamentally an additive model with multivariate components. Compared to a single tree model, the sum-of-trees can more easily incorporate additive effects. Various methods which combine a set of tree models, so-called ensemble methods, have attracted much attention. These include boosting, bagging, and random forests, each of which uses different techniques to fit a linear combination of trees. Yet another approach that results in a linear combination of trees is Bayesian model averaging applied to the posterior arising from a Bayesian single-tree model. In this project, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate <span class="math inline">\(f(x) = E(Y | x)\)</span>. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the <span class="math inline">\(g_j\)</span>’s become a dimensionally adaptive random basis of “weak learners.” By weakening the <span class="math inline">\(g_j\)</span> effects, BART ends up with a sum of trees, each of which explains a small and different portion of f. Part 1 We consider the fundamental problem of making inference about an unknown function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when <span class="math inline">\(Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\)</span>. To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees <span class="math inline">\(f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x)\)</span> where each <span class="math inline">\(g\)</span> denotes a regression tree and <span class="math inline">\(g_j\)</span> denotes the <span class="math inline">\(j_{th}\)</span> tree. Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> by a sum-of-trees model <span class="math inline">\(Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)\)</span>. Summarized more formally: <span class="math display">\[Y = f(x) +\epsilon, \text{with } \epsilon \sim N(0, \epsilon^2)\]</span> <span class="math display">\[ f(x) = E(Y|x)\]</span> <span class="math display">\[ f(x) \approx h(x) \equiv \sum^{m}_{j = 1} g_j(x)\]</span> where <span class="math inline">\(g_j\)</span> denotes the <span class="math inline">\(j_{th}\)</span> regression tree. So, we can equivalently write <span class="math display">\[ \begin{align*} Y &amp;= h(x) +\epsilon, \text{with } \epsilon \sim N(0, \sigma^2) \\ &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon \end{align*} \]</span> Getting into more details, let <span class="math inline">\(T\)</span> denote the set of all binary regression trees, and a full list of <span class="math inline">\(m\)</span> trees can be denoted as the set <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span> For a specific binary regression tree <span class="math inline">\(T_j\)</span> that has <span class="math inline">\(b\)</span> terminal nodes, let <span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span> denote the parameters for those <span class="math inline">\(b\)</span> terminal nodes of this tree <span class="math inline">\(T_j\)</span>. Under this setting, <span class="math display">\[ \begin{align*} Y &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ &amp; = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} \]</span> where <span class="math inline">\(g(x; T_j, M_j)\)</span> is a function that assigns <span class="math inline">\(\mu_{ij}\in M_j\)</span> to <span class="math inline">\(x\)</span>.</p>
+<p>The expected value of the output <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, <span class="math inline">\(E(Y | x)\)</span>, is the sum of all the <span class="math inline">\(\mu_{ij}\)</span> values assigned to <span class="math inline">\(x\)</span> by the functions <span class="math inline">\(g(x; T_j, M_j)\)</span>. When there are multiple trees (<span class="math inline">\(m &gt; 1\)</span>), each <span class="math inline">\(\mu_{ij}\)</span> contributes only a part of <span class="math inline">\(E(Y | x)\)</span>, which is different from a single tree model. Each <span class="math inline">\(\mu_{ij}\)</span> represents a “main effect” if <span class="math inline">\(g(x; T_j, M_j)\)</span> depends on only one component of <span class="math inline">\(x\)</span> (a single variable), and an interaction effect if it depends on more than one component (more than one variable). Therefore, the sum-of-trees model can capture both main effects and interaction effects, with interaction effects of varying orders depending on the sizes of the trees. In the special case where every terminal node assignment depends on just a single component of <span class="math inline">\(x\)</span>, the sum-of-trees model simplifies to a simple additive model. Let <span class="math inline">\(m\)</span> denote the number of trees we will build in a sum-of-trees model. For a fixed <span class="math inline">\(m\)</span> , a sum of tree model is determined by <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be: Prior over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> Prior over <span class="math inline">\(\sigma\)</span> For all those priors, we have their joint probability function as</p>
+<p><span class="math display">\[ \begin{align*} &amp; P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\ &amp; = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \\ &amp; = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma), \text{law of total probability} \\ &amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma), \text{independence of parameters associated with nodes in a specific tree}\\ &amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} \]</span> Thus, after those calculation, we figured that there are only three priors that we need to think about.</p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="prior-models-and-tuning" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Prior models and tuning<a href="the-methology.html#prior-models-and-tuning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="the-t_j-prior" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> The <span class="math inline">\(T_j\)</span> Prior<a href="the-methology.html#the-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The prior of <span class="math inline">\(T_j\)</span> is specified by the three below aspects.</p>
+<ol style="list-style-type: decimal">
+<li>The probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal</li>
+<li>The distribution on the splitting variable assignments at each interior node</li>
+<li>The distribution on the splitting rule assignment in each interior node, conditional on the splitting variable</li>
+</ol>
+<p><span class="math display">\[
+\begin{align*}
+(1) &amp; \quad P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\\
+(2) &amp; \quad \text{splitting variable } p \sim Unif()\\
+(3) &amp; \quad \text{splitting rule | variable } p \sim Unif()
+\end{align*}
+\]</span></p>
+<p>In order to keep the m trees small so they can be summed, we can choose to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
+</div>
+<div id="the-mu_ij-t_j-prior" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior<a href="the-methology.html#the-mu_ij-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior uses the conjugate normal distribution:</p>
+<p><span class="math display">\[
+\mu_{ij} | T_j \sim N(\mu_\mu, \sigma_\mu^2)
+\]</span></p>
+<p>The individual predictions <span class="math inline">\(\mu_{ij}\)</span> ’s are assumed to be independent and identically distributed (apriori i.i.d.)</p>
+<p><span class="math display">\[
+E(Y|x) \sim N(m\mu_\mu, m\sigma_\mu^2)
+\]</span></p>
+<p>Where it is highly probable for <span class="math inline">\(E(Y|x)\)</span> to fall between <span class="math inline">\(y_{min}\)</span> and <span class="math inline">\(y_{max}\)</span></p>
+<p>Because of this, we want to choose values of <span class="math inline">\(\mu_\mu\)</span> and <span class="math inline">\(\sigma_\mu\)</span> so that <span class="math inline">\(E(Y|x) \sim N(m\mu_\mu, m\sigma_\mu^2)\)</span> is most plausible in the interval of (<span class="math inline">\(y_{min}\)</span>, <span class="math inline">\(y_{max}\)</span>). We can do this by choosing values of <span class="math inline">\(\mu_\mu\)</span> and <span class="math inline">\(\sigma_\mu\)</span> so that:</p>
+<p><span class="math inline">\(m\mu_\mu - k \sqrt{m}\sigma_\mu = y_{min}\)</span></p>
+<p><span class="math inline">\(m\mu_\mu + k \sqrt{m}\sigma_\mu = y_{max}\)</span></p>
+<p>From here, we can rescale <span class="math inline">\(Y\)</span> so that our interval <span class="math inline">\((y_{min}, y_{max})\)</span> is <span class="math inline">\((-0.5, 0.5)\)</span> which gives</p>
+<p><span class="math display">\[
+\mu_\mu = 0 \\
+\sigma_\mu = \frac{0.5}{k\sqrt{m}}
+\]</span></p>
+<p>The value <span class="math inline">\(k=2\)</span> is a good defualt choice as this would yield a 95% prior probability that <span class="math inline">\(E(Y|x) \in (y_{min}, y_{max})\)</span></p>
+</div>
+<div id="the-sigma-prior" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> The <span class="math inline">\(\sigma\)</span> prior<a href="the-methology.html#the-sigma-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For <span class="math inline">\(\sigma^2\)</span> we use the inverse chi-square distribution:</p>
+<p><span class="math display">\[
+\sigma^2 \sim \frac{\nu\lambda}{X^2\nu}
+\]</span></p>
+<p>The degrees of freedom (df) <span class="math inline">\(\nu \in [3,10]\)</span></p>
+<p><span class="math inline">\(\lambda \rightarrow\)</span> qth quantile of the prior on <span class="math inline">\(\sigma\)</span> is at <span class="math inline">\(\hat{\sigma}\)</span> or: <span class="math inline">\(P(\sigma &lt; \hat{\sigma}) = q\)</span></p>
+<p>The defualt can be <span class="math inline">\((\nu, q) = (3, 0.9)\)</span> which typically avoids extremes</p>
+</div>
+<div id="choosing-m" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Choosing m<a href="the-methology.html#choosing-m" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Remembering from before, <span class="math inline">\(m\)</span> is the number of trees we are summing in our BART model</p>
+<p>A good default for this value is <span class="math inline">\(m = 200\)</span> as the predictive performance of the algorithm improves starting at <span class="math inline">\(m = 1\)</span> and levels at around 200 trees.</p>
+<p><br />
+<br />
+</p>
+</div>
+</div>
+<div id="backfitting-with-mcmc" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Backfitting with MCMC<a href="the-methology.html#backfitting-with-mcmc" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Coming soon… need to go over and type up</p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="bart-probit-for-classification" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> BART Probit for Classification<a href="the-methology.html#bart-probit-for-classification" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We have discussed BART model for continuous <span class="math inline">\(Y\)</span>, but BART can also be used for binary outcome <span class="math inline">\(Y\; (= 0\text{ or }1)\)</span>.</p>
+<div id="what-is-probitprobit-model" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> What is Probit/Probit Model?<a href="the-methology.html#what-is-probitprobit-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>A probit model is a type of regression where the dependent variable <span class="math inline">\(Y\)</span> can take only two values, for example married or not married, similar to logistic regression. However, probit model has different distribution than logistic regression. Specifically, we assume that the model takes the form
+<span class="math display">\[P(Y = 1 \mid X) = \Phi(X^\text{T} \beta)\]</span>
+where <span class="math inline">\(P\)</span> is the probability and <span class="math inline">\(\Phi\)</span> is the cumulative distribution function (CDF) of the standard normal distribution <span class="math inline">\(N(0,1)\)</span>.</p>
+</div>
+<div id="setup-bart-for-classification" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Setup BART for Classification<a href="the-methology.html#setup-bart-for-classification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Thus, BART model extends to be
+<span class="math display">\[p(x) \equiv P [Y = 1 \mid x] = \Phi[G(x)]\]</span>
+where <span class="math display">\[G(x) \equiv \sum_{j=1}^{m} g(x; T_j, M_j)\]</span>
+, our sum of regression trees.</p>
+</div>
+<div id="modification-of-regularization-priors" class="section level3 hasAnchor" number="2.4.3">
+<h3><span class="header-section-number">2.4.3</span> Modification of Regularization Priors<a href="the-methology.html#modification-of-regularization-priors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>BART extension to binary outcome requires imposing a regularization prior on <span class="math inline">\(G(x)\)</span> and implementing a Bayesian backfitting algorithm for posterior computation. Fortunately, these can be obtained with only minor modifications of the methods for continuous <span class="math inline">\(Y\)</span>.
+Since we use probit model distribution, we implicitly assume <span class="math inline">\(\sigma = 1\)</span> and so only a prior on <span class="math inline">\((T_1, M_1), \ldots, (T_m, M_m)\)</span> is needed. Proceeding exactly as BART for continuous <span class="math inline">\(Y\)</span>, we consider a prior of the form:
+<span class="math display">\[
+p((T_1,M_1),\ldots,(T_m,M_m)) = \prod_j \left[ p(T_j) \prod_i p(\mu_{ij}|T_j) \right]
+\]</span>
+where each tree prior <span class="math inline">\(p(T_j)\)</span> is the same as tree prior for continuous <span class="math inline">\(Y\)</span>. So we need to figure out the updated prior on <span class="math inline">\(p(\mu_{ij}|T_j)\)</span>. We choose <span class="math inline">\(p(\mu_{ij}|T_j)\)</span> to cover most of the relevant <span class="math inline">\(p(x)\)</span> values by considering the interval <span class="math inline">\((\Phi[-3.0], \Phi[3.0])\)</span>, which is often practical. Following the motivation of <span class="math inline">\(\mu_{ij}\)</span> when having continuous <span class="math inline">\(Y\)</span>, we recommend the choice:
+<span class="math display">\[
+\mu_{ij} \sim \mathcal{N} \left(0, \sigma_{\mu}^2 \right)
+\]</span>
+where <span class="math inline">\(\sigma_{\mu} = \frac{3.0}{k\sqrt{m}}\)</span>, and <span class="math inline">\(k\)</span> is chosen such that <span class="math inline">\(G(x)\)</span> will likely fall within the interval <span class="math inline">\((-3.0, 3.0)\)</span>. Therefore, this prior can also limit the effect of the individual tree components of <span class="math inline">\(G(x)\)</span> as <span class="math inline">\(\mu_{ij}\)</span> is shrinking towards zero. Thus, every small tree is a weak learner. As <span class="math inline">\(k\)</span> and/or the number of trees <span class="math inline">\(m\)</span> is increased, this prior will become tighter, leading to greater shrinkage applied to the <span class="math inline">\(\mu_{ij}\)</span>. When choosing <span class="math inline">\(k\)</span>, statisticians found that values between 1 and 3 work well and they suggest using <span class="math inline">\(k = 2\)</span> as the default choice, or determine it through cross-validation.</p>
 
+</div>
+</div>
 </div>
             </section>
 
