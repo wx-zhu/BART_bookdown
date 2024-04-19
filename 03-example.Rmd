@@ -23,7 +23,7 @@ library(glue)
 library(scales)
 library(janitor)
 library(DALEXtra)
-#library(bbplot)
+library(bbplot)
 
 #Loading the datasets
 df_childhood <- read_csv("https://raw.githubusercontent.com/mesdi/blog/main/childhood.csv")
