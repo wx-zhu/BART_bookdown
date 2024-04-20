@@ -1,12 +1,14 @@
-# Example 1
+# Examples
+
+## Example 1: Regression
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, 
   warning = FALSE,
   message = FALSE,
-  fig.height = 2.75, 
-  fig.width = 4.25,
+  fig.height = 4.75, 
+  fig.width = 6.25,
   fig.align = 'center')
 ```
 
@@ -281,8 +283,63 @@ as_tibble(pdp_age$agr_profiles) %>%
         panel.grid.minor.x = element_line(color="grey"))
 ```
 
+## Example 2: Classification
 
-## Reference
+```{r}
+# Loading data 
+library(palmerpenguins)
+data(penguins)
+
+head(penguins)
+```
+
+```{r}
+#Splitting the data into train and test sets
+set.seed(1234)
+penguin_split <- 
+  penguins %>%
+  na.omit() %>% 
+  initial_split() 
+
+penguin_train <- training(penguin_split)
+penguin_test <- testing(penguin_split)
+```
+
+```{r}
+#install.packages("dbarts")
+library(dbarts)
+#Preprocessing
+penguin_rec <- recipe(species ~ bill_length_mm, bill_depth_mm, flipper_length_mm, data = penguin_train) 
+
+#Modeling with BART
+penguin_spec <- 
+  parsnip::bart() %>% 
+  set_engine("dbarts") %>% 
+  set_mode("classification")  
+
+#Workflow
+penguin_wf <- 
+  workflow() %>% 
+  add_recipe(penguin_rec) %>% 
+  add_model(penguin_spec)
+
+#cross-validation for resamples
+set.seed(12345)
+penguin_folds <- vfold_cv(penguin_train)
+
+classification_metrics <- metric_set(accuracy)
+
+# Resampling for the classification metrics
+penguin_rs <- 
+  penguin_wf %>% 
+  fit_resamples(resamples = penguin_folds, metrics = classification_metrics)
+
+# Compute the classification metrics
+collect_metrics(penguin_rs)
+```
+
+
+## References
 - Bayesian additive regression trees (BART) - bart. - bart • parsnip. (n.d.). https://parsnip.tidymodels.org/reference/bart.html 
 
 - Disci, S. (2022, December 8). The effect of childhood education on wealth: Modeling with bayesian additive regression trees (BART): R-bloggers. R. https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette 
