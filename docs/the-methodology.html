@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-04-19" />
+<meta name="date" content="2024-04-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="example-1.html"/>
+<link rel="next" href="examples.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -96,9 +96,11 @@
 </ul></li>
 <li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>3</b> Example 1</a>
+<li class="chapter" data-level="3" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i><b>3</b> Examples</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="example-1.html"><a href="example-1.html#reference"><i class="fa fa-check"></i><b>3.1</b> Reference</a></li>
+<li class="chapter" data-level="3.1" data-path="examples.html"><a href="examples.html#example-1-regression"><i class="fa fa-check"></i><b>3.1</b> Example 1: Regression</a></li>
+<li class="chapter" data-level="3.2" data-path="examples.html"><a href="examples.html#example-2-classification"><i class="fa fa-check"></i><b>3.2</b> Example 2: Classification</a></li>
+<li class="chapter" data-level="3.3" data-path="examples.html"><a href="examples.html#references-1"><i class="fa fa-check"></i><b>3.3</b> References</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -155,14 +157,21 @@ sum of all the <span class="math inline">\(\mu_{ij}\)</span> values assigned to 
 from a single tree model. Each <span class="math inline">\(\mu_{ij}\)</span> represents a “main effect” if
 <span class="math inline">\(g(x; T_j, M_j)\)</span> depends on only one component of <span class="math inline">\(x\)</span> (a single
 variable), and an interaction effect if it depends on more than one
-component (more than one variable). Therefore, the sum-of-trees model
-can capture both main effects and interaction effects, with interaction
-effects of varying orders depending on the sizes of the trees. In the
-special case where every terminal node assignment depends on just a
-single component of <span class="math inline">\(x\)</span>, the sum-of-trees model simplifies to a simple
-additive model. Let <span class="math inline">\(m\)</span> denote the number of trees we will build in a
-sum-of-trees model. For a fixed <span class="math inline">\(m\)</span> , a sum of tree model is determined
-by <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
+component (more than one variable).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
+<img src="image/simple-g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
+<p class="caption">
+Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
+</p>
+</div>
+<p>Therefore, the sum-of-trees model can capture both main effects and
+interaction effects, with interaction effects of varying orders
+depending on the sizes of the trees. In the special case where every
+terminal node assignment depends on just a single component of <span class="math inline">\(x\)</span>, the
+sum-of-trees model simplifies to a simple additive model. Let <span class="math inline">\(m\)</span> denote
+the number of trees we will build in a sum-of-trees model. For a fixed
+<span class="math inline">\(m\)</span> , a sum of tree model is determined by
+<span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
 <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be:
 Prior over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> Prior
 over <span class="math inline">\(\sigma\)</span> For all those priors, we have their joint probability
@@ -193,10 +202,10 @@ node, conditional on the splitting variable</li>
 \]</span></p>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
 <img src="image/single_tree.jpeg" alt="A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
 <p class="caption">
-Figure 2.1: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
+Figure 2.2: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
 </div>
@@ -323,7 +332,7 @@ Bayesian additive regression trees.</li>
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="example-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="examples.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

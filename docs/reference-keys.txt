@@ -27,3 +27,4 @@ backfitting-with-mcmc-algorithm
 example-1-regression
 example-2-classification
 examples
+fig:unnamed-chunk-2

@@ -1,4 +1,4 @@
---- 
+---
 title: "Intro to Bayesian Addictive Regression Trees (BART)"
 author: "Jingyi Guan, Alayna Johnson, Wenxuan Zhu"
 date: "`r Sys.Date()`"
@@ -8,7 +8,5 @@ site: bookdown::bookdown_site
 # Introduction
 
 A sum-of-trees model is fundamentally an additive model with multivariate components. Compared to a single tree model, the sum-of-trees can more easily incorporate additive effects. Various methods which combine a set of tree models, so-called ensemble methods, have attracted much attention. These include boosting, bagging, and random forests, each of which uses different techniques to fit a linear combination of trees. Yet another approach that results in a linear combination of trees is Bayesian model averaging applied to the posterior arising from a Bayesian single-tree model.
-In this project, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate $f(x) = E(Y | x)$. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the $g_j$‘s become a dimensional adaptive random basis of “weak learners.” By weakening the $g_j$ effects, BART ends up with a sum of trees, each of which explains a small and different portion of f.
 
-
-
+In this tutorial, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate $f(x) = E(Y | x)$. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the $g_j$‘s become a dimensional adaptive random basis of “weak learners.” By weakening the $g_j$ effects, BART ends up with a sum of trees, each of which explains a small and different portion of $f$.

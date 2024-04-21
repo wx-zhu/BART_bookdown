@@ -39,14 +39,20 @@ $\mu_{ij}$ contributes only a part of $E(Y | x)$, which is different
 from a single tree model. Each $\mu_{ij}$ represents a “main effect” if
 $g(x; T_j, M_j)$ depends on only one component of $x$ (a single
 variable), and an interaction effect if it depends on more than one
-component (more than one variable). Therefore, the sum-of-trees model
-can capture both main effects and interaction effects, with interaction
-effects of varying orders depending on the sizes of the trees. In the
-special case where every terminal node assignment depends on just a
-single component of $x$, the sum-of-trees model simplifies to a simple
-additive model. Let $m$ denote the number of trees we will build in a
-sum-of-trees model. For a fixed $m$ , a sum of tree model is determined
-by $T = \{T_1, T_2, T_3, ...\}$,$M_j = \{M_1, M_2, M_3, ..., M_b\}$, and
+component (more than one variable).
+
+```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/simple-g.jpg")
+```
+
+Therefore, the sum-of-trees model can capture both main effects and
+interaction effects, with interaction effects of varying orders
+depending on the sizes of the trees. In the special case where every
+terminal node assignment depends on just a single component of $x$, the
+sum-of-trees model simplifies to a simple additive model. Let $m$ denote
+the number of trees we will build in a sum-of-trees model. For a fixed
+$m$ , a sum of tree model is determined by
+$T = \{T_1, T_2, T_3, ...\}$,$M_j = \{M_1, M_2, M_3, ..., M_b\}$, and
 $\sigma$. Thus, all the priors that we need in this setting would be:
 Prior over $(T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)$ Prior
 over $\sigma$ For all those priors, we have their joint probability
@@ -149,8 +155,6 @@ trees.
 \
 
 ## Backfitting with MCMC Algorithm
-
-Coming soon... need to go over and type up
 
 \
 \
