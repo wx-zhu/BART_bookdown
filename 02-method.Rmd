@@ -280,6 +280,12 @@ shrinkage applied to the $\mu_{ij}$. When choosing $k$, statisticians
 found that values between 1 and 3 work well and they suggest using
 $k = 2$ as the default choice, or determine it through cross-validation.
 
+### Multinomial Probit Classification
+
+Coming soon :)
+
+
+
 ## References
 
 -   Chipman, H. A., George, E. I., & McCulloch, R. E. (2010). BART:
