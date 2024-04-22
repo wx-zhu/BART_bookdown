@@ -28,3 +28,8 @@ example-1-regression
 example-2-classification
 examples
 fig:unnamed-chunk-2
+the-algorithm-set-up
+posterior-inference-statistics
+conclusion
+fig:unnamed-chunk-3
+fig:unnamed-chunk-4

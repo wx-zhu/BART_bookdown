@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-04-21" />
+<meta name="date" content="2024-04-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -87,7 +87,12 @@
 <li class="chapter" data-level="2.2.3" data-path="the-methodology.html"><a href="the-methodology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
 <li class="chapter" data-level="2.2.4" data-path="the-methodology.html"><a href="the-methodology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a></li>
+<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#the-algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> The algorithm set-up</a></li>
+<li class="chapter" data-level="2.3.2" data-path="the-methodology.html"><a href="the-methodology.html#posterior-inference-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Posterior inference statistics</a></li>
+<li class="chapter" data-level="2.3.3" data-path="the-methodology.html"><a href="the-methodology.html#conclusion"><i class="fa fa-check"></i><b>2.3.3</b> Conclusion</a></li>
+</ul></li>
 <li class="chapter" data-level="2.4" data-path="the-methodology.html"><a href="the-methodology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
 <ul>
 <li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
@@ -125,12 +130,12 @@
 <div id="header">
 <h1 class="title">Intro to Bayesian Addictive Regression Trees (BART)</h1>
 <p class="author"><em>Jingyi Guan, Alayna Johnson, Wenxuan Zhu</em></p>
-<p class="date"><em>2024-04-21</em></p>
+<p class="date"><em>2024-04-22</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>A sum-of-trees model is fundamentally an additive model with multivariate components. Compared to a single tree model, the sum-of-trees can more easily incorporate additive effects. Various methods which combine a set of tree models, so-called ensemble methods, have attracted much attention. These include boosting, bagging, and random forests, each of which uses different techniques to fit a linear combination of trees. Yet another approach that results in a linear combination of trees is Bayesian model averaging applied to the posterior arising from a Bayesian single-tree model.</p>
-<p>In this project, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate <span class="math inline">\(f(x) = E(Y | x)\)</span>. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the <span class="math inline">\(g_j\)</span>’s become a dimensional adaptive random basis of “weak learners.” By weakening the <span class="math inline">\(g_j\)</span> effects, BART ends up with a sum of trees, each of which explains a small and different portion of f.</p>
+<p>In this tutorial, we study a Bayesian approach called BART (Bayesian Additive Regression Trees) which uses a sum of trees to model or approximate <span class="math inline">\(f(x) = E(Y | x)\)</span>. The essential idea is to elaborate the sum-of-trees model by imposing a prior that regularizes the fit by keeping the individual tree effects small. In effect, the <span class="math inline">\(g_j\)</span>’s become a dimensional adaptive random basis of “weak learners.” By weakening the <span class="math inline">\(g_j\)</span> effects, BART ends up with a sum of trees, each of which explains a small and different portion of <span class="math inline">\(f\)</span>.</p>
 
 </div>
             </section>

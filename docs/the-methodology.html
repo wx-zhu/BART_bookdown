@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -135,16 +135,16 @@
 function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of
 inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
 <span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span></p>
+<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
+the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
+<span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span></p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
-<img src="image/simple-g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
+<img src="image/simple-g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="60%" />
 <p class="caption">
 Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
-<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
-the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
-<span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span>
-Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with
+<p>Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with
 <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> by a sum-of-trees model
 <span class="math inline">\(Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)\)</span>.
 Summarized more formally:

@@ -13,13 +13,14 @@ function f that predicts an output Y using a $p$-dimensional vector of
 inputs $x = (x_1, ..., x_p)$ when
 $$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$ 
 
-```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '80%', fig.align = 'center'}
-knitr::include_graphics("image/simple-g.jpg")
-```
-
 To do this, we consider modeling or at least approximating $f(x) = E(Y | x)$,
 the mean of $Y$ given $x$, by a sum of $m$ regression trees
 $$f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}$$
+
+```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '60%', fig.align = 'center'}
+knitr::include_graphics("image/simple-g.jpg")
+```
+
 Thus, we approximate $Y = f(x) + \epsilon$, with
 $\epsilon \sim N(0, \sigma^2)$ by a sum-of-trees model
 $Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)$.
