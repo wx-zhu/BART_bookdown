@@ -309,7 +309,38 @@ penguin_test <- testing(penguin_split)
 #install.packages("dbarts")
 library(dbarts)
 #Preprocessing
-penguin_rec <- recipe(species ~ bill_length_mm, bill_depth_mm, flipper_length_mm, data = penguin_train) 
+penguin_rec <- recipe(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm, data = penguin_train) 
+
+#Modeling with BART
+penguin_spec <- 
+  parsnip::bart() %>% 
+  set_engine("dbarts") %>% 
+  set_mode("classification")  
+
+#Workflow
+penguin_wf <- 
+  workflow() %>% 
+  add_recipe(penguin_rec) %>% 
+  add_model(penguin_spec)
+
+#cross-validation for resamples
+set.seed(12345)
+penguin_folds <- vfold_cv(penguin_train)
+
+classification_metrics <- metric_set(accuracy)
+
+# Resampling for the classification metrics
+penguin_rs <- 
+  penguin_wf %>% 
+  fit_resamples(resamples = penguin_folds, metrics = classification_metrics)
+
+# Compute the classification metrics
+collect_metrics(penguin_rs)
+```
+
+```{r}
+#Preprocessing
+penguin_rec <- recipe(sex ~ bill_length_mm + bill_depth_mm+ flipper_length_mm, data = penguin_train) 
 
 #Modeling with BART
 penguin_spec <- 
