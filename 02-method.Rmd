@@ -11,8 +11,13 @@ editor_options:
 We consider the fundamental problem of making inference about an unknown
 function f that predicts an output Y using a $p$-dimensional vector of
 inputs $x = (x_1, ..., x_p)$ when
-$$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$ To do
-this, we consider modeling or at least approximating $f(x) = E(Y | x)$,
+$$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$ 
+
+```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/simple-g.jpg")
+```
+
+To do this, we consider modeling or at least approximating $f(x) = E(Y | x)$,
 the mean of $Y$ given $x$, by a sum of $m$ regression trees
 $$f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}$$
 Thus, we approximate $Y = f(x) + \epsilon$, with
@@ -41,8 +46,14 @@ $g(x; T_j, M_j)$ depends on only one component of $x$ (a single
 variable), and an interaction effect if it depends on more than one
 component (more than one variable).
 
-```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '80%', fig.align = 'center'}
-knitr::include_graphics("image/simple-g.jpg")
+
+
+```{r, echo=FALSE, fig.cap="A visual representation of the set-up of a sum-of-tree model.", out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/set-up.png")
+```
+
+```{r, echo=FALSE, fig.cap="A visual representation of the prediction process of a sum-of-tree model.", out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/plug-x-in.png")
 ```
 
 Therefore, the sum-of-trees model can capture both main effects and

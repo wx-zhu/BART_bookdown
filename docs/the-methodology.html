@@ -134,8 +134,14 @@
 <p>We consider the fundamental problem of making inference about an unknown
 function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of
 inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
-<span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span> To do
-this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
+<span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span></p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
+<img src="image/simple-g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
+<p class="caption">
+Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
+</p>
+</div>
+<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
 the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
 <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span>
 Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with
@@ -163,10 +169,16 @@ from a single tree model. Each <span class="math inline">\(\mu_{ij}\)</span> rep
 <span class="math inline">\(g(x; T_j, M_j)\)</span> depends on only one component of <span class="math inline">\(x\)</span> (a single
 variable), and an interaction effect if it depends on more than one
 component (more than one variable).</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
-<img src="image/simple-g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<img src="image/set-up.png" alt="A visual representation of the set-up of a sum-of-tree model." width="80%" />
 <p class="caption">
-Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
+Figure 2.2: A visual representation of the set-up of a sum-of-tree model.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="image/plug-x-in.png" alt="A visual representation of the prediction process of a sum-of-tree model." width="80%" />
+<p class="caption">
+Figure 2.3: A visual representation of the prediction process of a sum-of-tree model.
 </p>
 </div>
 <p>Therefore, the sum-of-trees model can capture both main effects and
@@ -207,10 +219,10 @@ node, conditional on the splitting variable</li>
 \]</span></p>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
 <img src="image/single_tree.jpeg" alt="A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
 <p class="caption">
-Figure 2.2: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
+Figure 2.4: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
 </div>
