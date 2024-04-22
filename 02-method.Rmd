@@ -156,6 +156,65 @@ trees.
 
 ## Backfitting with MCMC Algorithm
 
+
+### The algorithm set-up
+
+Hastie and Tibshirani (2000) considered a similar application of the Gibbs sampler for posterior sampling for additive and generalized additive models with σ fixed, and showed how it was a stochastic generalization of the backfitting algorithm for such models. For this reason, Chipman et al. (2010) refer to their algorithm as backfitting MCMC.
+
+Given the observed data $y$ and unknown parameters $(T_1, M_1), ..., (T_m, M_m), \sigma$, the posterior distribution of these parameters can be represented as $$p((T_1, M_1), ..., (T_m, M_m), \sigma|y)$$, which determine the sum-of-trees model.
+
+Generally speaking, this backfitting algorithm iteratively updates each parameter in $(T_1, M_1), ...(T_m, M_m), \sigma$ using the most current knowldge of the other parameters, which is just the idea of Gibbs sampler.
+
+Specifically, $T_{(j)}$ represents all trees except $T_j$, and $M_{(j)}$ represents all terminal nodes parameters except $M_j$. In this Gibbs sampler, we loop from $j = 1$ to $j = m$ to draw $(T_j, M_j)$ from $(T_{(j)}, M_{(j)}), \sigma, y$. That is, $$(T_j, M_j) |T_{(j)}, M_{(j)}, \sigma, y$$
+We also need to update $\sigma$ based on the most recent knowledge of $(T_1, M_1), ...(T_m, M_m)$: $$\sigma|T_1,...T_m, M_1, ...M_m, y$$.
+
+
+The posterior distribution $p(T_j, M_j|T_{(j)}, M_{(j)}, \sigma, y)$ depends on four things $T_{(j)}, M_{(j)}, \sigma, y$. But it depends on three of them $T_{(j)}, M_{(j)}, y$ only through $$R_j \equiv y-\sum_{k\neq j}g(x;T_k, M_k)$$, which is an $n$-vector where the $j_{th}$ entry records the discrepancy between the real value and the current estimate, where the current estimate is just the sum of the partial results gotten from all but the $j_{th}$ trees.
+
+Consequently, drawing $(T_j, M_j)$ given $T_{(j)}, M_{(j)}, \sigma, y$ can be regarded as equivalent to drawing from $R_j, \sigma$, expressed as:
+
+$$(T_j, M_j)|R_j, \sigma$$
+
+Here, $R_j$ can be understood as the target value that the single tree model $T_j$ aims to get at, essentially acting as the "data" for this purpose. Formally, $$R_j = g(x;T_j, M_j)+\epsilon$$.
+
+The calculation for $p(T_j|R_j, \sigma)$ is detailed as follows:
+$$
+\begin{align*}
+p(T_j|R_j, \sigma) &= p(T_j)p(R_j|T_j,\sigma) \\
+&\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
+&= p(T_j)\int p(R_j|M_j, T_j,\sigma)p(M_j|T_j, \sigma)dM_j
+\end{align*}
+$$
+
+Given the use of a conjugate prior for $M_j$, we can derive $p(T_j|R_j, \sigma)$ in a closed form up to a normalization constant.
+
+In summary, the whole backfitting algorithm utilizing the idea of Gibbs sampler is to successively draw $T_1, M_1, ..., T_m, M_m, sigma$ in each full iteration. Thus, each interation is consists of $2m+1$ steps:
+
+
+$$
+T_j|R_j, \sigma\\
+M_j|T_j, R_j, \sigma \\
+\sigma |T_1, M_1,...T_m, M_m,y, \sigma
+$$
+Tree drawings $T_j$ are facilitated using the Metropolis-Hastings algorithm, which proposes new tree configurations based on the current tree through various modifications: growing a terminal node, pruning a pair of terminal nodes, changing a nonterminal rule, and swapping rules between parent and child nodes, with associated probabilities of 0.25, 0.25, 0.40, and 0.10 respectively.
+
+Subsequently, $M_j$ is drawn independently for the terminal nodes $\mu_{ij}$ from a normal distribution, facilitating the calculation of the next residual $R_{j+1}$, which is crucial for the upcoming draw of $T_{j+1}$.
+
+### Posterior inference statistics
+Every output from the algorithm can be used to build a tree-based model. Summing up all the tree outputs from each draw (indexed by j), we get a sequence of models that gradually approach the true underlying model, $f(·)$. This is noted as:
+  \[ f^*(·) = \sum_{j=1}^m g(·; T^*_j, M^*_j) \]
+
+
+By running the algorithm for a sufficient number of iterations, especially after a preliminary 'burn-in' period, the sequence of $f^{∗}$ draws (like $f^{∗}_1$, $f^{∗}_2$, ..., $f^{∗}_K$) gives a good approximation of the posterior distribution of the true model $f(·)$.
+
+These tree-based model outputs can be used to estimate various statistical measures, like the mean or median of $f(·)$, by averaging or finding the median of the post-burn-in samples.
+
+To predict values or behaviors ($Y$) at a new or existing data point ($x$), you can use the average or median of these post-burn-in tree models.
+To understand the reliability of these predictions at different values of $x$, you look at how much the predictions vary among these models. This can be captured by calculating intervals (quantiles) around the predictions.
+By observing which variables are most frequently used in the models (especially as the number of trees $m$ is reduced), BART helps identify the most important predictors for the response variable $Y$. This process is effectively a competition among predictors to demonstrate their relevance to the model.
+
+### Conclusion
+In summary, the backfitting MCMC algorithm generates multiple potential models by simulating how trees would split based on data. These models converge over many iterations to a true model. By analyzing these models, one can make predictions, assess uncertainty, understand variable importance, and determine the impact of specific predictors on the outcome.
 \
 \
 

@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-04-21" />
+<meta name="date" content="2024-04-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -87,7 +87,12 @@
 <li class="chapter" data-level="2.2.3" data-path="the-methodology.html"><a href="the-methodology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
 <li class="chapter" data-level="2.2.4" data-path="the-methodology.html"><a href="the-methodology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a></li>
+<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#the-algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> The algorithm set-up</a></li>
+<li class="chapter" data-level="2.3.2" data-path="the-methodology.html"><a href="the-methodology.html#posterior-inference-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Posterior inference statistics</a></li>
+<li class="chapter" data-level="2.3.3" data-path="the-methodology.html"><a href="the-methodology.html#conclusion"><i class="fa fa-check"></i><b>2.3.3</b> Conclusion</a></li>
+</ul></li>
 <li class="chapter" data-level="2.4" data-path="the-methodology.html"><a href="the-methodology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
 <ul>
 <li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
@@ -262,10 +267,51 @@ trees.</p>
 </div>
 <div id="backfitting-with-mcmc-algorithm" class="section level2 hasAnchor" number="2.3">
 <h2><span class="header-section-number">2.3</span> Backfitting with MCMC Algorithm<a href="the-methodology.html#backfitting-with-mcmc-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Coming soon… need to go over and type up</p>
-<p><br />
+<div id="the-algorithm-set-up" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> The algorithm set-up<a href="the-methodology.html#the-algorithm-set-up" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Hastie and Tibshirani (2000) considered a similar application of the Gibbs sampler for posterior sampling for additive and generalized additive models with σ fixed, and showed how it was a stochastic generalization of the backfitting algorithm for such models. For this reason, Chipman et al. (2010) refer to their algorithm as backfitting MCMC.</p>
+<p>Given the observed data <span class="math inline">\(y\)</span> and unknown parameters <span class="math inline">\((T_1, M_1), ..., (T_m, M_m), \sigma\)</span>, the posterior distribution of these parameters can be represented as <span class="math display">\[p((T_1, M_1), ..., (T_m, M_m), \sigma|y)\]</span>, which determine the sum-of-trees model.</p>
+<p>Generally speaking, this backfitting algorithm iteratively updates each parameter in <span class="math inline">\((T_1, M_1), ...(T_m, M_m), \sigma\)</span> using the most current knowldge of the other parameters, which is just the idea of Gibbs sampler.</p>
+<p>Specifically, <span class="math inline">\(T_{(j)}\)</span> represents all trees except <span class="math inline">\(T_j\)</span>, and <span class="math inline">\(M_{(j)}\)</span> represents all terminal nodes parameters except <span class="math inline">\(M_j\)</span>. In this Gibbs sampler, we loop from <span class="math inline">\(j = 1\)</span> to <span class="math inline">\(j = m\)</span> to draw <span class="math inline">\((T_j, M_j)\)</span> from <span class="math inline">\((T_{(j)}, M_{(j)}), \sigma, y\)</span>. That is, <span class="math display">\[(T_j, M_j) |T_{(j)}, M_{(j)}, \sigma, y\]</span>
+We also need to update <span class="math inline">\(\sigma\)</span> based on the most recent knowledge of <span class="math inline">\((T_1, M_1), ...(T_m, M_m)\)</span>: <span class="math display">\[\sigma|T_1,...T_m, M_1, ...M_m, y\]</span>.</p>
+<p>The posterior distribution <span class="math inline">\(p(T_j, M_j|T_{(j)}, M_{(j)}, \sigma, y)\)</span> depends on four things <span class="math inline">\(T_{(j)}, M_{(j)}, \sigma, y\)</span>. But it depends on three of them <span class="math inline">\(T_{(j)}, M_{(j)}, y\)</span> only through <span class="math display">\[R_j \equiv y-\sum_{k\neq j}g(x;T_k, M_k)\]</span>, which is an <span class="math inline">\(n\)</span>-vector where the <span class="math inline">\(j_{th}\)</span> entry records the discrepancy between the real value and the current estimate, where the current estimate is just the sum of the partial results gotten from all but the <span class="math inline">\(j_{th}\)</span> trees.</p>
+<p>Consequently, drawing <span class="math inline">\((T_j, M_j)\)</span> given <span class="math inline">\(T_{(j)}, M_{(j)}, \sigma, y\)</span> can be regarded as equivalent to drawing from <span class="math inline">\(R_j, \sigma\)</span>, expressed as:</p>
+<p><span class="math display">\[(T_j, M_j)|R_j, \sigma\]</span></p>
+<p>Here, <span class="math inline">\(R_j\)</span> can be understood as the target value that the single tree model <span class="math inline">\(T_j\)</span> aims to get at, essentially acting as the “data” for this purpose. Formally, <span class="math display">\[R_j = g(x;T_j, M_j)+\epsilon\]</span>.</p>
+<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows:
+<span class="math display">\[
+\begin{align*}
+p(T_j|R_j, \sigma) &amp;= p(T_j)p(R_j|T_j,\sigma) \\
+&amp;\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
+&amp;= p(T_j)\int p(R_j|M_j, T_j,\sigma)p(M_j|T_j, \sigma)dM_j
+\end{align*}
+\]</span></p>
+<p>Given the use of a conjugate prior for <span class="math inline">\(M_j\)</span>, we can derive <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> in a closed form up to a normalization constant.</p>
+<p>In summary, the whole backfitting algorithm utilizing the idea of Gibbs sampler is to successively draw <span class="math inline">\(T_1, M_1, ..., T_m, M_m, sigma\)</span> in each full iteration. Thus, each interation is consists of <span class="math inline">\(2m+1\)</span> steps:</p>
+<p><span class="math display">\[
+T_j|R_j, \sigma\\
+M_j|T_j, R_j, \sigma \\
+\sigma |T_1, M_1,...T_m, M_m,y, \sigma
+\]</span>
+Tree drawings <span class="math inline">\(T_j\)</span> are facilitated using the Metropolis-Hastings algorithm, which proposes new tree configurations based on the current tree through various modifications: growing a terminal node, pruning a pair of terminal nodes, changing a nonterminal rule, and swapping rules between parent and child nodes, with associated probabilities of 0.25, 0.25, 0.40, and 0.10 respectively.</p>
+<p>Subsequently, <span class="math inline">\(M_j\)</span> is drawn independently for the terminal nodes <span class="math inline">\(\mu_{ij}\)</span> from a normal distribution, facilitating the calculation of the next residual <span class="math inline">\(R_{j+1}\)</span>, which is crucial for the upcoming draw of <span class="math inline">\(T_{j+1}\)</span>.</p>
+</div>
+<div id="posterior-inference-statistics" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Posterior inference statistics<a href="the-methodology.html#posterior-inference-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Every output from the algorithm can be used to build a tree-based model. Summing up all the tree outputs from each draw (indexed by j), we get a sequence of models that gradually approach the true underlying model, <span class="math inline">\(f(·)\)</span>. This is noted as:
+<span class="math display">\[ f^*(·) = \sum_{j=1}^m g(·; T^*_j, M^*_j) \]</span></p>
+<p>By running the algorithm for a sufficient number of iterations, especially after a preliminary ‘burn-in’ period, the sequence of <span class="math inline">\(f^{∗}\)</span> draws (like <span class="math inline">\(f^{∗}_1\)</span>, <span class="math inline">\(f^{∗}_2\)</span>, …, <span class="math inline">\(f^{∗}_K\)</span>) gives a good approximation of the posterior distribution of the true model <span class="math inline">\(f(·)\)</span>.</p>
+<p>These tree-based model outputs can be used to estimate various statistical measures, like the mean or median of <span class="math inline">\(f(·)\)</span>, by averaging or finding the median of the post-burn-in samples.</p>
+<p>To predict values or behaviors (<span class="math inline">\(Y\)</span>) at a new or existing data point (<span class="math inline">\(x\)</span>), you can use the average or median of these post-burn-in tree models.
+To understand the reliability of these predictions at different values of <span class="math inline">\(x\)</span>, you look at how much the predictions vary among these models. This can be captured by calculating intervals (quantiles) around the predictions.
+By observing which variables are most frequently used in the models (especially as the number of trees <span class="math inline">\(m\)</span> is reduced), BART helps identify the most important predictors for the response variable <span class="math inline">\(Y\)</span>. This process is effectively a competition among predictors to demonstrate their relevance to the model.</p>
+</div>
+<div id="conclusion" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> Conclusion<a href="the-methodology.html#conclusion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In summary, the backfitting MCMC algorithm generates multiple potential models by simulating how trees would split based on data. These models converge over many iterations to a true model. By analyzing these models, one can make predictions, assess uncertainty, understand variable importance, and determine the impact of specific predictors on the outcome.<br />
 <br />
 </p>
+</div>
 </div>
 <div id="bart-probit-for-classification" class="section level2 hasAnchor" number="2.4">
 <h2><span class="header-section-number">2.4</span> BART Probit for Classification<a href="the-methodology.html#bart-probit-for-classification" class="anchor-section" aria-label="Anchor link to header"></a></h2>
