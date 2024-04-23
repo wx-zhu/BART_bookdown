@@ -34,3 +34,5 @@ conclusion
 fig:unnamed-chunk-3
 fig:unnamed-chunk-4
 multinomial-probit-classification
+dbarts-package
+titymdoels-package
