@@ -80,18 +80,13 @@ The prior of $T_j$ is specified by the three below aspects.
 
 1.  The probability that a node at depth d (= 0, 1, 2, . . .) is
     nonterminal
+    -   $P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)$
 2.  The distribution on the splitting variable assignments at each
-    interior node
+    interior node, where $p$ denotes the splitting variable
+    -    $\text{splitting variable } p \sim Unif()$
 3.  The distribution on the splitting rule assignment in each interior
     node, conditional on the splitting variable
-
-$$
-\begin{align*}
-(1) & \quad P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\\
-(2) & \quad \text{splitting variable } p \sim Unif()\\
-(3) & \quad \text{splitting rule | variable } p \sim Unif()
-\end{align*}
-$$
+    -    $\text{splitting rule | variable } p \sim Unif()$
 
 In order to keep the m trees small so they can be summed, we can choose
 to use values $\alpha = 0.95$ and $\beta = 2$

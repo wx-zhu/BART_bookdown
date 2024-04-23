@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-04-22" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -206,19 +206,21 @@ priors that we need to think about.</p>
 <p>The prior of <span class="math inline">\(T_j\)</span> is specified by the three below aspects.</p>
 <ol style="list-style-type: decimal">
 <li>The probability that a node at depth d (= 0, 1, 2, . . .) is
-nonterminal</li>
+nonterminal
+<ul>
+<li><span class="math inline">\(P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\)</span></li>
+</ul></li>
 <li>The distribution on the splitting variable assignments at each
-interior node</li>
+interior node, where <span class="math inline">\(p\)</span> denotes the splitting variable
+<ul>
+<li><span class="math inline">\(\text{splitting variable } p \sim Unif()\)</span></li>
+</ul></li>
 <li>The distribution on the splitting rule assignment in each interior
-node, conditional on the splitting variable</li>
+node, conditional on the splitting variable
+<ul>
+<li><span class="math inline">\(\text{splitting rule | variable } p \sim Unif()\)</span></li>
+</ul></li>
 </ol>
-<p><span class="math display">\[
-\begin{align*}
-(1) &amp; \quad P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\\
-(2) &amp; \quad \text{splitting variable } p \sim Unif()\\
-(3) &amp; \quad \text{splitting rule | variable } p \sim Unif()
-\end{align*}
-\]</span></p>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
