@@ -8,12 +8,8 @@ editor_options:
 
 ## Setting up
 
-We consider the fundamental problem of making inference about an unknown
-function f that predicts an output Y using a $p$-dimensional vector of
-inputs $x = (x_1, ..., x_p)$ when
-$$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$
+We consider the fundamental problem of making inference about an unknown function f that predicts an output Y using a $p$-dimensional vector of inputs $x = (x_1, ..., x_p)$ when $$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$.
 
-<<<<<<< Updated upstream
 To do this, we consider modeling or at least approximating
 $f(x) = E(Y | x)$, the mean of $Y$ given $x$, by a sum of $m$ regression
 trees
