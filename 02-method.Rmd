@@ -10,16 +10,13 @@ editor_options:
 
 We consider the fundamental problem of making inference about an unknown function f that predicts an output Y using a $p$-dimensional vector of inputs $x = (x_1, ..., x_p)$ when $$Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)$$.
 
-To do this, we consider modeling or at least approximating
-$f(x) = E(Y | x)$, the mean of $Y$ given $x$, by a sum of $m$ regression
-trees
-$$f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}$$
-=======
+
+
 To do this, we consider modeling or at least approximating $f(x) = E(Y | x)$,
 the mean of $Y$ given $x$, by a sum of $m$ regression trees
 $$f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) $$
 ,where each $g_j$ denotes the mapping function associated with the $j_{th}$ tree.
->>>>>>> Stashed changes
+
 
 ```{r, echo=FALSE, fig.cap="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. ", out.width = '60%', fig.align = 'center'}
 knitr::include_graphics("image/simple_g.jpg")
@@ -83,20 +80,13 @@ This prior defines how the decision trees in the model are built, specifically h
 
 The prior of $T_j$ is specified by the three below aspects.
 
-<<<<<<< Updated upstream
-1.  The probability that a node at depth d (= 0, 1, 2, . . .) is
-    nonterminal
-    -   $P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)$
-2.  The distribution on the splitting variable assignments at each
-    interior node, where $p$ denotes the splitting variable
-    -    $\text{splitting variable } p \sim Unif()$
-3.  The distribution on the splitting rule assignment in each interior
-    node, conditional on the splitting variable
-    -    $\text{splitting rule | variable } p \sim Unif()$
-=======
 1.  **Depth-based stopping**: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters $\alpha$ and $\beta$ are controlling this probability, where $\alpha$ affects the initial likelihood of branching and $\beta$ controls how quickly this likelihood decreases as the tree gets deeper.
-2.  **Variable selection**: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node
-3.  **Splitting rule**: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable
+2.  **Variable selection**: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node. The distribution on the splitting variable assignments at each interior node, where $p$ denotes the splitting variable:
+
+$$\text{splitting variable } p \sim Unif()$$
+3.  **Splitting rule**: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable.The distribution on the splitting rule assignment in each interior node, conditional on the splitting variable
+
+$$\text{splitting rule | variable } p \sim Unif()$$
 
 $$
 \begin{align*}
@@ -105,7 +95,7 @@ $$
 (3) & \quad \text{splitting rule | variable } p \sim Unif()
 \end{align*}
 $$
->>>>>>> Stashed changes
+
 
 In order to keep the m trees small so they can be summed, we can choose
 to use values $\alpha = 0.95$ and $\beta = 2$
@@ -229,7 +219,8 @@ Here, $R_j$ can be understood as the target value that the single tree
 model $T_j$ aims to get at, essentially acting as the "data" for this
 purpose. Formally, $$R_j = g(x;T_j, M_j)+\epsilon$$.
 
-The calculation for $p(T_j|R_j, \sigma)$ is detailed as follows: $$
+The calculation for $p(T_j|R_j, \sigma)$ is detailed as follows: 
+$$
 \begin{align*}
 p(T_j|R_j, \sigma) &= p(T_j)p(R_j|T_j,\sigma) \\
 &\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
@@ -248,7 +239,9 @@ $$
 T_j|R_j, \sigma\\
 M_j|T_j, R_j, \sigma \\
 \sigma |T_1, M_1,...T_m, M_m,y, \sigma
-$$ Tree drawings $T_j$ are facilitated using the Metropolis-Hastings
+$$
+
+Tree drawings $T_j$ are facilitated using the Metropolis-Hastings
 algorithm, which proposes new tree configurations based on the current
 tree through various modifications: growing a terminal node, pruning a
 pair of terminal nodes, changing a nonterminal rule, and swapping rules
