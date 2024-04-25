@@ -1,14 +1,50 @@
-p.caption {
-  color: #777;
-  margin-top: 10px;
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@700&display=swap');
+
+/* Body and paragraph settings for better readability */
+body {
+    font-family: 'Georgia', serif;
+    color: #333;
+    line-height: 1.6;
+    padding: 10px;
 }
-p code {
-  white-space: inherit;
+
+/* Header styles */
+h1, h2, h3, h4, h5, h6 {
+    color: #3B1280; 
+    font-family: 'Merriweather', serif;
 }
-pre {
-  word-break: normal;
-  word-wrap: normal;
+
+/* Link styles */
+a {
+    color: #9D88B3;
+    text-decoration: none;
 }
-pre code {
-  white-space: inherit;
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Code blocks styling */
+pre, code {
+    font-family: 'Courier New', monospace;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 0.95em;
+}
+
+/* Styling for tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
 }

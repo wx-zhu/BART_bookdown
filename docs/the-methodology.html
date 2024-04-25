@@ -23,7 +23,11 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
+<<<<<<< Updated upstream
 <meta name="date" content="2024-04-23" />
+=======
+<meta name="date" content="2024-04-25" />
+>>>>>>> Stashed changes
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -136,26 +140,33 @@
 function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of
 inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
 <span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span></p>
+<<<<<<< Updated upstream
 <p>To do this, we consider modeling or at least approximating
 <span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression
 trees
 <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span></p>
+=======
+<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
+the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
+<span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \]</span>
+,where each <span class="math inline">\(g_j\)</span> denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.</p>
+>>>>>>> Stashed changes
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-1"></span>
 <img src="image/simple_g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="60%" />
 <p class="caption">
 Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
-<p>Thus, we approximate <span class="math inline">\(Y = f(x) + \epsilon\)</span>, with
-<span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> by a sum-of-trees model
-<span class="math inline">\(Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)\)</span>.
-Summarized more formally:
-<span class="math display">\[Y = f(x) +\epsilon, \text{with } \epsilon \sim N(0, \epsilon^2)\]</span>
-<span class="math display">\[ f(x) = E(Y|x)\]</span> <span class="math display">\[ f(x) \approx h(x) \equiv \sum^{m}_{j = 1} g_j(x)\]</span>
-where <span class="math inline">\(g_j\)</span> denotes the <span class="math inline">\(j_{th}\)</span> regression tree. So, we can
-equivalently write
-<span class="math display">\[ \begin{align*} Y &amp;= h(x) +\epsilon, \text{with } \epsilon \sim N(0, \sigma^2) \\ &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon \end{align*} \]</span>
-Getting into more details, let <span class="math inline">\(T\)</span> denote the set of all binary
+<!-- Thus, we approximate $Y = f(x) + \epsilon$, with -->
+<!-- $\epsilon \sim N(0, \sigma^2)$ by a sum-of-trees model -->
+<!-- $Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)$. -->
+<!-- Summarized more formally: -->
+<!-- $$Y = f(x) +\epsilon, \text{with } \epsilon \sim N(0, \epsilon^2)$$ -->
+<!-- $$ f(x) = E(Y|x)$$ $$ f(x) \approx h(x) \equiv \sum^{m}_{j = 1} g_j(x)$$ -->
+<!-- where $g_j$ denotes the $j_{th}$ regression tree. So, we can -->
+<!-- equivalently write -->
+<!-- $$ \begin{align*} Y &= h(x) +\epsilon, \text{with } \epsilon \sim N(0, \sigma^2) \\ & = \sum^{m}_{j = 1} g_j(x) + \epsilon \end{align*} $$ -->
+<p>Getting into more details, let <span class="math inline">\(T\)</span> denote the set of all binary
 regression trees, and a full list of <span class="math inline">\(m\)</span> trees can be denoted as the set
 <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span> For a specific binary regression tree <span class="math inline">\(T_j\)</span>
 that has <span class="math inline">\(b\)</span> terminal nodes, let <span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>
@@ -197,14 +208,16 @@ over <span class="math inline">\(\sigma\)</span> For all those priors, we have t
 function as
 <span class="math display">\[ \begin{align*} &amp; P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\ &amp; = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \\ &amp; = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma), \text{law of total probability} \\ &amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma), \text{independence of parameters associated with nodes in a specific tree}\\ &amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} \]</span>
 Thus, after those calculation, we figured that there are only three
-priors that we need to think about.</p>
+priors that we need to think about, which are <span class="math inline">\(\mu_{ij}|T_j, T_j\)</span>, and <span class="math inline">\(\sigma\)</span>. We will talk about them one by one in the next section.</p>
 </div>
 <div id="prior-models-and-tuning" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Prior models and tuning<a href="the-methodology.html#prior-models-and-tuning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="the-t_j-prior" class="section level3 hasAnchor" number="2.2.1">
 <h3><span class="header-section-number">2.2.1</span> The <span class="math inline">\(T_j\)</span> Prior<a href="the-methodology.html#the-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>This prior defines how the decision trees in the model are built, specifically how they make splits at each non-terminal node.</p>
 <p>The prior of <span class="math inline">\(T_j\)</span> is specified by the three below aspects.</p>
 <ol style="list-style-type: decimal">
+<<<<<<< Updated upstream
 <li>The probability that a node at depth d (= 0, 1, 2, . . .) is
 nonterminal
 <ul>
@@ -220,6 +233,11 @@ node, conditional on the splitting variable
 <ul>
 <li><span class="math inline">\(\text{splitting rule | variable } p \sim Unif()\)</span></li>
 </ul></li>
+=======
+<li><strong>Depth-based stopping</strong>: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this likelihood decreases as the tree gets deeper.</li>
+<li><strong>Variable selection</strong>: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node</li>
+<li><strong>Splitting rule</strong>: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable</li>
+>>>>>>> Stashed changes
 </ol>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
@@ -229,6 +247,7 @@ to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class
 Figure 2.4: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
+<p>All these prior settings about <span class="math inline">\(T_j\)</span> help ensure that the trees remain small and manageable, which is important when they are combined to form the sum of trees model.</p>
 </div>
 <div id="the-mu_ij-t_j-prior" class="section level3 hasAnchor" number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior<a href="the-methodology.html#the-mu_ij-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
