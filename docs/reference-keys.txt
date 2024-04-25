@@ -36,3 +36,5 @@ fig:unnamed-chunk-4
 multinomial-probit-classification
 dbarts-package
 titymdoels-package
+fig:unnamed-chunk-5
+tidymodels-package

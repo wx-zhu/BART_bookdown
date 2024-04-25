@@ -82,8 +82,8 @@ The prior of $T_j$ is specified by the three below aspects.
 
 1.  **Depth-based stopping**: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters $\alpha$ and $\beta$ are controlling this probability, where $\alpha$ affects the initial likelihood of branching and $\beta$ controls how quickly this likelihood decreases as the tree gets deeper.
 2.  **Variable selection**: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node. The distribution on the splitting variable assignments at each interior node, where $p$ denotes the splitting variable:
-
 $$\text{splitting variable } p \sim Unif()$$
+
 3.  **Splitting rule**: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable.The distribution on the splitting rule assignment in each interior node, conditional on the splitting variable
 
 $$\text{splitting rule | variable } p \sim Unif()$$
@@ -151,25 +151,22 @@ For $\sigma^2$ we use the inverse chi-square distribution:
 $$
 \sigma^2 \sim \frac{\nu\lambda}{X^2\nu}
 $$
+For determining the hyperparameters $\nu$ and $\lambda$, we use the data-informed prior approach using a "rough data-based overestimate" of $\hat{\sigma}$ for $\sigma$.
 
-The degrees of freedom (df) $\nu \in [3,10]$
+We suggest setting $\nu$ between 3 and 10 for favorable results, and $\lambda$ as either 0.75, 0.90, or 0.99, ensuring that the $q$th quantile of the prior on $\sigma$ matches $\hat{\sigma}$, expressed as $P(\sigma < \hat{\sigma}) = q$.
 
-$\lambda \rightarrow$ qth quantile of the prior on $\sigma$ is at
-$\hat{\sigma}$ or: $P(\sigma < \hat{\sigma}) = q$
+For simplicity, the default can be $(\nu, q) = (3, 0.9)$, which generally avoids extremes.
 
-The defualt can be $(\nu, q) = (3, 0.9)$ which typically avoids extremes
 
 ### Choosing m
 
-Remembering from before, $m$ is the number of trees we are summing in
-our BART model
+Recalling from earlier, $m$ represents the number of trees in our BART model.
 
-A good default for this value is $m = 200$ as the predictive performance
-of the algorithm improves starting at $m = 1$ and levels at around 200
-trees.
+To select an optimal $m$, people often use cross-validation (CV), but this process can be time-consuming.
 
-\
-\
+An alternative to CV is to default to $m = 200$, as the algorithm's predictive performance significantly improves from $m = 1$ to around 200 trees. However, excessively large $m$ values can lead to a gradual degradation in BART's performance.
+
+
 
 ## Backfitting with MCMC Algorithm
 

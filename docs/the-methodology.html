@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -106,7 +106,7 @@
 <ul>
 <li class="chapter" data-level="3.1" data-path="examples.html"><a href="examples.html#example-1-regression"><i class="fa fa-check"></i><b>3.1</b> Example 1: Regression</a></li>
 <li class="chapter" data-level="3.2" data-path="examples.html"><a href="examples.html#dbarts-package"><i class="fa fa-check"></i><b>3.2</b> <code>dbarts</code> package</a></li>
-<li class="chapter" data-level="3.3" data-path="examples.html"><a href="examples.html#titymdoels-package"><i class="fa fa-check"></i><b>3.3</b> <code>titymdoels</code> package</a></li>
+<li class="chapter" data-level="3.3" data-path="examples.html"><a href="examples.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3</b> <code>tidymodels</code> package</a></li>
 <li class="chapter" data-level="3.4" data-path="examples.html"><a href="examples.html#example-2-classification"><i class="fa fa-check"></i><b>3.4</b> Example 2: Classification</a></li>
 <li class="chapter" data-level="3.5" data-path="examples.html"><a href="examples.html#references-1"><i class="fa fa-check"></i><b>3.5</b> References</a></li>
 </ul></li>
@@ -135,16 +135,10 @@
 <div id="setting-up" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Setting up<a href="the-methodology.html#setting-up" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We consider the fundamental problem of making inference about an unknown function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when <span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span>.</p>
-<p>To do this, we consider modeling or at least approximating
-<span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression
-trees
-<span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \text{ where each } g \text{ denotes a regression tree and } g_j \text{ denotes the } jth \text{ tree}\]</span>
-=======
-To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
+<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
 the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
 <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \]</span>
-,where each <span class="math inline">\(g_j\)</span> denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</p>
+,where each <span class="math inline">\(g_j\)</span> denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
 <img src="image/simple_g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="60%" />
 <p class="caption">
@@ -210,28 +204,20 @@ priors that we need to think about, which are <span class="math inline">\(\mu_{i
 <h3><span class="header-section-number">2.2.1</span> The <span class="math inline">\(T_j\)</span> Prior<a href="the-methodology.html#the-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This prior defines how the decision trees in the model are built, specifically how they make splits at each non-terminal node.</p>
 <p>The prior of <span class="math inline">\(T_j\)</span> is specified by the three below aspects.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
-1. The probability that a node at depth d (= 0, 1, 2, . . .) is
-nonterminal
-- <span class="math inline">\(P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\)</span>
-2. The distribution on the splitting variable assignments at each
-interior node, where <span class="math inline">\(p\)</span> denotes the splitting variable
-- <span class="math inline">\(\text{splitting variable } p \sim Unif()\)</span>
-3. The distribution on the splitting rule assignment in each interior
-node, conditional on the splitting variable
-- <span class="math inline">\(\text{splitting rule | variable } p \sim Unif()\)</span>
-=======
-1. <strong>Depth-based stopping</strong>: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this likelihood decreases as the tree gets deeper.
-2. <strong>Variable selection</strong>: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node
-3. <strong>Splitting rule</strong>: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Depth-based stopping</strong>: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this likelihood decreases as the tree gets deeper.</p></li>
+<li><p><strong>Variable selection</strong>: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node. The distribution on the splitting variable assignments at each interior node, where <span class="math inline">\(p\)</span> denotes the splitting variable:
+<span class="math display">\[\text{splitting variable } p \sim Unif()\]</span></p></li>
+<li><p><strong>Splitting rule</strong>: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable.The distribution on the splitting rule assignment in each interior node, conditional on the splitting variable</p></li>
+</ol>
+<p><span class="math display">\[\text{splitting rule | variable } p \sim Unif()\]</span></p>
 <p><span class="math display">\[
 \begin{align*}
 (1) &amp; \quad P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\\
 (2) &amp; \quad \text{splitting variable } p \sim Unif()\\
 (3) &amp; \quad \text{splitting rule | variable } p \sim Unif()
 \end{align*}
-\]</span>
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</p>
+\]</span></p>
 <p>In order to keep the m trees small so they can be summed, we can choose
 to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
@@ -333,7 +319,8 @@ as:</p>
 <p>Here, <span class="math inline">\(R_j\)</span> can be understood as the target value that the single tree
 model <span class="math inline">\(T_j\)</span> aims to get at, essentially acting as the “data” for this
 purpose. Formally, <span class="math display">\[R_j = g(x;T_j, M_j)+\epsilon\]</span>.</p>
-<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows: <span class="math display">\[
+<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows:
+<span class="math display">\[
 \begin{align*}
 p(T_j|R_j, \sigma) &amp;= p(T_j)p(R_j|T_j,\sigma) \\
 &amp;\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
@@ -349,7 +336,8 @@ full iteration. Thus, each interation is consists of <span class="math inline">\
 T_j|R_j, \sigma\\
 M_j|T_j, R_j, \sigma \\
 \sigma |T_1, M_1,...T_m, M_m,y, \sigma
-\]</span> Tree drawings <span class="math inline">\(T_j\)</span> are facilitated using the Metropolis-Hastings
+\]</span></p>
+<p>Tree drawings <span class="math inline">\(T_j\)</span> are facilitated using the Metropolis-Hastings
 algorithm, which proposes new tree configurations based on the current
 tree through various modifications: growing a terminal node, pruning a
 pair of terminal nodes, changing a nonterminal rule, and swapping rules
