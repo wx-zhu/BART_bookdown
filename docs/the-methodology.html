@@ -261,22 +261,16 @@ probability that <span class="math inline">\(E(Y|x) \in (y_{min}, y_{max})\)</sp
 <p>For <span class="math inline">\(\sigma^2\)</span> we use the inverse chi-square distribution:</p>
 <p><span class="math display">\[
 \sigma^2 \sim \frac{\nu\lambda}{X^2\nu}
-\]</span></p>
-<p>The degrees of freedom (df) <span class="math inline">\(\nu \in [3,10]\)</span></p>
-<p><span class="math inline">\(\lambda \rightarrow\)</span> qth quantile of the prior on <span class="math inline">\(\sigma\)</span> is at
-<span class="math inline">\(\hat{\sigma}\)</span> or: <span class="math inline">\(P(\sigma &lt; \hat{\sigma}) = q\)</span></p>
-<p>The defualt can be <span class="math inline">\((\nu, q) = (3, 0.9)\)</span> which typically avoids extremes</p>
+\]</span>
+For determining the hyperparameters <span class="math inline">\(\nu\)</span> and <span class="math inline">\(\lambda\)</span>, we use the data-informed prior approach using a “rough data-based overestimate” of <span class="math inline">\(\hat{\sigma}\)</span> for <span class="math inline">\(\sigma\)</span>.</p>
+<p>We suggest setting <span class="math inline">\(\nu\)</span> between 3 and 10 for favorable results, and <span class="math inline">\(\lambda\)</span> as either 0.75, 0.90, or 0.99, ensuring that the <span class="math inline">\(q\)</span>th quantile of the prior on <span class="math inline">\(\sigma\)</span> matches <span class="math inline">\(\hat{\sigma}\)</span>, expressed as <span class="math inline">\(P(\sigma &lt; \hat{\sigma}) = q\)</span>.</p>
+<p>For simplicity, the default can be <span class="math inline">\((\nu, q) = (3, 0.9)\)</span>, which generally avoids extremes.</p>
 </div>
 <div id="choosing-m" class="section level3 hasAnchor" number="2.2.4">
 <h3><span class="header-section-number">2.2.4</span> Choosing m<a href="the-methodology.html#choosing-m" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Remembering from before, <span class="math inline">\(m\)</span> is the number of trees we are summing in
-our BART model</p>
-<p>A good default for this value is <span class="math inline">\(m = 200\)</span> as the predictive performance
-of the algorithm improves starting at <span class="math inline">\(m = 1\)</span> and levels at around 200
-trees.</p>
-<p><br />
-<br />
-</p>
+<p>Recalling from earlier, <span class="math inline">\(m\)</span> represents the number of trees in our BART model.</p>
+<p>To select an optimal <span class="math inline">\(m\)</span>, people often use cross-validation (CV), but this process can be time-consuming.</p>
+<p>An alternative to CV is to default to <span class="math inline">\(m = 200\)</span>, as the algorithm’s predictive performance significantly improves from <span class="math inline">\(m = 1\)</span> to around 200 trees. However, excessively large <span class="math inline">\(m\)</span> values can lead to a gradual degradation in BART’s performance.</p>
 </div>
 </div>
 <div id="backfitting-with-mcmc-algorithm" class="section level2 hasAnchor" number="2.3">
