@@ -25,7 +25,7 @@ knitr::include_graphics("image/simple_g.jpg")
 Getting into more details, let $T$ denote the set of all binary
 regression trees, and a full list of $m$ trees can be denoted as the set
 $T = \{T_1, T_2, T_3, ...\}$ For a specific binary regression tree $T_j$
-that has $b$ terminal nodes, let $M_j = \{M_1, M_2, M_3, ..., M_b\}$
+that has $b$ terminal nodes, let $M_j = \{\mu_{1j}, \mu_{2j}, \mu_{3j}, ..., \mu_{bj}\}$
 denote the parameters for those $b$ terminal nodes of this tree $T_j$.
 Under this setting,
 $$ \begin{align*} Y & = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ & = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} $$
@@ -54,15 +54,15 @@ terminal node assignment depends on just a single component of $x$, the
 sum-of-trees model simplifies to a simple additive model. Let $m$ denote
 the number of trees we will build in a sum-of-trees model. For a fixed
 $m$ , a sum of tree model is determined by
-$T = \{T_1, T_2, T_3, ...\}$,$M_j = \{M_1, M_2, M_3, ..., M_b\}$, and
+$T = \{T_1, T_2, T_3, ...\}$, $M = \{M_1, M_2, M_3, ..., M_b\}$, and
 $\sigma$. Thus, all the priors that we need in this setting would be:
 Prior over $(T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)$ Prior
 over $\sigma$ For all those priors, we have their joint probability
 function as
 $$ \begin{align*} & P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\ & = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \\ & = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma), \text{law of total probability} \\ & = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma), \text{independence of parameters associated with nodes in a specific tree}\\ & = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} $$
-Thus, after those calculation, we figured that there are only three
-priors that we need to think about, which are $\mu_{ij}|T_j, T_j$, and
-$\sigma$. We will talk about them one by one in the next section.
+Thus, after those calculation, we figured that there are only $4$
+priors that we need to think about, which are $T_j, \mu_{ij}|T_j$, $\sigma$ and
+$m$. We will talk about them one by one in the next section.
 
 ## Prior models and tuning
 
@@ -351,9 +351,6 @@ shrinkage applied to the $\mu_{ij}$. When choosing $k$, statisticians
 found that values between 1 and 3 work well and they suggest using
 $k = 2$ as the default choice, or determine it through cross-validation.
 
-### Multinomial Probit Classification
-
-Coming soon :)
 
 ## References
 

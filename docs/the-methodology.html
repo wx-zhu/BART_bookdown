@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-04-25" />
+<meta name="date" content="2024-04-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -98,7 +98,6 @@
 <li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
 <li class="chapter" data-level="2.4.2" data-path="the-methodology.html"><a href="the-methodology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
 <li class="chapter" data-level="2.4.3" data-path="the-methodology.html"><a href="the-methodology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
-<li class="chapter" data-level="2.4.4" data-path="the-methodology.html"><a href="the-methodology.html#multinomial-probit-classification"><i class="fa fa-check"></i><b>2.4.4</b> Multinomial Probit Classification</a></li>
 </ul></li>
 <li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
 </ul></li>
@@ -108,7 +107,9 @@
 <li class="chapter" data-level="3.2" data-path="examples.html"><a href="examples.html#dbarts-package"><i class="fa fa-check"></i><b>3.2</b> <code>dbarts</code> package</a></li>
 <li class="chapter" data-level="3.3" data-path="examples.html"><a href="examples.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3</b> <code>tidymodels</code> package</a></li>
 <li class="chapter" data-level="3.4" data-path="examples.html"><a href="examples.html#example-2-classification"><i class="fa fa-check"></i><b>3.4</b> Example 2: Classification</a></li>
-<li class="chapter" data-level="3.5" data-path="examples.html"><a href="examples.html#references-1"><i class="fa fa-check"></i><b>3.5</b> References</a></li>
+<li class="chapter" data-level="3.5" data-path="examples.html"><a href="examples.html#dbarts-package-1"><i class="fa fa-check"></i><b>3.5</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="3.6" data-path="examples.html"><a href="examples.html#tidymodels-package-1"><i class="fa fa-check"></i><b>3.6</b> <code>tidymodels</code> package</a></li>
+<li class="chapter" data-level="3.7" data-path="examples.html"><a href="examples.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -134,30 +135,24 @@
 <h1><span class="header-section-number">Chapter 2</span> The Methodology<a href="the-methodology.html#the-methodology" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="setting-up" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Setting up<a href="the-methodology.html#setting-up" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>We consider the fundamental problem of making inference about an unknown function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when <span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span>.</p>
-<p>To do this, we consider modeling or at least approximating <span class="math inline">\(f(x) = E(Y | x)\)</span>,
-the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression trees
-<span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \]</span>
-,where each <span class="math inline">\(g_j\)</span> denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.</p>
+<p>We consider the fundamental problem of making inference about an unknown
+function f that predicts an output Y using a <span class="math inline">\(p\)</span>-dimensional vector of
+inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
+<span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2)\]</span>.</p>
+<p>To do this, we consider modeling or at least approximating
+<span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression
+trees <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \]</span> ,where each <span class="math inline">\(g_j\)</span>
+denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
 <img src="image/simple_g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="60%" />
 <p class="caption">
 Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)\)</span> . Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
-<!-- Thus, we approximate $Y = f(x) + \epsilon$, with -->
-<!-- $\epsilon \sim N(0, \sigma^2)$ by a sum-of-trees model -->
-<!-- $Y = h(x) + \epsilon, \text{with }\epsilon \sim N(0, \sigma^2)$. -->
-<!-- Summarized more formally: -->
-<!-- $$Y = f(x) +\epsilon, \text{with } \epsilon \sim N(0, \epsilon^2)$$ -->
-<!-- $$ f(x) = E(Y|x)$$ $$ f(x) \approx h(x) \equiv \sum^{m}_{j = 1} g_j(x)$$ -->
-<!-- where $g_j$ denotes the $j_{th}$ regression tree. So, we can -->
-<!-- equivalently write -->
-<!-- $$ \begin{align*} Y &= h(x) +\epsilon, \text{with } \epsilon \sim N(0, \sigma^2) \\ & = \sum^{m}_{j = 1} g_j(x) + \epsilon \end{align*} $$ -->
 <p>Getting into more details, let <span class="math inline">\(T\)</span> denote the set of all binary
 regression trees, and a full list of <span class="math inline">\(m\)</span> trees can be denoted as the set
 <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span> For a specific binary regression tree <span class="math inline">\(T_j\)</span>
-that has <span class="math inline">\(b\)</span> terminal nodes, let <span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>
+that has <span class="math inline">\(b\)</span> terminal nodes, let <span class="math inline">\(M_j = \{\mu_{1j}, \mu_{2j}, \mu_{3j}, ..., \mu_{bj}\}\)</span>
 denote the parameters for those <span class="math inline">\(b\)</span> terminal nodes of this tree <span class="math inline">\(T_j\)</span>.
 Under this setting,
 <span class="math display">\[ \begin{align*} Y &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ &amp; = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} \]</span>
@@ -189,44 +184,63 @@ terminal node assignment depends on just a single component of <span class="math
 sum-of-trees model simplifies to a simple additive model. Let <span class="math inline">\(m\)</span> denote
 the number of trees we will build in a sum-of-trees model. For a fixed
 <span class="math inline">\(m\)</span> , a sum of tree model is determined by
-<span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>,<span class="math inline">\(M_j = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
+<span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span>, <span class="math inline">\(M = \{M_1, M_2, M_3, ..., M_b\}\)</span>, and
 <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be:
 Prior over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> Prior
 over <span class="math inline">\(\sigma\)</span> For all those priors, we have their joint probability
 function as
 <span class="math display">\[ \begin{align*} &amp; P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\ &amp; = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \\ &amp; = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma), \text{law of total probability} \\ &amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma), \text{independence of parameters associated with nodes in a specific tree}\\ &amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} \]</span>
-Thus, after those calculation, we figured that there are only three
-priors that we need to think about, which are <span class="math inline">\(\mu_{ij}|T_j, T_j\)</span>, and <span class="math inline">\(\sigma\)</span>. We will talk about them one by one in the next section.</p>
+Thus, after those calculation, we figured that there are only <span class="math inline">\(4\)</span>
+priors that we need to think about, which are <span class="math inline">\(T_j, \mu_{ij}|T_j\)</span>, <span class="math inline">\(\sigma\)</span> and
+<span class="math inline">\(m\)</span>. We will talk about them one by one in the next section.</p>
 </div>
 <div id="prior-models-and-tuning" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Prior models and tuning<a href="the-methodology.html#prior-models-and-tuning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="the-t_j-prior" class="section level3 hasAnchor" number="2.2.1">
 <h3><span class="header-section-number">2.2.1</span> The <span class="math inline">\(T_j\)</span> Prior<a href="the-methodology.html#the-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>This prior defines how the decision trees in the model are built, specifically how they make splits at each non-terminal node.</p>
+<p>This prior defines how the decision trees in the model are built,
+specifically how they make splits at each non-terminal node.</p>
 <p>The prior of <span class="math inline">\(T_j\)</span> is specified by the three below aspects.</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Depth-based stopping</strong>: The deeper a node in the tree, the less likely it is to continue branching. This is controlled by manipulating the probability that a node at depth d (= 0, 1, 2, . . .) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this likelihood decreases as the tree gets deeper.</p></li>
-<li><p><strong>Variable selection</strong>: Each time the tree decides to split, it randomly chooses which variable (or feature) to split on. This choice is uniform, meaning every variable has an equal chance of being selected. This is controlled by setting the distribution on the splitting variable assignments at each interior node. The distribution on the splitting variable assignments at each interior node, where <span class="math inline">\(p\)</span> denotes the splitting variable:
+<li><p><strong>Depth-based stopping</strong>: The deeper a node in the tree, the less
+likely it is to continue branching. This is controlled by
+manipulating the probability that a node at depth d (= 0, 1, 2, . .
+.) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are
+controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial
+likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this
+likelihood decreases as the tree gets deeper.</p>
+<p><span class="math display">\[
+P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>In order to keep the m trees small so they can be summed, we can
+choose to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></li>
+</ol></li>
+<li><p><strong>Variable selection</strong>: Each time the tree decides to split, it
+randomly chooses which variable (or feature) to split on. This
+choice is uniform, meaning every variable has an equal chance of
+being selected. This is controlled by setting the distribution on
+the splitting variable assignments at each interior node. The
+distribution on the splitting variable assignments at each interior
+node, where <span class="math inline">\(p\)</span> denotes the splitting variable:
 <span class="math display">\[\text{splitting variable } p \sim Unif()\]</span></p></li>
-<li><p><strong>Splitting rule</strong>: For the chosen variable, the specific way it splits (i.e., the rule it uses to divide the data) is also chosen randomly. This is controlled by setting the distribution on the splitting rule assignment in each interior node, conditional on the splitting variable.The distribution on the splitting rule assignment in each interior node, conditional on the splitting variable</p></li>
+<li><p><strong>Splitting rule</strong>: For the chosen variable, the specific way it
+splits (i.e., the rule it uses to divide the data) is also chosen
+randomly. This is controlled by setting the distribution on the
+splitting rule assignment in each interior node, conditional on the
+splitting variable.The distribution on the splitting rule assignment
+in each interior node, conditional on the splitting variable</p></li>
 </ol>
 <p><span class="math display">\[\text{splitting rule | variable } p \sim Unif()\]</span></p>
-<p><span class="math display">\[
-\begin{align*}
-(1) &amp; \quad P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)\\
-(2) &amp; \quad \text{splitting variable } p \sim Unif()\\
-(3) &amp; \quad \text{splitting rule | variable } p \sim Unif()
-\end{align*}
-\]</span></p>
-<p>In order to keep the m trees small so they can be summed, we can choose
-to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
 <img src="image/single_tree.jpeg" alt="A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="80%" />
 <p class="caption">
 Figure 2.4: A single classification tree. Square boxes represent the splitting rules, while circles denote the terminal nodes.
 </p>
 </div>
-<p>All these prior settings about <span class="math inline">\(T_j\)</span> help ensure that the trees remain small and manageable, which is important when they are combined to form the sum of trees model.</p>
+<p>All these prior settings about <span class="math inline">\(T_j\)</span> help ensure that the trees remain
+small and manageable, which is important when they are combined to form
+the sum of trees model.</p>
 </div>
 <div id="the-mu_ij-t_j-prior" class="section level3 hasAnchor" number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior<a href="the-methodology.html#the-mu_ij-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -260,17 +274,27 @@ probability that <span class="math inline">\(E(Y|x) \in (y_{min}, y_{max})\)</sp
 <h3><span class="header-section-number">2.2.3</span> The <span class="math inline">\(\sigma\)</span> prior<a href="the-methodology.html#the-sigma-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>For <span class="math inline">\(\sigma^2\)</span> we use the inverse chi-square distribution:</p>
 <p><span class="math display">\[
-\sigma^2 \sim \frac{\nu\lambda}{X^2\nu}
-\]</span>
-For determining the hyperparameters <span class="math inline">\(\nu\)</span> and <span class="math inline">\(\lambda\)</span>, we use the data-informed prior approach using a “rough data-based overestimate” of <span class="math inline">\(\hat{\sigma}\)</span> for <span class="math inline">\(\sigma\)</span>.</p>
-<p>We suggest setting <span class="math inline">\(\nu\)</span> between 3 and 10 for favorable results, and <span class="math inline">\(\lambda\)</span> as either 0.75, 0.90, or 0.99, ensuring that the <span class="math inline">\(q\)</span>th quantile of the prior on <span class="math inline">\(\sigma\)</span> matches <span class="math inline">\(\hat{\sigma}\)</span>, expressed as <span class="math inline">\(P(\sigma &lt; \hat{\sigma}) = q\)</span>.</p>
-<p>For simplicity, the default can be <span class="math inline">\((\nu, q) = (3, 0.9)\)</span>, which generally avoids extremes.</p>
+\sigma^2 \sim \frac{\nu\lambda}{\chi^2_{\nu}}
+\]</span> For determining the hyperparameters <span class="math inline">\(\nu\)</span> and <span class="math inline">\(\lambda\)</span>, we use the
+data-informed prior approach using a “rough data-based overestimate” of
+<span class="math inline">\(\hat{\sigma}\)</span> for <span class="math inline">\(\sigma\)</span>.</p>
+<p>We suggest setting <span class="math inline">\(\nu\)</span> between 3 and 10 for favorable results, and
+<span class="math inline">\(\lambda\)</span> as either 0.75, 0.90, or 0.99, ensuring that the <span class="math inline">\(q\)</span>th
+quantile of the prior on <span class="math inline">\(\sigma\)</span> matches <span class="math inline">\(\hat{\sigma}\)</span>, expressed as
+<span class="math inline">\(P(\sigma &lt; \hat{\sigma}) = q\)</span>.</p>
+<p>For simplicity, the default can be <span class="math inline">\((\nu, q) = (3, 0.9)\)</span>, which
+generally avoids extremes.</p>
 </div>
 <div id="choosing-m" class="section level3 hasAnchor" number="2.2.4">
 <h3><span class="header-section-number">2.2.4</span> Choosing m<a href="the-methodology.html#choosing-m" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Recalling from earlier, <span class="math inline">\(m\)</span> represents the number of trees in our BART model.</p>
-<p>To select an optimal <span class="math inline">\(m\)</span>, people often use cross-validation (CV), but this process can be time-consuming.</p>
-<p>An alternative to CV is to default to <span class="math inline">\(m = 200\)</span>, as the algorithm’s predictive performance significantly improves from <span class="math inline">\(m = 1\)</span> to around 200 trees. However, excessively large <span class="math inline">\(m\)</span> values can lead to a gradual degradation in BART’s performance.</p>
+<p>Recalling from earlier, <span class="math inline">\(m\)</span> represents the number of trees in our BART
+model.</p>
+<p>To select an optimal <span class="math inline">\(m\)</span>, people often use cross-validation (CV), but
+this process can be time-consuming.</p>
+<p>An alternative to CV is to default to <span class="math inline">\(m = 200\)</span>, as the algorithm’s
+predictive performance significantly improves from <span class="math inline">\(m = 1\)</span> to around 200
+trees. However, excessively large <span class="math inline">\(m\)</span> values can lead to a gradual
+degradation in BART’s performance.</p>
 </div>
 </div>
 <div id="backfitting-with-mcmc-algorithm" class="section level2 hasAnchor" number="2.3">
@@ -313,8 +337,7 @@ as:</p>
 <p>Here, <span class="math inline">\(R_j\)</span> can be understood as the target value that the single tree
 model <span class="math inline">\(T_j\)</span> aims to get at, essentially acting as the “data” for this
 purpose. Formally, <span class="math display">\[R_j = g(x;T_j, M_j)+\epsilon\]</span>.</p>
-<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows:
-<span class="math display">\[
+<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows: <span class="math display">\[
 \begin{align*}
 p(T_j|R_j, \sigma) &amp;= p(T_j)p(R_j|T_j,\sigma) \\
 &amp;\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
@@ -426,10 +449,6 @@ every small tree is a weak learner. As <span class="math inline">\(k\)</span> an
 shrinkage applied to the <span class="math inline">\(\mu_{ij}\)</span>. When choosing <span class="math inline">\(k\)</span>, statisticians
 found that values between 1 and 3 work well and they suggest using
 <span class="math inline">\(k = 2\)</span> as the default choice, or determine it through cross-validation.</p>
-</div>
-<div id="multinomial-probit-classification" class="section level3 hasAnchor" number="2.4.4">
-<h3><span class="header-section-number">2.4.4</span> Multinomial Probit Classification<a href="the-methodology.html#multinomial-probit-classification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Coming soon :)</p>
 </div>
 </div>
 <div id="references" class="section level2 hasAnchor" number="2.5">
