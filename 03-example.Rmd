@@ -12,13 +12,25 @@ knitr::opts_chunk$set(
   fig.align = 'center')
 ```
 
+
+This example is inspired by the blog post “The Effect of Childhood Education on Wealth: Modeling with Bayesian Additive Regression Trees (BART)” on R-bloggers by Selcuk Disci. We aimed to explore how enrollment rates in early childhood education are associated with household net worth across all countries involved in the organisation of economic co-operation and development (OECD), using datasets provided by this organization. The OECD collects data on enrollment rates in early childhood education and household net worth from its member countries every year from 2000 to 2020 through standardized surveys and national statistics, ensuring consistent and comparable data across all countries involved.
+
+According to OECD, the enrollment rates for each childhood age group, 3-year-old, 4-year-old, and 5-year-old are calculated by dividing the number of students enrolled in early childhood education and care (ECEC) of a particular age group by the total population of that age group. This calculation does not distinguish between full-time and part-time enrollment.
+
+The household net worth indicator first calculates the overall financial status of households by measuring the total value of their assets (both financial, like stocks and savings, and non-financial, like real estate) and subtracting the total value of their outstanding debts (such as loans and mortgages). This result is then presented as a percentage of the households’ annual income. Essentially, this indicator provides a snapshot of the economic health and financial stability of households by showing how much wealth they have in relation to how much they earn each year.
+
+\
+\
+
+We start here by loading some packages for the data and modeling, as well as cleaning and wrangling the data. 
+
+
 ```{r}
 # install.packages("countrycode")
 # install.packages("DALEXtra")
-# install.packages("devtools")
-# devtools::install_github('bbc/bbplot')
 library(tidyverse)
 library(tidymodels)
+library(ggplot2)
 library(countrycode)
 library(plotly)
 library(sysfonts)
@@ -27,9 +39,7 @@ library(glue)
 library(scales)
 library(janitor)
 library(DALEXtra)
-library(bbplot)
 library(dbarts)
-library(ggpubr)
 
 #Loading the datasets
 df_childhood <- read_csv("https://raw.githubusercontent.com/mesdi/blog/main/childhood.csv")
@@ -99,10 +109,19 @@ ggplotly(p, tooltip = c("text")) %>%
   layout(font=font)
 ```
 
+This graph can show us what the household net worth looks like based on the education rate for each of the ages in the data set. Yellow represents age 3, teal is age 4, and purple is age 5. The blue trend line shows the household net worth for each country in the data.
+
+\
+\
+
+
 ```{r}
 head(df_tidy)
 ```
 
+\
+
+In order to run the two different packages we use in this tutorial, `dbarts` and `tidymodels`, we start by splitting our data into a training set and and a test set. This way we can train the model and evaluate the performance on the test set.
 
 ```{r}
 #Splitting the data into train and test sets
@@ -123,20 +142,121 @@ df_test <- testing(df_split)
 df_train
 ```
 
-## `dbarts` package
-```{r}
-bartFit <- bart(x.train = as.matrix(df_train[,5:7]), y.train = as.numeric(unlist(df_train[,3])), keeptrees = TRUE)
 
+## `dbarts` package
+
+Using the `dbarts` package, we can fit a model using the column numbers from our data. Our response variables called `x.train` is formed using the columns for age 3, age 4, and age 5 while `y.train` is formed using our response variable column.
+
+We can also set `keeptrees = TRUE` in order to view some examples of what variable a tree chose, what the split rule is, and how long before the tree terminates.
+
+```{r}
+ # Fitting a BART model with default 1,000 iterations of 200 trees
+set.seed(4343)
+bartFit <- bart(x.train = as.matrix(df_train[,5:7]), y.train = as.numeric(unlist(df_train[,3])),keeptrees = TRUE, ndpost = 1000)
+
+# Extracting trees from model
 trees <- extract(bartFit, "trees")
 
-
-bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 3)
+ # Looking at some examples of trees from model
+bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 1)
 bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 140)
-bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 152)
+```
+
+\
+\
+
+Using the `bartMan` package, we can look at some more interesting visualizations that show us some model diagnostics as well as what our trees look like in a fit model.
+
+
+```{r, eval=FALSE}
+ # Loading packages for BART visualization
+library(bartMan)
+library(ggridges)
+
+bartDiag(model = bartFit, response = "household", burnIn = 1000, data = df_tidy)
+```
+
+\
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/regr-diag.png")
+
 ```
 
 
+\
+\
+For less computational time and simplicity, we reduce the number of trees as well as the number of iterations for each tree. We fit a new model with the same variables with 50 trees for 10 iterations.
+
+```{r}
+ # Fitting another BART model with fewer trees and less iterations
+set.seed(4343)
+bartFit50 <- bart(x.train = as.matrix(df_train[,5:7]), y.train = as.numeric(unlist(df_train[,3])), keeptrees = TRUE, ntree = 50, ndpost = 10)
+```
+
+
+```{r, eval = FALSE}
+ # Extracting the tree data
+trees_data50 <- extractTreeData(bartFit50, df_tidy)
+
+
+ # Visualizing what each of the 50 trees look like over their 10 iterations
+plotTrees(trees = trees_data50, fillBy = NULL, sizeNodes = TRUE)
+
+# Viewing all 10 iterations of one tree
+plotTrees(trees = trees_data50, treeNo = 13)
+  
+```
+
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/regr-all-tree.png")
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/regr-one-tree.png")
+
+```
+\
+
+This plot shows us all of the iterations of the trees fit in the reduced model. Each color represents the variable that the tree is splitting on, and the gray represents a stump/leaf, or a terminal node.
+
+\
+\
+
+
+Now, we are creating a couple more visuals of the trees using our model with 50 trees and 10 iterations. To start, we use `bartMan` again to create a bar plot that shows how many times each specific structure of tree, including which variable the tree splits on (but not its splitting rule value), shows up within the model. We also create a density plot that shows the splitting variables and the frequency at which each splitting rule value is chosen.
+
+```{r, eval = FALSE}
+ # Creating bar plot showing frequency of 8 most common trees from model
+treeBarPlot(trees_data50, topTrees = 8, iter = NULL)
+
+ # Creating density plot of variable split levels values
+splitDensity(trees = trees_data50, data = df_tidy, display = 'ridge')
+
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/regr-bar.png")
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/regr-dens.png")
+
+```
+
+These visuals can be interesting to look at and interpret, but there is a discrepancy in the colors that are shown between the before tree plots, the density plot, and the bar plot. There is no legend argument for the `treeBarPlot`, so we do not actually know which variables are most commonly split on and where in the tree.
+
+\
+\
+
 ## `tidymodels` package
+
+Now we are using the `tidymodels` package to fit our BART models. There are different steps to this package than there are for `dbarts`, but if you are familiar with machine learning in R, you should be able to follow along better.
+
 ```{r}
 #Preprocessing
 df_rec <- recipe(household ~ age_3 + age_4 + age_5, data = df_train) 
@@ -167,15 +287,19 @@ df_rs <-
 #Computes the accuracy metrics  
 collect_metrics(df_rs)
 
-# A tibble: 2 x 6
-#  .metric .estimator   mean     n std_err .config             
-#  <chr>   <chr>       <dbl> <int>   <dbl> <chr>               
-#1 rmse    standard   85.2      10  4.79   Preprocessor1_Model1
-#2 rsq     standard    0.528    10  0.0458 Preprocessor1_Model1
 ```
 
+The output we see above are quality metrics for our model. Our RMSE average value shows the difference between the observed and predicted values of household net worth to be 85.2. The variable for household net worth ranges from 134 to 824. Given this context, our model has an could be considered to have a decent performance, but it could be better. 
+
+The $R^2$ value indicates the model fit. We observe a value of 0.528, which we would like to be closer to 1 in order for the model to explain more variability in the data.
+
+\
+\
+
+For this second model, we are using grid search to tune the priors of the model. These priors include the trees, terminal node coefficient, and the exponential component of the prior distribution for these terminal node parameters.
+
 ```{r}
-#Model tuning with grid search
+# Model tuning with grid search
 df_spec <- 
   parsnip::bart(
     trees = tune(),
@@ -233,71 +357,19 @@ collect_metrics(final_df_fit)
 ```
 
 
-```{r}
-#Creating a preprocessed dataframe of the train dataset
-imp_data <- 
-  df_rec %>%
-  prep() %>%
-  bake(new_data = NULL)
+The RMSE average value shows the difference between the observed and predicted values of household net worth to be 84.5. This is just slightly better than the previous model. 
 
-#Final modeling with the best parameters
-df_spec_final <- 
-  parsnip::bart(
-    trees = 80,
-    prior_terminal_node_coef = 0.884,
-    prior_terminal_node_expo = 0.713
-  ) %>% 
-  set_engine("dbarts") %>% 
-  set_mode("regression")
+For this second model, we observe a value of 0.645, which is better than the first model, but still a bit far from 1.
 
-#building the explainer-object
-explainer_df <- 
-  explain_tidymodels(
-    df_spec_final %>% 
-      fit(household ~ ., data = imp_data),
-    data = imp_data %>% select(-household), 
-    y = df_train$household,
-    verbose = FALSE
-  )
+\
+\
 
-
-set.seed(1983)
-#calculates the variable-importance measure
-vip_df <- 
-  model_parts( 
-    explainer = explainer_df, 
-    loss_function = loss_root_mean_square, 
-    B = 100, #the number of permutations
-    type = "difference",
-    label =""
-  )
-
-#Plotting ranking of the importance of explanatory variables
-plot(vip_df) +
-  ggtitle("Mean variable-importance over 100 permutations", "")+
-  theme(plot.title = element_text(hjust = 0.5, size = 20),
-        axis.title.x = element_text(size=15),
-        axis.text = element_text(size=15))
-```
-
-```{r}
-#Partial dependence profiles for 4-years old students
-set.seed(2403)
-pdp_age <- model_profile(explainer_df, variables = "age_4")
-
-as_tibble(pdp_age$agr_profiles) %>% 
-  ggplot(aes(`_x_`, `_yhat_`)) +
-  geom_line(data = as_tibble(pdp_age$cp_profiles),
-            aes(x = age_4, group = `_ids_`),
-            size = 0.5, alpha = 0.05, color = "gray50")+
-    geom_line(color = "midnightblue", size = 1.2, alpha = 0.8)+
-  bbc_style()+ 
-  labs(title= "Household vs. AGE-4")+
-  theme(plot.title = element_text(hjust = 0.5),
-        panel.grid.minor.x = element_line(color="grey"))
-```
 
 ## Example 2: Classification
+
+Now we are using classification with the `tidymodels` package instead of regression. The Palmer Penguins data set that lives in a package we can load easily here. We can use this model to predict what species a penguin is out of three different observed options: Adelie, Chinstrap, and Gentoo. This data set contains measurements from many observations of the three different species of penguins. 
+
+These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the Palmer Station Long Term Ecological Research Program, part of the US Long Term Ecological Research Network. The data were imported directly from the Environmental Data Initiative (EDI) Data Portal, and are available for use by CC0 license (“No Rights Reserved”) in accordance with the Palmer Station Data Policy.
 
 ```{r}
 # Loading data 
@@ -306,6 +378,10 @@ data(penguins)
 
 head(penguins)
 ```
+
+## `dbarts` package
+
+To start to build our models, we again have to split the data into training and test sets.
 
 ```{r}
 #Splitting the data into train and test sets
@@ -319,11 +395,111 @@ penguin_train <- training(penguin_split)
 penguin_test <- testing(penguin_split)
 ```
 
+
+Now we will fit the model in a similar way to the regression model from before, except now with our penguin data specifications. We are using the variables for bill length, bill depth, flipper length, and body mass of the penguins to predict their species. We can view some examples of trees within the model as well.
+
 ```{r}
-#install.packages("dbarts")
-library(dbarts)
+ # Fitting a BART model with 200 trees with 1000 iterations
+set.seed(4343)
+p.bartFit <- bart(x.train = as.matrix(penguin_train[,3:6]), y.train = as.numeric(unlist(penguin_train[,1])), keeptrees = TRUE, ndpost = 1000)
+
+trees <- extract(p.bartFit, "trees")
+
+ # Looking at some examples of trees from model
+p.bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 112)
+p.bartFit$fit$plotTree(chainNum = 1, sampleNum = 3, treeNum = 140)
+```
+
+\
+
+
+```{r, eval=FALSE}
+bartDiag(model = p.bartFit, data = penguins, response = "species", burnIn = 0)
+```
+
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/class-diag.png")
+
+```
+
+Here we can see some diagnostic plots of our model. The two upper rows show if our model has a reasonable performance of the residuals. 
+
+\
+\
+
+Using the `bartMan` package we can create similar visualizations to view the trends of the shapes of the trees and their splitting variables and values. We will again start with a smaller model with less trees and less iterations.
+
+```{r}
+# Fitting another BART model with fewer trees and less iterations
+set.seed(4343)
+p.bartFit50 <- bart(x.train = as.matrix(penguin_train[,3:6]), y.train = as.numeric(unlist(penguin_train[,1])), keeptrees = TRUE, ntree = 50, ndpost = 10)
+
+```
+
+
+```{r, eval = FALSE}
+
+ # Extracting the tree data
+p.trees_data <- extractTreeData(p.bartFit50, penguins)
+
+ # Visualizing what each of the 50 trees look like over their 10 iterations
+plotTrees(trees = p.trees_data, fillBy = NULL, sizeNodes = TRUE)
+
+# Viewing all 10 iterations of one tree
+plotTrees(trees = p.trees_data, treeNo = 13)
+
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/class-all-tree.png")
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/class-one-tree.png")
+
+```
+
+
+In visualizing our model of each of the 50 trees each with 10 iterations, we can see that each of the four variables have appeared in our trees as splitting variables...
+
+But this time, since we have more variables in the data to choose from, we can use these next plots to help us see which variables are considered most important in the model.
+
+
+```{r, eval = FALSE}
+ # Creating bar plot showing frequency of 10 most common trees from model
+treeBarPlot(p.trees_data, iter = NULL, topTrees = 10, removeStump = FALSE)
+
+
+
+ # Creating density plot of variable split levels values
+splitDensity(trees = p.trees_data, data = df_tidy, display = 'ridge')
+
+```
+We can see from our bar plot of the 8 most common tree configurations, that we have idk bro
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/class-bar.png")
+
+```
+
+```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
+knitr::include_graphics("image/class-dens.png")
+
+```
+
+
+
+## `tidymodels` package
+
+When we are fitting our model using `tidymodels`, we use a very similar layout to the code we use for the regression model. The differences here are that we would change the mode to classification rather than regression and our model evaluation metrics also need to change. Using the diagnostic plots from the `dbarts` model, we can decide to take out the body mass variable from this model.
+
+
+```{r}
 #Preprocessing
-penguin_rec <- recipe(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm, data = penguin_train) 
+penguin_rec <- recipe(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm , data = penguin_train) 
 
 #Modeling with BART
 penguin_spec <- 
@@ -352,9 +528,16 @@ penguin_rs <-
 collect_metrics(penguin_rs)
 ```
 
+The output from this model shows the proportion of correctly classified instances of species from our model. So, our model correctly classifies species of penguin 64% of the time. This value is not much higher than 50%, so we might want to look a bit more at fixing our model.
+
+\
+\
+
+This next model has uses a binary output sex rather than a three-level factor like the species variable.
+
 ```{r}
 #Preprocessing
-penguin_rec <- recipe(sex ~ bill_length_mm + bill_depth_mm+ flipper_length_mm, data = penguin_train) 
+penguin_rec <- recipe(sex ~ bill_length_mm + bill_depth_mm+ flipper_length_mm + species, data = penguin_train) 
 
 #Modeling with BART
 penguin_spec <- 
@@ -372,7 +555,7 @@ penguin_wf <-
 set.seed(12345)
 penguin_folds <- vfold_cv(penguin_train)
 
-classification_metrics <- metric_set(accuracy)
+classification_metrics <- metric_set(accuracy, precision)
 
 # Resampling for the classification metrics
 penguin_rs <- 
@@ -383,15 +566,21 @@ penguin_rs <-
 collect_metrics(penguin_rs)
 ```
 
+We are able to view both accuracy and precision estimates for this model as it has a binary response variable. From the average accuracy, we can see that this model correctly classifies a penguin's sex 88% of the time. We could say here that the model is pretty good. 
+
+The precision is calculated using $\frac{\text{True Positive}}{\text{True Positive + False Positive}}$. If the cost of false negatives is high in our model, we want to minimize how many there are. In the context of our model, a positive value is male while a negative value is female. With a precision value of 88%, we can say that when the model predicts a positive outcome (male) it is correct about 88% of the time.
 
 ## References
+
+- AlanInglis. (n.d.). GitHub - AlanInglis/bartMan: Visualisations for posterior evaluation of BART models. GitHub. https://github.com/AlanInglis/bartMan?tab=readme-ov-file
+
 - Bayesian additive regression trees (BART) - bart. - bart • parsnip. (n.d.). https://parsnip.tidymodels.org/reference/bart.html 
 
 - Disci, S. (2022, December 8). The effect of childhood education on wealth: Modeling with bayesian additive regression trees (BART): R-bloggers. R. https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette 
 
+- Inglis, A., Parnell, A. C., & Hurley, C. (2024). Visualisations for Bayesian Additive Regression Trees. Journal of Data Science, Statistics, and Visualisation, 4(1). https://doi.org/10.52933/jdssv.v4i1.79
 
-
-
+- Introduction to palmerpenguins. (n.d.). https://allisonhorst.github.io/palmerpenguins/articles/intro.html
 
 
 
