@@ -40,3 +40,16 @@ fig:unnamed-chunk-5
 tidymodels-package
 dbarts-package-1
 tidymodels-package-1
+regression-example
+background-data
+data-cleaning
+implementation
+bartman-package
+classification-example
+background-data-1
+data-wrangling
+implementation-1
+bartman-package-1
+references-2
+data-wrangling-1
+algorithm-set-up

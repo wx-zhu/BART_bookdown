@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Regression Example | Intro to Bayesian Addictive Regression Trees (BART)</title>
+  <meta name="description" content="Chapter 3 Regression Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Regression Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Regression Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  
+  
+  
+
+<meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
+
+
+<meta name="date" content="2024-05-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="the-methodology.html"/>
+<link rel="next" href="classification-example.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">BART</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="the-methodology.html"><a href="the-methodology.html"><i class="fa fa-check"></i><b>2</b> The Methodology</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="the-methodology.html"><a href="the-methodology.html#setting-up"><i class="fa fa-check"></i><b>2.1</b> Setting up</a></li>
+<li class="chapter" data-level="2.2" data-path="the-methodology.html"><a href="the-methodology.html#prior-models-and-tuning"><i class="fa fa-check"></i><b>2.2</b> Prior models and tuning</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="the-methodology.html"><a href="the-methodology.html#the-t_j-prior"><i class="fa fa-check"></i><b>2.2.1</b> The <span class="math inline">\(T_j\)</span> Prior</a></li>
+<li class="chapter" data-level="2.2.2" data-path="the-methodology.html"><a href="the-methodology.html#the-mu_ij-t_j-prior"><i class="fa fa-check"></i><b>2.2.2</b> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.3" data-path="the-methodology.html"><a href="the-methodology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.4" data-path="the-methodology.html"><a href="the-methodology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> Algorithm set-up</a></li>
+<li class="chapter" data-level="2.3.2" data-path="the-methodology.html"><a href="the-methodology.html#posterior-inference-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Posterior inference statistics</a></li>
+<li class="chapter" data-level="2.3.3" data-path="the-methodology.html"><a href="the-methodology.html#conclusion"><i class="fa fa-check"></i><b>2.3.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="the-methodology.html"><a href="the-methodology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
+<li class="chapter" data-level="2.4.2" data-path="the-methodology.html"><a href="the-methodology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
+<li class="chapter" data-level="2.4.3" data-path="the-methodology.html"><a href="the-methodology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="regression-example.html"><a href="regression-example.html"><i class="fa fa-check"></i><b>3</b> Regression Example</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="regression-example.html"><a href="regression-example.html#background-data"><i class="fa fa-check"></i><b>3.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="3.2" data-path="regression-example.html"><a href="regression-example.html#data-wrangling"><i class="fa fa-check"></i><b>3.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="3.3" data-path="regression-example.html"><a href="regression-example.html#implementation"><i class="fa fa-check"></i><b>3.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="regression-example.html"><a href="regression-example.html#dbarts-package"><i class="fa fa-check"></i><b>3.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="3.3.2" data-path="regression-example.html"><a href="regression-example.html#bartman-package"><i class="fa fa-check"></i><b>3.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="3.3.3" data-path="regression-example.html"><a href="regression-example.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="regression-example.html"><a href="regression-example.html#references-1"><i class="fa fa-check"></i><b>3.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="classification-example.html"><a href="classification-example.html"><i class="fa fa-check"></i><b>4</b> Classification Example</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="classification-example.html"><a href="classification-example.html#background-data-1"><i class="fa fa-check"></i><b>4.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="4.2" data-path="classification-example.html"><a href="classification-example.html#data-wrangling-1"><i class="fa fa-check"></i><b>4.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="4.3" data-path="classification-example.html"><a href="classification-example.html#implementation-1"><i class="fa fa-check"></i><b>4.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="classification-example.html"><a href="classification-example.html#dbarts-package-1"><i class="fa fa-check"></i><b>4.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="4.3.2" data-path="classification-example.html"><a href="classification-example.html#bartman-package-1"><i class="fa fa-check"></i><b>4.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="4.3.3" data-path="classification-example.html"><a href="classification-example.html#tidymodels-package-1"><i class="fa fa-check"></i><b>4.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="classification-example.html"><a href="classification-example.html#references-2"><i class="fa fa-check"></i><b>4.4</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Intro to Bayesian Addictive Regression Trees (BART)</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regression-example" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Regression Example<a href="regression-example.html#regression-example" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="background-data" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Background &amp; Data<a href="regression-example.html#background-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This regression example is inspired by the blog post “The Effect of Childhood Education on Wealth: Modeling with Bayesian Additive Regression Trees (BART)” on R-bloggers by Selcuk Disci. We aim to explore how enrollment rates in early childhood education are associated with household net worth for all countries involved in the Organisation of Economic Co-operation and Development (OECD), using datasets provided by this organization. The OECD collects data on enrollment rates in early childhood education and household net worth from its member countries every year from 2000 to 2020, through standardized surveys and national statistics, ensuring consistent and comparable data across all countries involved.</p>
+<p>According to OECD, the <strong>enrollment rates</strong> for each childhood age group, 3-year-old, 4-year-old, and 5-year-old are calculated by dividing the number of children enrolled in early childhood education and care (ECEC) of a particular age group by the total population of that age group. It is notable that this calculation does not distinguish between full-time and part-time enrollment.</p>
+<p>The <strong>household net worth</strong> indicator first calculates the overall financial status of households by measuring the total value of their assets (both financial, like stocks and savings, and non-financial, like real estate) and subtracting the total value of their outstanding debts (such as loans and mortgages). This result is then presented as a <strong>percentage</strong> of the households’ annual income. Essentially, this indicator provides a snapshot of the economic health and financial stability of households by showing how much wealth they have in relation to how much they earn each year. By definition, the unit of household net worth is percent.</p>
+<p>Here, we demonstrate how to use the Bayesian Additive Regression Trees (BART) model to capture the relationship between enrollment rates in early childhood education in a country and its average household net worth.</p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="data-wrangling" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Data Wrangling<a href="regression-example.html#data-wrangling" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We start here by loading some packages for the data and modeling, as well as cleaning and wrangling the data.</p>
+<p>Note: Code chunks with the comments saying “Rbloggers code is from <a href="https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette">“The Effect of Childhood Education on Wealth: Modeling with Bayesian Additive Regression Trees (BART)” on R-bloggers by Selcuk Disci.</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="regression-example.html#cb1-1" tabindex="-1"></a><span class="co"># Rbloggers code</span></span>
+<span id="cb1-2"><a href="regression-example.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="regression-example.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-4"><a href="regression-example.html#cb1-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="regression-example.html#cb1-5" tabindex="-1"></a><span class="fu">library</span>(countrycode)</span>
+<span id="cb1-6"><a href="regression-example.html#cb1-6" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-7"><a href="regression-example.html#cb1-7" tabindex="-1"></a><span class="fu">library</span>(sysfonts)</span>
+<span id="cb1-8"><a href="regression-example.html#cb1-8" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb1-9"><a href="regression-example.html#cb1-9" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-10"><a href="regression-example.html#cb1-10" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-11"><a href="regression-example.html#cb1-11" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-12"><a href="regression-example.html#cb1-12" tabindex="-1"></a><span class="fu">library</span>(DALEXtra)</span>
+<span id="cb1-13"><a href="regression-example.html#cb1-13" tabindex="-1"></a><span class="fu">library</span>(dbarts)</span>
+<span id="cb1-14"><a href="regression-example.html#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="regression-example.html#cb1-15" tabindex="-1"></a><span class="co">#Loading the datasets</span></span>
+<span id="cb1-16"><a href="regression-example.html#cb1-16" tabindex="-1"></a>df_childhood <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/mesdi/blog/main/childhood.csv&quot;</span>)</span>
+<span id="cb1-17"><a href="regression-example.html#cb1-17" tabindex="-1"></a>df_household <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/mesdi/blog/main/household.csv&quot;</span>)</span>
+<span id="cb1-18"><a href="regression-example.html#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="regression-example.html#cb1-19" tabindex="-1"></a><span class="co">#Joining them by country and time</span></span>
+<span id="cb1-20"><a href="regression-example.html#cb1-20" tabindex="-1"></a>df <span class="ot">&lt;-</span> </span>
+<span id="cb1-21"><a href="regression-example.html#cb1-21" tabindex="-1"></a>  df_childhood <span class="sc">%&gt;%</span> </span>
+<span id="cb1-22"><a href="regression-example.html#cb1-22" tabindex="-1"></a>  <span class="fu">left_join</span>(df_household, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;time&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-23"><a href="regression-example.html#cb1-23" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb1-24"><a href="regression-example.html#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="regression-example.html#cb1-25" tabindex="-1"></a><span class="co">#Wrangling the dataset</span></span>
+<span id="cb1-26"><a href="regression-example.html#cb1-26" tabindex="-1"></a>df_tidy <span class="ot">&lt;-</span> </span>
+<span id="cb1-27"><a href="regression-example.html#cb1-27" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb1-28"><a href="regression-example.html#cb1-28" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">household =</span> <span class="fu">round</span>(household, <span class="dv">2</span>),</span>
+<span id="cb1-29"><a href="regression-example.html#cb1-29" tabindex="-1"></a>         <span class="at">childhood =</span> <span class="fu">round</span>(childhood, <span class="dv">2</span>),</span>
+<span id="cb1-30"><a href="regression-example.html#cb1-30" tabindex="-1"></a>         <span class="at">age =</span> <span class="fu">str_replace</span>(age, <span class="st">&quot;_&quot;</span>, <span class="st">&quot;-&quot;</span>),</span>
+<span id="cb1-31"><a href="regression-example.html#cb1-31" tabindex="-1"></a>         <span class="at">country_name =</span> <span class="fu">countrycode</span>(country, <span class="st">&quot;genc3c&quot;</span>, <span class="st">&quot;country.name&quot;</span>)</span>
+<span id="cb1-32"><a href="regression-example.html#cb1-32" tabindex="-1"></a>         )</span>
+<span id="cb1-33"><a href="regression-example.html#cb1-33" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="regression-example.html#cb1-34" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="regression-example.html#cb1-35" tabindex="-1"></a><span class="co">#Best 20 countries based on the household net worth in their last year</span></span>
+<span id="cb1-36"><a href="regression-example.html#cb1-36" tabindex="-1"></a>df_tidy <span class="sc">%&gt;%</span> </span>
+<span id="cb1-37"><a href="regression-example.html#cb1-37" tabindex="-1"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-38"><a href="regression-example.html#cb1-38" tabindex="-1"></a>  <span class="fu">slice_max</span>(time) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-39"><a href="regression-example.html#cb1-39" tabindex="-1"></a>  <span class="fu">slice_max</span>(household, <span class="at">n=</span><span class="dv">20</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-40"><a href="regression-example.html#cb1-40" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">fct_reorder</span>(age, childhood, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-41"><a href="regression-example.html#cb1-41" tabindex="-1"></a>         <span class="at">country_name =</span> <span class="fu">fct_reorder</span>(country_name, household, <span class="at">.desc =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-42"><a href="regression-example.html#cb1-42" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>country_name, </span>
+<span id="cb1-43"><a href="regression-example.html#cb1-43" tabindex="-1"></a>             <span class="at">y=</span>childhood, </span>
+<span id="cb1-44"><a href="regression-example.html#cb1-44" tabindex="-1"></a>             <span class="at">fill =</span> age,</span>
+<span id="cb1-45"><a href="regression-example.html#cb1-45" tabindex="-1"></a>             <span class="co">#Hover text of the barplot</span></span>
+<span id="cb1-46"><a href="regression-example.html#cb1-46" tabindex="-1"></a>             <span class="at">text =</span> <span class="fu">glue</span>(<span class="st">&quot;{country}</span><span class="sc">\n</span><span class="st">%{childhood}</span><span class="sc">\n</span><span class="st">{age}</span><span class="sc">\n</span><span class="st">Childhood education&quot;</span>))) <span class="sc">+</span> </span>
+<span id="cb1-47"><a href="regression-example.html#cb1-47" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb1-48"><a href="regression-example.html#cb1-48" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>household<span class="sc">/</span><span class="dv">2</span>, <span class="at">group =</span> <span class="dv">1</span>),</span>
+<span id="cb1-49"><a href="regression-example.html#cb1-49" tabindex="-1"></a>            <span class="at">color=</span> <span class="st">&quot;skyblue&quot;</span>, </span>
+<span id="cb1-50"><a href="regression-example.html#cb1-50" tabindex="-1"></a>            <span class="at">size=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-51"><a href="regression-example.html#cb1-51" tabindex="-1"></a>  <span class="co">#Adding the household net worth as a second(dual) y-axis</span></span>
+<span id="cb1-52"><a href="regression-example.html#cb1-52" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span>.<span class="sc">*</span><span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb1-53"><a href="regression-example.html#cb1-53" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb1-54"><a href="regression-example.html#cb1-54" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb1-55"><a href="regression-example.html#cb1-55" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb1-56"><a href="regression-example.html#cb1-56" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb1-57"><a href="regression-example.html#cb1-57" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb1-58"><a href="regression-example.html#cb1-58" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">60</span>),</span>
+<span id="cb1-59"><a href="regression-example.html#cb1-59" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-60"><a href="regression-example.html#cb1-60" tabindex="-1"></a>    <span class="at">axis.text.y.right =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-61"><a href="regression-example.html#cb1-61" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-62"><a href="regression-example.html#cb1-62" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb1-63"><a href="regression-example.html#cb1-63" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> p</span>
+<span id="cb1-64"><a href="regression-example.html#cb1-64" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="regression-example.html#cb1-65" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="regression-example.html#cb1-66" tabindex="-1"></a><span class="co">#adding google font</span></span>
+<span id="cb1-67"><a href="regression-example.html#cb1-67" tabindex="-1"></a><span class="fu">font_add_google</span>(<span class="at">name =</span> <span class="st">&quot;Henny Penny&quot;</span>, <span class="at">family =</span> <span class="st">&quot;henny&quot;</span>)</span>
+<span id="cb1-68"><a href="regression-example.html#cb1-68" tabindex="-1"></a><span class="fu">showtext_auto</span>()</span>
+<span id="cb1-69"><a href="regression-example.html#cb1-69" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="regression-example.html#cb1-70" tabindex="-1"></a><span class="co">#setting font family for ggplotly </span></span>
+<span id="cb1-71"><a href="regression-example.html#cb1-71" tabindex="-1"></a>font <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-72"><a href="regression-example.html#cb1-72" tabindex="-1"></a>  <span class="at">family=</span> <span class="st">&quot;Henny Penny&quot;</span>, </span>
+<span id="cb1-73"><a href="regression-example.html#cb1-73" tabindex="-1"></a>  <span class="at">size =</span><span class="dv">5</span></span>
+<span id="cb1-74"><a href="regression-example.html#cb1-74" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Let’s take a look at the cleaned dataset:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="regression-example.html#cb2-1" tabindex="-1"></a><span class="fu">head</span>(df_tidy)</span>
+<span id="cb2-2"><a href="regression-example.html#cb2-2" tabindex="-1"></a><span class="do">## # A tibble: 6 × 6</span></span>
+<span id="cb2-3"><a href="regression-example.html#cb2-3" tabindex="-1"></a><span class="do">##   country age    time childhood household country_name</span></span>
+<span id="cb2-4"><a href="regression-example.html#cb2-4" tabindex="-1"></a><span class="do">##   &lt;chr&gt;   &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       </span></span>
+<span id="cb2-5"><a href="regression-example.html#cb2-5" tabindex="-1"></a><span class="do">## 1 AUS     AGE-3  2010      71.8      347. Australia   </span></span>
+<span id="cb2-6"><a href="regression-example.html#cb2-6" tabindex="-1"></a><span class="do">## 2 AUS     AGE-3  2013      62.3      366. Australia   </span></span>
+<span id="cb2-7"><a href="regression-example.html#cb2-7" tabindex="-1"></a><span class="do">## 3 AUS     AGE-3  2014      69.4      383. Australia   </span></span>
+<span id="cb2-8"><a href="regression-example.html#cb2-8" tabindex="-1"></a><span class="do">## 4 AUS     AGE-3  2015      68.4      402. Australia   </span></span>
+<span id="cb2-9"><a href="regression-example.html#cb2-9" tabindex="-1"></a><span class="do">## 5 AUS     AGE-3  2016      63.3      428. Australia   </span></span>
+<span id="cb2-10"><a href="regression-example.html#cb2-10" tabindex="-1"></a><span class="do">## 6 AUS     AGE-3  2017      66.0      439. Australia</span></span></code></pre></div>
+<p>Before modeling the relationship between average household net worth and the enrollment rate of childhood education for different age groups, we can plot this information together to get some initial insights.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="regression-example.html#cb3-1" tabindex="-1"></a><span class="co"># Rbloggers code</span></span>
+<span id="cb3-2"><a href="regression-example.html#cb3-2" tabindex="-1"></a><span class="co">#Plotly chart</span></span>
+<span id="cb3-3"><a href="regression-example.html#cb3-3" tabindex="-1"></a><span class="fu">ggplotly</span>(p, <span class="at">tooltip =</span> <span class="fu">c</span>(<span class="st">&quot;text&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="regression-example.html#cb3-4" tabindex="-1"></a>  <span class="co">#Hover text of the line</span></span>
+<span id="cb3-5"><a href="regression-example.html#cb3-5" tabindex="-1"></a>  <span class="fu">style</span>(<span class="at">text =</span> <span class="fu">glue</span>(<span class="st">&quot;{unique(p$data$country)}</span><span class="sc">\n</span><span class="st">%{unique(p$data$household)}</span><span class="sc">\n</span><span class="st">Household net worth&quot;</span>),<span class="at">traces =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-6"><a href="regression-example.html#cb3-6" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">font=</span>font)</span></code></pre></div>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-d2dea0c50d965e0a52f1" style="width:600px;height:456px;"></div>
+<script type="application/json" data-for="htmlwidget-d2dea0c50d965e0a52f1">{"x":{"data":[{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.89999999999999947,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858],"base":[147.22,171.78,196.13999999999999,136.68000000000001,164.86000000000001,184.56999999999999,194.44999999999999,193.66000000000003,179.44999999999999,172.59999999999999,200,200,110.85999999999999,183.32999999999998,187.46000000000001,185.44,192.75999999999999,172.57999999999998,169.34,182.42000000000002,135.66,175.82999999999998,193.62,166.80000000000001,179.10000000000002,148.42000000000002,182.51999999999998,187.97],"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[97,97.749999999999972,98.639999999999986,94.199999999999989,92.720000000000027,96.569999999999993,98.319999999999993,98.120000000000005,93.089999999999975,91.590000000000003,100,95.620000000000005,95.150000000000006,95.480000000000018,96.340000000000003,99.379999999999995,89.949999999999989,89.75,98.799999999999983,96.879999999999995,100,98.95999999999998,97.620000000000005,94.839999999999975,97.870000000000005,86.29000000000002,95.230000000000018,95.390000000000015],"text":["AUS<br />%97<br />AGE-5<br />Childhood education","AUT<br />%97.75<br />AGE-5<br />Childhood education","BEL<br />%98.64<br />AGE-5<br />Childhood education","CHL<br />%94.2<br />AGE-5<br />Childhood education","CZE<br />%92.72<br />AGE-5<br />Childhood education","DEU<br />%96.57<br />AGE-5<br />Childhood education","DNK<br />%98.32<br />AGE-5<br />Childhood education","ESP<br />%98.12<br />AGE-5<br />Childhood education","EST<br />%93.09<br />AGE-5<br />Childhood education","FIN<br />%91.59<br />AGE-5<br />Childhood education","FRA<br />%100<br />AGE-5<br />Childhood education","GBR<br />%95.62<br />AGE-5<br />Childhood education","GRC<br />%95.15<br />AGE-5<br />Childhood education","HUN<br />%95.48<br />AGE-5<br />Childhood education","ITA<br />%96.34<br />AGE-5<br />Childhood education","JPN<br />%99.38<br />AGE-5<br />Childhood education","KOR<br />%89.95<br />AGE-5<br />Childhood education","LTU<br />%89.75<br />AGE-5<br />Childhood education","LUX<br />%98.8<br />AGE-5<br />Childhood education","LVA<br />%96.88<br />AGE-5<br />Childhood education","MEX<br />%100<br />AGE-5<br />Childhood education","NLD<br />%98.96<br />AGE-5<br />Childhood education","NOR<br />%97.62<br />AGE-5<br />Childhood education","POL<br />%94.84<br />AGE-5<br />Childhood education","PRT<br />%97.87<br />AGE-5<br />Childhood education","SVK<br />%86.29<br />AGE-5<br />Childhood education","SVN<br />%95.23<br />AGE-5<br />Childhood education","SWE<br />%95.39<br />AGE-5<br />Childhood education"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(68,1,84,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"AGE-5","legendgroup":"AGE-5","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.89999999999999947,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858],"base":[64.950000000000003,77.849999999999994,97.870000000000005,54.969999999999999,76.969999999999999,90.019999999999996,96.430000000000007,96.120000000000005,87.269999999999996,84.5,100,100,34.899999999999999,87.170000000000002,92.060000000000002,85.439999999999998,98.799999999999997,84.469999999999999,71.409999999999997,89.090000000000003,46.789999999999999,80.719999999999999,96.379999999999995,77.609999999999999,83.680000000000007,68.290000000000006,89.489999999999995,93.390000000000001],"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[82.269999999999996,93.930000000000007,98.269999999999982,81.710000000000008,87.890000000000015,94.549999999999997,98.019999999999982,97.54000000000002,92.179999999999993,88.099999999999994,100,100,75.95999999999998,96.159999999999982,95.400000000000006,100,93.959999999999994,88.109999999999985,97.930000000000007,93.330000000000013,88.870000000000005,95.109999999999985,97.240000000000009,89.190000000000012,95.420000000000016,80.13000000000001,93.029999999999987,94.579999999999998],"text":["AUS<br />%82.27<br />AGE-4<br />Childhood education","AUT<br />%93.93<br />AGE-4<br />Childhood education","BEL<br />%98.27<br />AGE-4<br />Childhood education","CHL<br />%81.71<br />AGE-4<br />Childhood education","CZE<br />%87.89<br />AGE-4<br />Childhood education","DEU<br />%94.55<br />AGE-4<br />Childhood education","DNK<br />%98.02<br />AGE-4<br />Childhood education","ESP<br />%97.54<br />AGE-4<br />Childhood education","EST<br />%92.18<br />AGE-4<br />Childhood education","FIN<br />%88.1<br />AGE-4<br />Childhood education","FRA<br />%100<br />AGE-4<br />Childhood education","GBR<br />%100<br />AGE-4<br />Childhood education","GRC<br />%75.96<br />AGE-4<br />Childhood education","HUN<br />%96.16<br />AGE-4<br />Childhood education","ITA<br />%95.4<br />AGE-4<br />Childhood education","JPN<br />%100<br />AGE-4<br />Childhood education","KOR<br />%93.96<br />AGE-4<br />Childhood education","LTU<br />%88.11<br />AGE-4<br />Childhood education","LUX<br />%97.93<br />AGE-4<br />Childhood education","LVA<br />%93.33<br />AGE-4<br />Childhood education","MEX<br />%88.87<br />AGE-4<br />Childhood education","NLD<br />%95.11<br />AGE-4<br />Childhood education","NOR<br />%97.24<br />AGE-4<br />Childhood education","POL<br />%89.19<br />AGE-4<br />Childhood education","PRT<br />%95.42<br />AGE-4<br />Childhood education","SVK<br />%80.13<br />AGE-4<br />Childhood education","SVN<br />%93.03<br />AGE-4<br />Childhood education","SWE<br />%94.58<br />AGE-4<br />Childhood education"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(33,144,140,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"AGE-4","legendgroup":"AGE-4","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.89999999999999947,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858,0.89999999999999858],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[64.950000000000003,77.849999999999994,97.870000000000005,54.969999999999999,76.969999999999999,90.019999999999996,96.430000000000007,96.120000000000005,87.269999999999996,84.5,100,100,34.899999999999999,87.170000000000002,92.060000000000002,85.439999999999998,98.799999999999997,84.469999999999999,71.409999999999997,89.090000000000003,46.789999999999999,80.719999999999999,96.379999999999995,77.609999999999999,83.680000000000007,68.290000000000006,89.489999999999995,93.390000000000001],"text":["AUS<br />%64.95<br />AGE-3<br />Childhood education","AUT<br />%77.85<br />AGE-3<br />Childhood education","BEL<br />%97.87<br />AGE-3<br />Childhood education","CHL<br />%54.97<br />AGE-3<br />Childhood education","CZE<br />%76.97<br />AGE-3<br />Childhood education","DEU<br />%90.02<br />AGE-3<br />Childhood education","DNK<br />%96.43<br />AGE-3<br />Childhood education","ESP<br />%96.12<br />AGE-3<br />Childhood education","EST<br />%87.27<br />AGE-3<br />Childhood education","FIN<br />%84.5<br />AGE-3<br />Childhood education","FRA<br />%100<br />AGE-3<br />Childhood education","GBR<br />%100<br />AGE-3<br />Childhood education","GRC<br />%34.9<br />AGE-3<br />Childhood education","HUN<br />%87.17<br />AGE-3<br />Childhood education","ITA<br />%92.06<br />AGE-3<br />Childhood education","JPN<br />%85.44<br />AGE-3<br />Childhood education","KOR<br />%98.8<br />AGE-3<br />Childhood education","LTU<br />%84.47<br />AGE-3<br />Childhood education","LUX<br />%71.41<br />AGE-3<br />Childhood education","LVA<br />%89.09<br />AGE-3<br />Childhood education","MEX<br />%46.79<br />AGE-3<br />Childhood education","NLD<br />%80.72<br />AGE-3<br />Childhood education","NOR<br />%96.38<br />AGE-3<br />Childhood education","POL<br />%77.61<br />AGE-3<br />Childhood education","PRT<br />%83.68<br />AGE-3<br />Childhood education","SVK<br />%68.29<br />AGE-3<br />Childhood education","SVN<br />%89.49<br />AGE-3<br />Childhood education","SWE<br />%93.39<br />AGE-3<br />Childhood education"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(253,231,37,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"AGE-3","legendgroup":"AGE-3","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[235.56,243.005,332.5,158.58500000000001,196.11500000000001,259.01999999999998,411.56,195.39500000000001,169.63499999999999,204.06999999999999,273.38,254.16499999999999,180.86500000000001,184.565,312.68000000000001,302.20999999999998,202.43000000000001,115.93000000000001,209.72499999999999,179.08500000000001,182.59999999999999,397.64999999999998,175.42500000000001,80.144999999999996,212.03999999999999,136.59,157.57499999999999,311.68000000000001],"text":["AUS<br />%97<br />AGE-5<br />Childhood education","AUT<br />%97.75<br />AGE-5<br />Childhood education","BEL<br />%98.64<br />AGE-5<br />Childhood education","CHL<br />%94.2<br />AGE-5<br />Childhood education","CZE<br />%92.72<br />AGE-5<br />Childhood education","DEU<br />%96.57<br />AGE-5<br />Childhood education","DNK<br />%98.32<br />AGE-5<br />Childhood education","ESP<br />%98.12<br />AGE-5<br />Childhood education","EST<br />%93.09<br />AGE-5<br />Childhood education","FIN<br />%91.59<br />AGE-5<br />Childhood education","FRA<br />%100<br />AGE-5<br />Childhood education","GBR<br />%95.62<br />AGE-5<br />Childhood education","GRC<br />%95.15<br />AGE-5<br />Childhood education","HUN<br />%95.48<br />AGE-5<br />Childhood education","ITA<br />%96.34<br />AGE-5<br />Childhood education","JPN<br />%99.38<br />AGE-5<br />Childhood education","KOR<br />%89.95<br />AGE-5<br />Childhood education","LTU<br />%89.75<br />AGE-5<br />Childhood education","LUX<br />%98.8<br />AGE-5<br />Childhood education","LVA<br />%96.88<br />AGE-5<br />Childhood education","MEX<br />%100<br />AGE-5<br />Childhood education","NLD<br />%98.96<br />AGE-5<br />Childhood education","NOR<br />%97.62<br />AGE-5<br />Childhood education","POL<br />%94.84<br />AGE-5<br />Childhood education","PRT<br />%97.87<br />AGE-5<br />Childhood education","SVK<br />%86.29<br />AGE-5<br />Childhood education","SVN<br />%95.23<br />AGE-5<br />Childhood education","SWE<br />%95.39<br />AGE-5<br />Childhood education"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(135,206,235,1)","dash":"solid"},"hoveron":"points","name":"AGE-5","legendgroup":"AGE-5","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[235.56,243.005,332.5,158.58500000000001,196.11500000000001,259.01999999999998,411.56,195.39500000000001,169.63499999999999,204.06999999999999,273.38,254.16499999999999,180.86500000000001,184.565,312.68000000000001,302.20999999999998,202.43000000000001,115.93000000000001,209.72499999999999,179.08500000000001,182.59999999999999,397.64999999999998,175.42500000000001,80.144999999999996,212.03999999999999,136.59,157.57499999999999,311.68000000000001],"text":["AUS<br />%82.27<br />AGE-4<br />Childhood education","AUT<br />%93.93<br />AGE-4<br />Childhood education","BEL<br />%98.27<br />AGE-4<br />Childhood education","CHL<br />%81.71<br />AGE-4<br />Childhood education","CZE<br />%87.89<br />AGE-4<br />Childhood education","DEU<br />%94.55<br />AGE-4<br />Childhood education","DNK<br />%98.02<br />AGE-4<br />Childhood education","ESP<br />%97.54<br />AGE-4<br />Childhood education","EST<br />%92.18<br />AGE-4<br />Childhood education","FIN<br />%88.1<br />AGE-4<br />Childhood education","FRA<br />%100<br />AGE-4<br />Childhood education","GBR<br />%100<br />AGE-4<br />Childhood education","GRC<br />%75.96<br />AGE-4<br />Childhood education","HUN<br />%96.16<br />AGE-4<br />Childhood education","ITA<br />%95.4<br />AGE-4<br />Childhood education","JPN<br />%100<br />AGE-4<br />Childhood education","KOR<br />%93.96<br />AGE-4<br />Childhood education","LTU<br />%88.11<br />AGE-4<br />Childhood education","LUX<br />%97.93<br />AGE-4<br />Childhood education","LVA<br />%93.33<br />AGE-4<br />Childhood education","MEX<br />%88.87<br />AGE-4<br />Childhood education","NLD<br />%95.11<br />AGE-4<br />Childhood education","NOR<br />%97.24<br />AGE-4<br />Childhood education","POL<br />%89.19<br />AGE-4<br />Childhood education","PRT<br />%95.42<br />AGE-4<br />Childhood education","SVK<br />%80.13<br />AGE-4<br />Childhood education","SVN<br />%93.03<br />AGE-4<br />Childhood education","SWE<br />%94.58<br />AGE-4<br />Childhood education"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(135,206,235,1)","dash":"solid"},"hoveron":"points","name":"AGE-4","legendgroup":"AGE-4","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],"y":[235.56,243.005,332.5,158.58500000000001,196.11500000000001,259.01999999999998,411.56,195.39500000000001,169.63499999999999,204.06999999999999,273.38,254.16499999999999,180.86500000000001,184.565,312.68000000000001,302.20999999999998,202.43000000000001,115.93000000000001,209.72499999999999,179.08500000000001,182.59999999999999,397.64999999999998,175.42500000000001,80.144999999999996,212.03999999999999,136.59,157.57499999999999,311.68000000000001],"text":["AUS<br />%471.12<br />Household net worth","AUT<br />%486.01<br />Household net worth","BEL<br />%665<br />Household net worth","CHL<br />%317.17<br />Household net worth","CZE<br />%392.23<br />Household net worth","DEU<br />%518.04<br />Household net worth","DNK<br />%823.12<br />Household net worth","ESP<br />%390.79<br />Household net worth","EST<br />%339.27<br />Household net worth","FIN<br />%408.14<br />Household net worth","FRA<br />%546.76<br />Household net worth","GBR<br />%508.33<br />Household net worth","GRC<br />%361.73<br />Household net worth","HUN<br />%369.13<br />Household net worth","ITA<br />%625.36<br />Household net worth","JPN<br />%604.42<br />Household net worth","KOR<br />%404.86<br />Household net worth","LTU<br />%231.86<br />Household net worth","LUX<br />%419.45<br />Household net worth","LVA<br />%358.17<br />Household net worth","MEX<br />%365.2<br />Household net worth","NLD<br />%795.3<br />Household net worth","NOR<br />%350.85<br />Household net worth","POL<br />%160.29<br />Household net worth","PRT<br />%424.08<br />Household net worth","SVK<br />%273.18<br />Household net worth","SVN<br />%315.15<br />Household net worth","SWE<br />%623.36<br />Household net worth"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(135,206,235,1)","dash":"solid"},"hoveron":"points","name":"AGE-3","legendgroup":"AGE-3","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":25.613073780341267,"r":7.3059360730593621,"b":26.016039548917576,"l":10.958904109589042},"font":{"color":"rgba(0,0,0,1)","family":"Henny Penny","size":5},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,28.600000000000001],"tickmode":"array","ticktext":["Australia","Austria","Belgium","Chile","Czechia","Germany","Denmark","Spain","Estonia","Finland","France","United Kingdom","Greece","Hungary","Italy","Japan","South Korea","Lithuania","Luxembourg","Latvia","Mexico","Netherlands","Norway","Poland","Portugal","Slovakia","Slovenia","Sweden"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15.000000000000002,16,17,18,19,20,21,22,23,24,25,26,27,28],"categoryorder":"array","categoryarray":["Australia","Austria","Belgium","Chile","Czechia","Germany","Denmark","Spain","Estonia","Finland","France","United Kingdom","Greece","Hungary","Italy","Japan","South Korea","Lithuania","Luxembourg","Latvia","Mexico","Netherlands","Norway","Poland","Portugal","Slovakia","Slovenia","Sweden"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-60,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-20.578000000000003,432.13800000000003],"tickmode":"array","ticktext":["0","100","200","300","400"],"tickvals":[0,99.999999999999986,200,300,400],"categoryorder":"array","categoryarray":["0","100","200","300","400"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":false,"tickfont":{"color":null,"family":null,"size":0},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"2e8838f80863":{"x":{},"y":{},"fill":{},"text":{},"type":"bar"},"2e8823eeb8cd":{"x":{},"y":{},"fill":{},"text":{}}},"cur_data":"2e8838f80863","visdat":{"2e8838f80863":["function (y) ","x"],"2e8823eeb8cd":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>In the graph above, yellow portions of the bars represent childhood enrollment rate for 3-year-olds, teal represents that for 4-year-olds, and purple represents that for 5-year-olds. The light blue trend line shows the average household net worth for each country in the dataset. Before modeling anything, a vague and general takeaway is that the childhood enrollment rate seems to be positively related to the average household net worth in that country.</p>
+<p><br />
+<br />
+With that in mind, we will model this relationship with BART in the next section.</p>
+<p><br />
+</p>
+</div>
+<div id="implementation" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Implementation<a href="regression-example.html#implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>BART has been implemented in various R packages. In order to run the two packages we use in this tutorial, which are <code>dbarts</code> and <code>tidymodels</code>, we start by splitting our data into a training set and and a test set. This way we can train the model and evaluate the performance on the test set using cross validation.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="regression-example.html#cb4-1" tabindex="-1"></a><span class="co"># Rbloggers code</span></span>
+<span id="cb4-2"><a href="regression-example.html#cb4-2" tabindex="-1"></a><span class="co">#Splitting the data into train and test sets</span></span>
+<span id="cb4-3"><a href="regression-example.html#cb4-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb4-4"><a href="regression-example.html#cb4-4" tabindex="-1"></a>df_split <span class="ot">&lt;-</span> </span>
+<span id="cb4-5"><a href="regression-example.html#cb4-5" tabindex="-1"></a>  df_tidy <span class="sc">%&gt;%</span> </span>
+<span id="cb4-6"><a href="regression-example.html#cb4-6" tabindex="-1"></a>  <span class="co">#Converting the levels to variables for modeling</span></span>
+<span id="cb4-7"><a href="regression-example.html#cb4-7" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age, <span class="at">values_from =</span> childhood) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="regression-example.html#cb4-8" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="regression-example.html#cb4-9" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-10"><a href="regression-example.html#cb4-10" tabindex="-1"></a>  <span class="fu">initial_split</span>() </span>
+<span id="cb4-11"><a href="regression-example.html#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="regression-example.html#cb4-12" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">training</span>(df_split)</span>
+<span id="cb4-13"><a href="regression-example.html#cb4-13" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(df_split)</span></code></pre></div>
+<div id="dbarts-package" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> <code>dbarts</code> package<a href="regression-example.html#dbarts-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The function we are using under the <code>dbarts</code> package is called <code>bart</code>. To fit a BART model, we need to feed in the independent variables for the <code>x.train</code> parameter and the response variable for the <code>y.train</code> parameter.</p>
+<p>In our case, the independent variables are the age 3, age 4, and age 5 education enrollment rates, and the response variable is the household net worth. To input these information into the <code>bart</code> function, we specify their column indices to access them.</p>
+<p>We also set <code>keeptrees = TRUE</code> in order for the resulting fitted model to store the splitting information and the configuration of each single tree that we have. We did this because we would like to view some examples of what variable a tree chose, what the split rule is, and how long before the tree terminates.</p>
+<p>The parameter <code>ndpost</code> specifies the number of iterations we want after the burn-in period, while the default number of iterations inside the burn-in period is 100.</p>
+<p>The printed descriptive output of the <code>bart</code> function shows the specific parameters that were used to fit the BART model, which were introduced in our methodology chapter.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="regression-example.html#cb5-1" tabindex="-1"></a> <span class="co"># Fitting a BART model with default 1,000 iterations of 200 trees</span></span>
+<span id="cb5-2"><a href="regression-example.html#cb5-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4343</span>)</span>
+<span id="cb5-3"><a href="regression-example.html#cb5-3" tabindex="-1"></a>bartFit <span class="ot">&lt;-</span> <span class="fu">bart</span>(<span class="at">x.train =</span> <span class="fu">as.matrix</span>(df_train[,<span class="dv">5</span><span class="sc">:</span><span class="dv">7</span>]), <span class="at">y.train =</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(df_train[,<span class="dv">3</span>])),<span class="at">keeptrees =</span> <span class="cn">TRUE</span>, <span class="at">ndpost =</span> <span class="dv">1000</span>)</span>
+<span id="cb5-4"><a href="regression-example.html#cb5-4" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-5"><a href="regression-example.html#cb5-5" tabindex="-1"></a><span class="do">## Running BART with numeric y</span></span>
+<span id="cb5-6"><a href="regression-example.html#cb5-6" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-7"><a href="regression-example.html#cb5-7" tabindex="-1"></a><span class="do">## number of trees: 200</span></span>
+<span id="cb5-8"><a href="regression-example.html#cb5-8" tabindex="-1"></a><span class="do">## number of chains: 1, number of threads 1</span></span>
+<span id="cb5-9"><a href="regression-example.html#cb5-9" tabindex="-1"></a><span class="do">## tree thinning rate: 1</span></span>
+<span id="cb5-10"><a href="regression-example.html#cb5-10" tabindex="-1"></a><span class="do">## Prior:</span></span>
+<span id="cb5-11"><a href="regression-example.html#cb5-11" tabindex="-1"></a><span class="do">##  k prior fixed to 2.000000</span></span>
+<span id="cb5-12"><a href="regression-example.html#cb5-12" tabindex="-1"></a><span class="do">##  degrees of freedom in sigma prior: 3.000000</span></span>
+<span id="cb5-13"><a href="regression-example.html#cb5-13" tabindex="-1"></a><span class="do">##  quantile in sigma prior: 0.900000</span></span>
+<span id="cb5-14"><a href="regression-example.html#cb5-14" tabindex="-1"></a><span class="do">##  scale in sigma prior: 0.004462</span></span>
+<span id="cb5-15"><a href="regression-example.html#cb5-15" tabindex="-1"></a><span class="do">##  power and base for tree prior: 2.000000 0.950000</span></span>
+<span id="cb5-16"><a href="regression-example.html#cb5-16" tabindex="-1"></a><span class="do">##  use quantiles for rule cut points: false</span></span>
+<span id="cb5-17"><a href="regression-example.html#cb5-17" tabindex="-1"></a><span class="do">##  proposal probabilities: birth/death 0.50, swap 0.10, change 0.40; birth 0.50</span></span>
+<span id="cb5-18"><a href="regression-example.html#cb5-18" tabindex="-1"></a><span class="do">## data:</span></span>
+<span id="cb5-19"><a href="regression-example.html#cb5-19" tabindex="-1"></a><span class="do">##  number of training observations: 216</span></span>
+<span id="cb5-20"><a href="regression-example.html#cb5-20" tabindex="-1"></a><span class="do">##  number of test observations: 0</span></span>
+<span id="cb5-21"><a href="regression-example.html#cb5-21" tabindex="-1"></a><span class="do">##  number of explanatory variables: 3</span></span>
+<span id="cb5-22"><a href="regression-example.html#cb5-22" tabindex="-1"></a><span class="do">##  init sigma: 103.908284, curr sigma: 103.908284</span></span>
+<span id="cb5-23"><a href="regression-example.html#cb5-23" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-24"><a href="regression-example.html#cb5-24" tabindex="-1"></a><span class="do">## Cutoff rules c in x&lt;=c vs x&gt;c</span></span>
+<span id="cb5-25"><a href="regression-example.html#cb5-25" tabindex="-1"></a><span class="do">## Number of cutoffs: (var: number of possible c):</span></span>
+<span id="cb5-26"><a href="regression-example.html#cb5-26" tabindex="-1"></a><span class="do">## (1: 100) (2: 100) (3: 100) </span></span>
+<span id="cb5-27"><a href="regression-example.html#cb5-27" tabindex="-1"></a><span class="do">## Running mcmc loop:</span></span>
+<span id="cb5-28"><a href="regression-example.html#cb5-28" tabindex="-1"></a><span class="do">## iteration: 100 (of 1000)</span></span>
+<span id="cb5-29"><a href="regression-example.html#cb5-29" tabindex="-1"></a><span class="do">## iteration: 200 (of 1000)</span></span>
+<span id="cb5-30"><a href="regression-example.html#cb5-30" tabindex="-1"></a><span class="do">## iteration: 300 (of 1000)</span></span>
+<span id="cb5-31"><a href="regression-example.html#cb5-31" tabindex="-1"></a><span class="do">## iteration: 400 (of 1000)</span></span>
+<span id="cb5-32"><a href="regression-example.html#cb5-32" tabindex="-1"></a><span class="do">## iteration: 500 (of 1000)</span></span>
+<span id="cb5-33"><a href="regression-example.html#cb5-33" tabindex="-1"></a><span class="do">## iteration: 600 (of 1000)</span></span>
+<span id="cb5-34"><a href="regression-example.html#cb5-34" tabindex="-1"></a><span class="do">## iteration: 700 (of 1000)</span></span>
+<span id="cb5-35"><a href="regression-example.html#cb5-35" tabindex="-1"></a><span class="do">## iteration: 800 (of 1000)</span></span>
+<span id="cb5-36"><a href="regression-example.html#cb5-36" tabindex="-1"></a><span class="do">## iteration: 900 (of 1000)</span></span>
+<span id="cb5-37"><a href="regression-example.html#cb5-37" tabindex="-1"></a><span class="do">## iteration: 1000 (of 1000)</span></span>
+<span id="cb5-38"><a href="regression-example.html#cb5-38" tabindex="-1"></a><span class="do">## total seconds in loop: 0.452259</span></span>
+<span id="cb5-39"><a href="regression-example.html#cb5-39" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-40"><a href="regression-example.html#cb5-40" tabindex="-1"></a><span class="do">## Tree sizes, last iteration:</span></span>
+<span id="cb5-41"><a href="regression-example.html#cb5-41" tabindex="-1"></a><span class="do">## [1] 2 2 2 3 4 3 4 2 2 2 3 2 2 4 2 2 2 2 </span></span>
+<span id="cb5-42"><a href="regression-example.html#cb5-42" tabindex="-1"></a><span class="do">## 2 3 2 1 2 4 2 2 3 2 2 2 2 2 2 1 2 1 2 1 </span></span>
+<span id="cb5-43"><a href="regression-example.html#cb5-43" tabindex="-1"></a><span class="do">## 2 5 2 2 3 3 4 2 2 1 3 2 2 2 2 1 3 2 1 2 </span></span>
+<span id="cb5-44"><a href="regression-example.html#cb5-44" tabindex="-1"></a><span class="do">## 1 2 2 2 3 2 2 1 3 2 2 2 4 2 3 2 2 1 3 2 </span></span>
+<span id="cb5-45"><a href="regression-example.html#cb5-45" tabindex="-1"></a><span class="do">## 2 3 4 2 4 2 2 3 2 2 2 2 2 2 3 2 2 3 2 3 </span></span>
+<span id="cb5-46"><a href="regression-example.html#cb5-46" tabindex="-1"></a><span class="do">## 4 2 2 2 3 2 2 2 2 2 3 2 4 2 2 1 2 2 2 2 </span></span>
+<span id="cb5-47"><a href="regression-example.html#cb5-47" tabindex="-1"></a><span class="do">## 2 2 3 2 2 2 4 2 1 3 2 2 4 2 2 2 3 3 4 3 </span></span>
+<span id="cb5-48"><a href="regression-example.html#cb5-48" tabindex="-1"></a><span class="do">## 2 2 2 3 2 2 2 4 2 2 2 1 2 2 2 2 3 2 2 2 </span></span>
+<span id="cb5-49"><a href="regression-example.html#cb5-49" tabindex="-1"></a><span class="do">## 1 2 2 3 3 3 2 2 2 2 3 1 2 2 3 2 3 3 2 2 </span></span>
+<span id="cb5-50"><a href="regression-example.html#cb5-50" tabindex="-1"></a><span class="do">## 1 4 3 2 2 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 </span></span>
+<span id="cb5-51"><a href="regression-example.html#cb5-51" tabindex="-1"></a><span class="do">## 2 2 </span></span>
+<span id="cb5-52"><a href="regression-example.html#cb5-52" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-53"><a href="regression-example.html#cb5-53" tabindex="-1"></a><span class="do">## Variable Usage, last iteration (var:count):</span></span>
+<span id="cb5-54"><a href="regression-example.html#cb5-54" tabindex="-1"></a><span class="do">## (1: 77) (2: 91) (3: 86) </span></span>
+<span id="cb5-55"><a href="regression-example.html#cb5-55" tabindex="-1"></a><span class="do">## DONE BART</span></span>
+<span id="cb5-56"><a href="regression-example.html#cb5-56" tabindex="-1"></a></span>
+<span id="cb5-57"><a href="regression-example.html#cb5-57" tabindex="-1"></a><span class="co"># Extracting trees from model</span></span>
+<span id="cb5-58"><a href="regression-example.html#cb5-58" tabindex="-1"></a>trees <span class="ot">&lt;-</span> <span class="fu">extract</span>(bartFit, <span class="st">&quot;trees&quot;</span>)</span>
+<span id="cb5-59"><a href="regression-example.html#cb5-59" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="regression-example.html#cb5-60" tabindex="-1"></a> <span class="co"># Looking at some examples of trees from model</span></span>
+<span id="cb5-61"><a href="regression-example.html#cb5-61" tabindex="-1"></a>bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-1.png" width="600" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="regression-example.html#cb6-1" tabindex="-1"></a>bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">140</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-2.png" width="600" style="display: block; margin: auto;" /></p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="bartman-package" class="section level3 hasAnchor" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> <code>bartMan</code> package<a href="regression-example.html#bartman-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Using the <code>bartMan</code> package, we can look at more interesting visualizations that show us some model diagnostics as well as what our trees look like in a fitted model.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="regression-example.html#cb7-1" tabindex="-1"></a> <span class="co"># Loading packages for BART visualization</span></span>
+<span id="cb7-2"><a href="regression-example.html#cb7-2" tabindex="-1"></a><span class="fu">library</span>(bartMan)</span>
+<span id="cb7-3"><a href="regression-example.html#cb7-3" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb7-4"><a href="regression-example.html#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="regression-example.html#cb7-5" tabindex="-1"></a><span class="fu">bartDiag</span>(<span class="at">model =</span> bartFit, <span class="at">response =</span> <span class="st">&quot;household&quot;</span>, <span class="at">burnIn =</span> <span class="dv">1000</span>, <span class="at">data =</span> df_tidy)</span></code></pre></div>
+<p><br />
+</p>
+<p><img src="image/regr-diag.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Shown above are six general diagnostic plots for the BART regression fit on our dataset. Top left: A QQ-plot of the residuals after fitting the model. Top right: trace plot of <span class="math inline">\(\sigma\)</span> from MCMC iteration. Middle left: Residuals versus fitted values with 95% credible intervals. Middle right: A histogram of the residuals. Bottom Left: Actual values versus fitted values with 95% credible intervals. (This is unfornately not working properly due to unknown reasons). Bottom right: Variable importance plot with 25 to 75% quantile interval shown. In our case, the BART model decides that the enrollment rate of childhood education for 3-year-olds is the most important variable.</p>
+<p><br />
+<br />
+</p>
+<p>Then, we want to visualize all the trees we fitted across all iterations. For less computational time and simplicity, we reduce the number of trees as well as the number of iterations for each tree. With <code>dbarts</code>, we fit a new model with the same variables with 50 trees for 10 iterations.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="regression-example.html#cb8-1" tabindex="-1"></a> <span class="co"># Fitting another BART model with fewer trees and less iterations</span></span>
+<span id="cb8-2"><a href="regression-example.html#cb8-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4343</span>)</span>
+<span id="cb8-3"><a href="regression-example.html#cb8-3" tabindex="-1"></a>bartFit50 <span class="ot">&lt;-</span> <span class="fu">bart</span>(<span class="at">x.train =</span> <span class="fu">as.matrix</span>(df_train[,<span class="dv">5</span><span class="sc">:</span><span class="dv">7</span>]), <span class="at">y.train =</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(df_train[,<span class="dv">3</span>])), <span class="at">keeptrees =</span> <span class="cn">TRUE</span>, <span class="at">ntree =</span> <span class="dv">50</span>, <span class="at">ndpost =</span> <span class="dv">10</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="regression-example.html#cb9-1" tabindex="-1"></a> <span class="co"># Extracting the tree data</span></span>
+<span id="cb9-2"><a href="regression-example.html#cb9-2" tabindex="-1"></a>trees_data50 <span class="ot">&lt;-</span> <span class="fu">extractTreeData</span>(bartFit50, df_tidy)</span>
+<span id="cb9-3"><a href="regression-example.html#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="regression-example.html#cb9-4" tabindex="-1"></a> <span class="co"># Visualizing what each of the 50 trees look like over their 10 iterations</span></span>
+<span id="cb9-5"><a href="regression-example.html#cb9-5" tabindex="-1"></a><span class="fu">plotTrees</span>(<span class="at">trees =</span> trees_data50, <span class="at">fillBy =</span> <span class="cn">NULL</span>, <span class="at">sizeNodes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="image/regr-all-tree.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>In the plot above, each little box represents a single tree. There are 500 boxes, thus 500 = 50 <span class="math inline">\(\cdot\)</span> 10 trees, because it is showing all the trees (50 trees) built in all iterations after the burn-in period (10 iterations) in the reduced model. Different colors represent different variables that a tree is splitting on, and the gray represents a stump/leaf, or a terminal node.</p>
+<p>While this plot is useful, it is hard to get insight from it because that is too much to look at at one time. To deal with that, we can specify one tree to look at all the iterations (10) of it. Here we are using the <span class="math inline">\(13^{th}\)</span> as an example:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="regression-example.html#cb10-1" tabindex="-1"></a><span class="co"># Viewing all 10 iterations of one tree</span></span>
+<span id="cb10-2"><a href="regression-example.html#cb10-2" tabindex="-1"></a><span class="fu">plotTrees</span>(<span class="at">trees =</span> trees_data50, <span class="at">treeNo =</span> <span class="dv">13</span>)</span></code></pre></div>
+<p><img src="image/regr-one-tree.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>However, that is only the information of one tree. An even better alternative to grab information efficiently is to use the <code>treeBarPlot</code> function in the <code>bartMan</code> package. This function creates a bar plot that shows how many times each specific structure of tree, including which variable the tree splits on (but not its splitting rule value), shows up within the model. We also create a density plot that shows the splitting variables and the frequency at which each splitting rule value is chosen.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="regression-example.html#cb11-1" tabindex="-1"></a> <span class="co"># Creating bar plot showing frequency of 8 most common trees from model</span></span>
+<span id="cb11-2"><a href="regression-example.html#cb11-2" tabindex="-1"></a><span class="fu">treeBarPlot</span>(trees_data50, <span class="at">topTrees =</span> <span class="dv">8</span>, <span class="at">iter =</span> <span class="cn">NULL</span>)</span>
+<span id="cb11-3"><a href="regression-example.html#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="regression-example.html#cb11-4" tabindex="-1"></a> <span class="co"># Creating density plot of variable split levels values</span></span>
+<span id="cb11-5"><a href="regression-example.html#cb11-5" tabindex="-1"></a><span class="fu">splitDensity</span>(<span class="at">trees =</span> trees_data50, <span class="at">data =</span> df_tidy, <span class="at">display =</span> <span class="st">&#39;ridge&#39;</span>)</span></code></pre></div>
+<p><img src="image/regr-bar.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="image/regr-dens.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Note: These visuals can be interesting to look at and interpret, but there is a discrepancy in the colors that are shown between the 500-tree plot, the density plot, and the bar plot. There is no legend argument for the <code>treeBarPlot</code>, so we manually added in the legends for these later plots. We made sure that the variables match the colors as described in the legend by checking <a href="https://github.com/AlanInglis/bartMan/blob/master/R/treeBarPlot.R">original code</a> of the function <code>treeBarPlot</code>.</p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="tidymodels-package" class="section level3 hasAnchor" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> <code>tidymodels</code> package<a href="regression-example.html#tidymodels-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Next, we decide to use the <code>tidymodels</code> package to fit our BART model and assess its overall performance. This is because <code>tidymodels</code> is more comprehensive and provides an standardized workflow for not only training and testing the model, but also performing cross-validation on the model. The steps for this package are universal for machine learning in R.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="regression-example.html#cb12-1" tabindex="-1"></a><span class="co"># Rbloggers code</span></span>
+<span id="cb12-2"><a href="regression-example.html#cb12-2" tabindex="-1"></a><span class="co">#Preprocessing</span></span>
+<span id="cb12-3"><a href="regression-example.html#cb12-3" tabindex="-1"></a>df_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(household <span class="sc">~</span> age_3 <span class="sc">+</span> age_4 <span class="sc">+</span> age_5, <span class="at">data =</span> df_train) </span>
+<span id="cb12-4"><a href="regression-example.html#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="regression-example.html#cb12-5" tabindex="-1"></a><span class="co">#Modeling with BART</span></span>
+<span id="cb12-6"><a href="regression-example.html#cb12-6" tabindex="-1"></a>df_spec <span class="ot">&lt;-</span> </span>
+<span id="cb12-7"><a href="regression-example.html#cb12-7" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">bart</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-8"><a href="regression-example.html#cb12-8" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;dbarts&quot;</span>, <span class="at">keeptrees =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-9"><a href="regression-example.html#cb12-9" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;regression&quot;</span>)  </span>
+<span id="cb12-10"><a href="regression-example.html#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="regression-example.html#cb12-11" tabindex="-1"></a><span class="co">#Workflow</span></span>
+<span id="cb12-12"><a href="regression-example.html#cb12-12" tabindex="-1"></a>df_wf <span class="ot">&lt;-</span> </span>
+<span id="cb12-13"><a href="regression-example.html#cb12-13" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-14"><a href="regression-example.html#cb12-14" tabindex="-1"></a>  <span class="fu">add_recipe</span>(df_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-15"><a href="regression-example.html#cb12-15" tabindex="-1"></a>  <span class="fu">add_model</span>(df_spec)</span>
+<span id="cb12-16"><a href="regression-example.html#cb12-16" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="regression-example.html#cb12-17" tabindex="-1"></a><span class="co">#cross-validation for resamples</span></span>
+<span id="cb12-18"><a href="regression-example.html#cb12-18" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb12-19"><a href="regression-example.html#cb12-19" tabindex="-1"></a>df_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train)</span>
+<span id="cb12-20"><a href="regression-example.html#cb12-20" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="regression-example.html#cb12-21" tabindex="-1"></a><span class="co">#Resampling for the accuracy metrics</span></span>
+<span id="cb12-22"><a href="regression-example.html#cb12-22" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">98765</span>)</span>
+<span id="cb12-23"><a href="regression-example.html#cb12-23" tabindex="-1"></a>df_rs <span class="ot">&lt;-</span> </span>
+<span id="cb12-24"><a href="regression-example.html#cb12-24" tabindex="-1"></a>  df_wf <span class="sc">%&gt;%</span> </span>
+<span id="cb12-25"><a href="regression-example.html#cb12-25" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> df_folds)</span>
+<span id="cb12-26"><a href="regression-example.html#cb12-26" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="regression-example.html#cb12-27" tabindex="-1"></a><span class="co">#Computes the accuracy metrics  </span></span>
+<span id="cb12-28"><a href="regression-example.html#cb12-28" tabindex="-1"></a><span class="fu">collect_metrics</span>(df_rs)</span>
+<span id="cb12-29"><a href="regression-example.html#cb12-29" tabindex="-1"></a><span class="do">## # A tibble: 2 × 6</span></span>
+<span id="cb12-30"><a href="regression-example.html#cb12-30" tabindex="-1"></a><span class="do">##   .metric .estimator   mean     n std_err .config             </span></span>
+<span id="cb12-31"><a href="regression-example.html#cb12-31" tabindex="-1"></a><span class="do">##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb12-32"><a href="regression-example.html#cb12-32" tabindex="-1"></a><span class="do">## 1 rmse    standard   85.2      10  4.79   Preprocessor1_Model1</span></span>
+<span id="cb12-33"><a href="regression-example.html#cb12-33" tabindex="-1"></a><span class="do">## 2 rsq     standard    0.528    10  0.0458 Preprocessor1_Model1</span></span></code></pre></div>
+<p>The output we see above are quality metrics for our model. Our RMSE average value shows the average difference between the observed and predicted values of household net worth to be 85.2 percent, since the household net worth is a percentage by its definition. That is, the prediction we get from this built BART model is off by 85.2 percent on average. Given that the household net worth ranges from 134 percent to 824 percent in our dataset, we think the BART model has a decent performance.</p>
+<p>Additionally, the <span class="math inline">\(R^2\)</span> value provides us insights on how well the model fit our data. We observe a value of 0.528, which means that 52.8% of the data can be explained by the fitted BART model. We would like to be closer to 1 in order for the model to explain more variability in the data.</p>
+<p><br />
+<br />
+</p>
+<p>To refine our BART model, we can also tune the priors instead of simply using the default ones. Here, we demonstrate how to use grid search to tune the priors of the BART model. These priors include the number of trees, terminal node coefficient, and the exponential component of the prior distribution for these terminal node parameters.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="regression-example.html#cb13-1" tabindex="-1"></a><span class="co"># Rbloggers code</span></span>
+<span id="cb13-2"><a href="regression-example.html#cb13-2" tabindex="-1"></a><span class="co"># Model tuning with grid search</span></span>
+<span id="cb13-3"><a href="regression-example.html#cb13-3" tabindex="-1"></a>df_spec <span class="ot">&lt;-</span> </span>
+<span id="cb13-4"><a href="regression-example.html#cb13-4" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">bart</span>(</span>
+<span id="cb13-5"><a href="regression-example.html#cb13-5" tabindex="-1"></a>    <span class="at">trees =</span> <span class="fu">tune</span>(),</span>
+<span id="cb13-6"><a href="regression-example.html#cb13-6" tabindex="-1"></a>    <span class="at">prior_terminal_node_coef =</span> <span class="fu">tune</span>(),</span>
+<span id="cb13-7"><a href="regression-example.html#cb13-7" tabindex="-1"></a>    <span class="at">prior_terminal_node_expo =</span> <span class="fu">tune</span>()</span>
+<span id="cb13-8"><a href="regression-example.html#cb13-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-9"><a href="regression-example.html#cb13-9" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;dbarts&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-10"><a href="regression-example.html#cb13-10" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;regression&quot;</span>)</span>
+<span id="cb13-11"><a href="regression-example.html#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="regression-example.html#cb13-12" tabindex="-1"></a><span class="co">#parameter object</span></span>
+<span id="cb13-13"><a href="regression-example.html#cb13-13" tabindex="-1"></a>rf_param <span class="ot">&lt;-</span> </span>
+<span id="cb13-14"><a href="regression-example.html#cb13-14" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-15"><a href="regression-example.html#cb13-15" tabindex="-1"></a>  <span class="fu">add_model</span>(df_spec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-16"><a href="regression-example.html#cb13-16" tabindex="-1"></a>  <span class="fu">add_recipe</span>(df_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-17"><a href="regression-example.html#cb13-17" tabindex="-1"></a>  <span class="fu">extract_parameter_set_dials</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-18"><a href="regression-example.html#cb13-18" tabindex="-1"></a>  <span class="fu">finalize</span>(df_train)</span>
+<span id="cb13-19"><a href="regression-example.html#cb13-19" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="regression-example.html#cb13-20" tabindex="-1"></a><span class="co">#space-filling design with integer grid argument</span></span>
+<span id="cb13-21"><a href="regression-example.html#cb13-21" tabindex="-1"></a>df_reg_tune <span class="ot">&lt;-</span></span>
+<span id="cb13-22"><a href="regression-example.html#cb13-22" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-23"><a href="regression-example.html#cb13-23" tabindex="-1"></a>  <span class="fu">add_recipe</span>(df_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-24"><a href="regression-example.html#cb13-24" tabindex="-1"></a>  <span class="fu">add_model</span>(df_spec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-25"><a href="regression-example.html#cb13-25" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb13-26"><a href="regression-example.html#cb13-26" tabindex="-1"></a>    df_folds,</span>
+<span id="cb13-27"><a href="regression-example.html#cb13-27" tabindex="-1"></a>    <span class="at">grid =</span> <span class="dv">20</span>,</span>
+<span id="cb13-28"><a href="regression-example.html#cb13-28" tabindex="-1"></a>    <span class="at">param_info =</span> rf_param,</span>
+<span id="cb13-29"><a href="regression-example.html#cb13-29" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(rsq)</span>
+<span id="cb13-30"><a href="regression-example.html#cb13-30" tabindex="-1"></a>  )</span>
+<span id="cb13-31"><a href="regression-example.html#cb13-31" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="regression-example.html#cb13-32" tabindex="-1"></a><span class="co">#Selecting the best parameters according to the r-square</span></span>
+<span id="cb13-33"><a href="regression-example.html#cb13-33" tabindex="-1"></a>rf_param_best <span class="ot">&lt;-</span> </span>
+<span id="cb13-34"><a href="regression-example.html#cb13-34" tabindex="-1"></a>  <span class="fu">select_best</span>(df_reg_tune, <span class="at">metric =</span> <span class="st">&quot;rsq&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-35"><a href="regression-example.html#cb13-35" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>.config)</span>
+<span id="cb13-36"><a href="regression-example.html#cb13-36" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="regression-example.html#cb13-37" tabindex="-1"></a><span class="co">#Final estimation with the object of best parameters</span></span>
+<span id="cb13-38"><a href="regression-example.html#cb13-38" tabindex="-1"></a>final_df_wflow <span class="ot">&lt;-</span> </span>
+<span id="cb13-39"><a href="regression-example.html#cb13-39" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-40"><a href="regression-example.html#cb13-40" tabindex="-1"></a>  <span class="fu">add_model</span>(df_spec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-41"><a href="regression-example.html#cb13-41" tabindex="-1"></a>  <span class="fu">add_recipe</span>(df_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-42"><a href="regression-example.html#cb13-42" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(rf_param_best)</span>
+<span id="cb13-43"><a href="regression-example.html#cb13-43" tabindex="-1"></a></span>
+<span id="cb13-44"><a href="regression-example.html#cb13-44" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb13-45"><a href="regression-example.html#cb13-45" tabindex="-1"></a>final_df_fit <span class="ot">&lt;-</span> </span>
+<span id="cb13-46"><a href="regression-example.html#cb13-46" tabindex="-1"></a>  final_df_wflow <span class="sc">%&gt;%</span> </span>
+<span id="cb13-47"><a href="regression-example.html#cb13-47" tabindex="-1"></a>  <span class="fu">last_fit</span>(df_split)</span>
+<span id="cb13-48"><a href="regression-example.html#cb13-48" tabindex="-1"></a></span>
+<span id="cb13-49"><a href="regression-example.html#cb13-49" tabindex="-1"></a><span class="co">#Computes final the accuracy metrics </span></span>
+<span id="cb13-50"><a href="regression-example.html#cb13-50" tabindex="-1"></a><span class="fu">collect_metrics</span>(final_df_fit)</span>
+<span id="cb13-51"><a href="regression-example.html#cb13-51" tabindex="-1"></a><span class="do">## # A tibble: 2 × 4</span></span>
+<span id="cb13-52"><a href="regression-example.html#cb13-52" tabindex="-1"></a><span class="do">##   .metric .estimator .estimate .config             </span></span>
+<span id="cb13-53"><a href="regression-example.html#cb13-53" tabindex="-1"></a><span class="do">##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb13-54"><a href="regression-example.html#cb13-54" tabindex="-1"></a><span class="do">## 1 rmse    standard      88.6   Preprocessor1_Model1</span></span>
+<span id="cb13-55"><a href="regression-example.html#cb13-55" tabindex="-1"></a><span class="do">## 2 rsq     standard       0.616 Preprocessor1_Model1</span></span></code></pre></div>
+<p>The RMSE average value shows the difference between the observed and predicted values of household net worth to be 84.5 percent. This is just slightly better than the previous BART model fitted with <code>tidymodels</code>.</p>
+<p>For this second model, we observe a value of 0.645 for <span class="math inline">\(R^2\)</span>, which is better than the first model.</p>
+<p><br />
+<br />
+</p>
+</div>
+</div>
+<div id="references-1" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> References<a href="regression-example.html#references-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>AlanInglis. (n.d.). GitHub - AlanInglis/bartMan: Visualisations for posterior evaluation of BART models. GitHub. <a href="https://github.com/AlanInglis/bartMan?tab=readme-ov-file" class="uri">https://github.com/AlanInglis/bartMan?tab=readme-ov-file</a></p></li>
+<li><p>Bayesian additive regression trees (BART) - bart. - bart • parsnip. (n.d.). <a href="https://parsnip.tidymodels.org/reference/bart.html" class="uri">https://parsnip.tidymodels.org/reference/bart.html</a></p></li>
+<li><p>Disci, S. (2022, December 8). The effect of childhood education on wealth: Modeling with bayesian additive regression trees (BART): R-bloggers. R. <a href="https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette" class="uri">https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette</a></p></li>
+<li><p>Inglis, A., Parnell, A. C., &amp; Hurley, C. (2024). Visualisations for Bayesian Additive Regression Trees. Journal of Data Science, Statistics, and Visualisation, 4(1). <a href="https://doi.org/10.52933/jdssv.v4i1.79" class="uri">https://doi.org/10.52933/jdssv.v4i1.79</a></p></li>
+<li><p>Introduction to palmerpenguins. (n.d.). <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="uri">https://allisonhorst.github.io/palmerpenguins/articles/intro.html</a></p></li>
+<li><p>OECD (2024), Enrolment rate in early childhood education (indicator). doi: 10.1787/ce02d0f9-en (Accessed on 30 April 2024)</p></li>
+<li><p>OECD (2024), Household net worth (indicator). doi: 10.1787/2cc2469a-en (Accessed on 30 April 2024)</p></li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="the-methodology.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="classification-example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/03-regression.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/03-regression.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

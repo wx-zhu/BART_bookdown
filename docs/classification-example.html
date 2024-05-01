@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)</title>
+  <meta name="description" content="Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)" />
+  
+  
+  
+
+<meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
+
+
+<meta name="date" content="2024-05-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regression-example.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">BART</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="the-methodology.html"><a href="the-methodology.html"><i class="fa fa-check"></i><b>2</b> The Methodology</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="the-methodology.html"><a href="the-methodology.html#setting-up"><i class="fa fa-check"></i><b>2.1</b> Setting up</a></li>
+<li class="chapter" data-level="2.2" data-path="the-methodology.html"><a href="the-methodology.html#prior-models-and-tuning"><i class="fa fa-check"></i><b>2.2</b> Prior models and tuning</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="the-methodology.html"><a href="the-methodology.html#the-t_j-prior"><i class="fa fa-check"></i><b>2.2.1</b> The <span class="math inline">\(T_j\)</span> Prior</a></li>
+<li class="chapter" data-level="2.2.2" data-path="the-methodology.html"><a href="the-methodology.html#the-mu_ij-t_j-prior"><i class="fa fa-check"></i><b>2.2.2</b> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.3" data-path="the-methodology.html"><a href="the-methodology.html#the-sigma-prior"><i class="fa fa-check"></i><b>2.2.3</b> The <span class="math inline">\(\sigma\)</span> prior</a></li>
+<li class="chapter" data-level="2.2.4" data-path="the-methodology.html"><a href="the-methodology.html#choosing-m"><i class="fa fa-check"></i><b>2.2.4</b> Choosing m</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> Algorithm set-up</a></li>
+<li class="chapter" data-level="2.3.2" data-path="the-methodology.html"><a href="the-methodology.html#posterior-inference-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Posterior inference statistics</a></li>
+<li class="chapter" data-level="2.3.3" data-path="the-methodology.html"><a href="the-methodology.html#conclusion"><i class="fa fa-check"></i><b>2.3.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="the-methodology.html"><a href="the-methodology.html#bart-probit-for-classification"><i class="fa fa-check"></i><b>2.4</b> BART Probit for Classification</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="the-methodology.html"><a href="the-methodology.html#what-is-probitprobit-model"><i class="fa fa-check"></i><b>2.4.1</b> What is Probit/Probit Model?</a></li>
+<li class="chapter" data-level="2.4.2" data-path="the-methodology.html"><a href="the-methodology.html#setup-bart-for-classification"><i class="fa fa-check"></i><b>2.4.2</b> Setup BART for Classification</a></li>
+<li class="chapter" data-level="2.4.3" data-path="the-methodology.html"><a href="the-methodology.html#modification-of-regularization-priors"><i class="fa fa-check"></i><b>2.4.3</b> Modification of Regularization Priors</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="regression-example.html"><a href="regression-example.html"><i class="fa fa-check"></i><b>3</b> Regression Example</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="regression-example.html"><a href="regression-example.html#background-data"><i class="fa fa-check"></i><b>3.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="3.2" data-path="regression-example.html"><a href="regression-example.html#data-wrangling"><i class="fa fa-check"></i><b>3.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="3.3" data-path="regression-example.html"><a href="regression-example.html#implementation"><i class="fa fa-check"></i><b>3.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="regression-example.html"><a href="regression-example.html#dbarts-package"><i class="fa fa-check"></i><b>3.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="3.3.2" data-path="regression-example.html"><a href="regression-example.html#bartman-package"><i class="fa fa-check"></i><b>3.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="3.3.3" data-path="regression-example.html"><a href="regression-example.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="regression-example.html"><a href="regression-example.html#references-1"><i class="fa fa-check"></i><b>3.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="classification-example.html"><a href="classification-example.html"><i class="fa fa-check"></i><b>4</b> Classification Example</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="classification-example.html"><a href="classification-example.html#background-data-1"><i class="fa fa-check"></i><b>4.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="4.2" data-path="classification-example.html"><a href="classification-example.html#data-wrangling-1"><i class="fa fa-check"></i><b>4.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="4.3" data-path="classification-example.html"><a href="classification-example.html#implementation-1"><i class="fa fa-check"></i><b>4.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="classification-example.html"><a href="classification-example.html#dbarts-package-1"><i class="fa fa-check"></i><b>4.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="4.3.2" data-path="classification-example.html"><a href="classification-example.html#bartman-package-1"><i class="fa fa-check"></i><b>4.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="4.3.3" data-path="classification-example.html"><a href="classification-example.html#tidymodels-package-1"><i class="fa fa-check"></i><b>4.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="classification-example.html"><a href="classification-example.html#references-2"><i class="fa fa-check"></i><b>4.4</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Intro to Bayesian Addictive Regression Trees (BART)</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="classification-example" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Classification Example<a href="classification-example.html#classification-example" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="background-data-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Background &amp; Data<a href="classification-example.html#background-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this section, we shift away from regression BART models and demonstrate how to fit a BART model for classification purpose. We aim to make use of the <code>palmerpenguins</code> dataset to build a BART model to predict what species a penguin is out of three different observed options: Adelie, Chinstrap, and Gentoo based on their various traits.</p>
+<p>These data were collected from 2007 to 2009 by Dr. Kristen Gorman with the Palmer Station Long Term Ecological Research Program, which is part of the US Long Term Ecological Research Network. The data were imported directly from the Environmental Data Initiative (EDI) Data Portal, and are available for use by CC0 license (“No Rights Reserved”) in accordance with the Palmer Station Data Policy.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="classification-example.html#cb1-1" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb1-2"><a href="classification-example.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="classification-example.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-4"><a href="classification-example.html#cb1-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="classification-example.html#cb1-5" tabindex="-1"></a><span class="fu">library</span>(countrycode)</span>
+<span id="cb1-6"><a href="classification-example.html#cb1-6" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-7"><a href="classification-example.html#cb1-7" tabindex="-1"></a><span class="fu">library</span>(sysfonts)</span>
+<span id="cb1-8"><a href="classification-example.html#cb1-8" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb1-9"><a href="classification-example.html#cb1-9" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-10"><a href="classification-example.html#cb1-10" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-11"><a href="classification-example.html#cb1-11" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-12"><a href="classification-example.html#cb1-12" tabindex="-1"></a><span class="fu">library</span>(DALEXtra)</span>
+<span id="cb1-13"><a href="classification-example.html#cb1-13" tabindex="-1"></a><span class="fu">library</span>(dbarts)</span>
+<span id="cb1-14"><a href="classification-example.html#cb1-14" tabindex="-1"></a><span class="co"># Loading data </span></span>
+<span id="cb1-15"><a href="classification-example.html#cb1-15" tabindex="-1"></a><span class="co"># install.packages(&quot;palmerpenguins&quot;)</span></span>
+<span id="cb1-16"><a href="classification-example.html#cb1-16" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb1-17"><a href="classification-example.html#cb1-17" tabindex="-1"></a><span class="fu">data</span>(penguins)</span>
+<span id="cb1-18"><a href="classification-example.html#cb1-18" tabindex="-1"></a><span class="fu">head</span>(penguins)</span>
+<span id="cb1-19"><a href="classification-example.html#cb1-19" tabindex="-1"></a><span class="do">## # A tibble: 6 × 8</span></span>
+<span id="cb1-20"><a href="classification-example.html#cb1-20" tabindex="-1"></a><span class="do">##   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g</span></span>
+<span id="cb1-21"><a href="classification-example.html#cb1-21" tabindex="-1"></a><span class="do">##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;</span></span>
+<span id="cb1-22"><a href="classification-example.html#cb1-22" tabindex="-1"></a><span class="do">## 1 Adelie  Torgersen           39.1          18.7               181        3750</span></span>
+<span id="cb1-23"><a href="classification-example.html#cb1-23" tabindex="-1"></a><span class="do">## 2 Adelie  Torgersen           39.5          17.4               186        3800</span></span>
+<span id="cb1-24"><a href="classification-example.html#cb1-24" tabindex="-1"></a><span class="do">## 3 Adelie  Torgersen           40.3          18                 195        3250</span></span>
+<span id="cb1-25"><a href="classification-example.html#cb1-25" tabindex="-1"></a><span class="do">## 4 Adelie  Torgersen           NA            NA                  NA          NA</span></span>
+<span id="cb1-26"><a href="classification-example.html#cb1-26" tabindex="-1"></a><span class="do">## 5 Adelie  Torgersen           36.7          19.3               193        3450</span></span>
+<span id="cb1-27"><a href="classification-example.html#cb1-27" tabindex="-1"></a><span class="do">## 6 Adelie  Torgersen           39.3          20.6               190        3650</span></span>
+<span id="cb1-28"><a href="classification-example.html#cb1-28" tabindex="-1"></a><span class="do">## # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</span></span></code></pre></div>
+</div>
+<div id="data-wrangling-1" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Data Wrangling<a href="classification-example.html#data-wrangling-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before fitting the models, we again split the data into training and test sets.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="classification-example.html#cb2-1" tabindex="-1"></a><span class="co">#Splitting the data into train and test sets</span></span>
+<span id="cb2-2"><a href="classification-example.html#cb2-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb2-3"><a href="classification-example.html#cb2-3" tabindex="-1"></a>penguin_split <span class="ot">&lt;-</span> </span>
+<span id="cb2-4"><a href="classification-example.html#cb2-4" tabindex="-1"></a>  penguins <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="classification-example.html#cb2-5" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="classification-example.html#cb2-6" tabindex="-1"></a>  <span class="fu">initial_split</span>() </span>
+<span id="cb2-7"><a href="classification-example.html#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="classification-example.html#cb2-8" tabindex="-1"></a>penguin_train <span class="ot">&lt;-</span> <span class="fu">training</span>(penguin_split)</span>
+<span id="cb2-9"><a href="classification-example.html#cb2-9" tabindex="-1"></a>penguin_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(penguin_split)</span></code></pre></div>
+</div>
+<div id="implementation-1" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Implementation<a href="classification-example.html#implementation-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="dbarts-package-1" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> <code>dbarts</code> package<a href="classification-example.html#dbarts-package-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now we will fit the model in a similar way to the regression model as described in the last chapter, except now with our penguin data specifications. We are using the variables for bill length, bill depth, flipper length, and body mass of the penguins to predict their species. We can view some examples of trees within the model as well.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="classification-example.html#cb3-1" tabindex="-1"></a> <span class="co"># Fitting a BART model with 200 trees with 1000 iterations</span></span>
+<span id="cb3-2"><a href="classification-example.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4343</span>)</span>
+<span id="cb3-3"><a href="classification-example.html#cb3-3" tabindex="-1"></a>p.bartFit <span class="ot">&lt;-</span> <span class="fu">bart</span>(<span class="at">x.train =</span> <span class="fu">as.matrix</span>(penguin_train[,<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>]), <span class="at">y.train =</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(penguin_train[,<span class="dv">1</span>])), <span class="at">keeptrees =</span> <span class="cn">TRUE</span>, <span class="at">ndpost =</span> <span class="dv">1000</span>)</span>
+<span id="cb3-4"><a href="classification-example.html#cb3-4" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-5"><a href="classification-example.html#cb3-5" tabindex="-1"></a><span class="do">## Running BART with numeric y</span></span>
+<span id="cb3-6"><a href="classification-example.html#cb3-6" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-7"><a href="classification-example.html#cb3-7" tabindex="-1"></a><span class="do">## number of trees: 200</span></span>
+<span id="cb3-8"><a href="classification-example.html#cb3-8" tabindex="-1"></a><span class="do">## number of chains: 1, number of threads 1</span></span>
+<span id="cb3-9"><a href="classification-example.html#cb3-9" tabindex="-1"></a><span class="do">## tree thinning rate: 1</span></span>
+<span id="cb3-10"><a href="classification-example.html#cb3-10" tabindex="-1"></a><span class="do">## Prior:</span></span>
+<span id="cb3-11"><a href="classification-example.html#cb3-11" tabindex="-1"></a><span class="do">##  k prior fixed to 2.000000</span></span>
+<span id="cb3-12"><a href="classification-example.html#cb3-12" tabindex="-1"></a><span class="do">##  degrees of freedom in sigma prior: 3.000000</span></span>
+<span id="cb3-13"><a href="classification-example.html#cb3-13" tabindex="-1"></a><span class="do">##  quantile in sigma prior: 0.900000</span></span>
+<span id="cb3-14"><a href="classification-example.html#cb3-14" tabindex="-1"></a><span class="do">##  scale in sigma prior: 0.003171</span></span>
+<span id="cb3-15"><a href="classification-example.html#cb3-15" tabindex="-1"></a><span class="do">##  power and base for tree prior: 2.000000 0.950000</span></span>
+<span id="cb3-16"><a href="classification-example.html#cb3-16" tabindex="-1"></a><span class="do">##  use quantiles for rule cut points: false</span></span>
+<span id="cb3-17"><a href="classification-example.html#cb3-17" tabindex="-1"></a><span class="do">##  proposal probabilities: birth/death 0.50, swap 0.10, change 0.40; birth 0.50</span></span>
+<span id="cb3-18"><a href="classification-example.html#cb3-18" tabindex="-1"></a><span class="do">## data:</span></span>
+<span id="cb3-19"><a href="classification-example.html#cb3-19" tabindex="-1"></a><span class="do">##  number of training observations: 249</span></span>
+<span id="cb3-20"><a href="classification-example.html#cb3-20" tabindex="-1"></a><span class="do">##  number of test observations: 0</span></span>
+<span id="cb3-21"><a href="classification-example.html#cb3-21" tabindex="-1"></a><span class="do">##  number of explanatory variables: 4</span></span>
+<span id="cb3-22"><a href="classification-example.html#cb3-22" tabindex="-1"></a><span class="do">##  init sigma: 0.255188, curr sigma: 0.255188</span></span>
+<span id="cb3-23"><a href="classification-example.html#cb3-23" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-24"><a href="classification-example.html#cb3-24" tabindex="-1"></a><span class="do">## Cutoff rules c in x&lt;=c vs x&gt;c</span></span>
+<span id="cb3-25"><a href="classification-example.html#cb3-25" tabindex="-1"></a><span class="do">## Number of cutoffs: (var: number of possible c):</span></span>
+<span id="cb3-26"><a href="classification-example.html#cb3-26" tabindex="-1"></a><span class="do">## (1: 100) (2: 100) (3: 100) (4: 100) </span></span>
+<span id="cb3-27"><a href="classification-example.html#cb3-27" tabindex="-1"></a><span class="do">## Running mcmc loop:</span></span>
+<span id="cb3-28"><a href="classification-example.html#cb3-28" tabindex="-1"></a><span class="do">## iteration: 100 (of 1000)</span></span>
+<span id="cb3-29"><a href="classification-example.html#cb3-29" tabindex="-1"></a><span class="do">## iteration: 200 (of 1000)</span></span>
+<span id="cb3-30"><a href="classification-example.html#cb3-30" tabindex="-1"></a><span class="do">## iteration: 300 (of 1000)</span></span>
+<span id="cb3-31"><a href="classification-example.html#cb3-31" tabindex="-1"></a><span class="do">## iteration: 400 (of 1000)</span></span>
+<span id="cb3-32"><a href="classification-example.html#cb3-32" tabindex="-1"></a><span class="do">## iteration: 500 (of 1000)</span></span>
+<span id="cb3-33"><a href="classification-example.html#cb3-33" tabindex="-1"></a><span class="do">## iteration: 600 (of 1000)</span></span>
+<span id="cb3-34"><a href="classification-example.html#cb3-34" tabindex="-1"></a><span class="do">## iteration: 700 (of 1000)</span></span>
+<span id="cb3-35"><a href="classification-example.html#cb3-35" tabindex="-1"></a><span class="do">## iteration: 800 (of 1000)</span></span>
+<span id="cb3-36"><a href="classification-example.html#cb3-36" tabindex="-1"></a><span class="do">## iteration: 900 (of 1000)</span></span>
+<span id="cb3-37"><a href="classification-example.html#cb3-37" tabindex="-1"></a><span class="do">## iteration: 1000 (of 1000)</span></span>
+<span id="cb3-38"><a href="classification-example.html#cb3-38" tabindex="-1"></a><span class="do">## total seconds in loop: 0.497049</span></span>
+<span id="cb3-39"><a href="classification-example.html#cb3-39" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-40"><a href="classification-example.html#cb3-40" tabindex="-1"></a><span class="do">## Tree sizes, last iteration:</span></span>
+<span id="cb3-41"><a href="classification-example.html#cb3-41" tabindex="-1"></a><span class="do">## [1] 2 2 2 2 1 2 3 2 2 2 2 2 2 5 2 2 2 1 </span></span>
+<span id="cb3-42"><a href="classification-example.html#cb3-42" tabindex="-1"></a><span class="do">## 3 4 2 3 2 2 2 2 3 3 3 2 3 3 3 2 1 2 2 2 </span></span>
+<span id="cb3-43"><a href="classification-example.html#cb3-43" tabindex="-1"></a><span class="do">## 2 4 2 2 3 1 2 3 1 2 4 2 3 3 6 3 2 2 2 2 </span></span>
+<span id="cb3-44"><a href="classification-example.html#cb3-44" tabindex="-1"></a><span class="do">## 3 2 3 3 2 2 5 2 2 2 2 3 2 2 2 3 2 1 2 1 </span></span>
+<span id="cb3-45"><a href="classification-example.html#cb3-45" tabindex="-1"></a><span class="do">## 2 2 2 2 3 4 4 2 2 4 3 3 3 3 2 2 2 4 3 2 </span></span>
+<span id="cb3-46"><a href="classification-example.html#cb3-46" tabindex="-1"></a><span class="do">## 3 2 2 2 2 2 2 2 3 2 2 3 4 3 2 3 3 3 2 3 </span></span>
+<span id="cb3-47"><a href="classification-example.html#cb3-47" tabindex="-1"></a><span class="do">## 2 5 3 3 1 2 2 2 1 2 2 3 2 4 1 2 2 2 3 2 </span></span>
+<span id="cb3-48"><a href="classification-example.html#cb3-48" tabindex="-1"></a><span class="do">## 4 2 1 3 2 2 3 3 2 3 2 2 3 3 2 2 1 3 2 3 </span></span>
+<span id="cb3-49"><a href="classification-example.html#cb3-49" tabindex="-1"></a><span class="do">## 2 2 2 3 2 3 2 2 2 1 2 2 3 3 2 3 3 3 2 2 </span></span>
+<span id="cb3-50"><a href="classification-example.html#cb3-50" tabindex="-1"></a><span class="do">## 2 2 2 2 3 2 3 2 2 2 2 2 2 4 2 1 2 2 2 2 </span></span>
+<span id="cb3-51"><a href="classification-example.html#cb3-51" tabindex="-1"></a><span class="do">## 2 2 </span></span>
+<span id="cb3-52"><a href="classification-example.html#cb3-52" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-53"><a href="classification-example.html#cb3-53" tabindex="-1"></a><span class="do">## Variable Usage, last iteration (var:count):</span></span>
+<span id="cb3-54"><a href="classification-example.html#cb3-54" tabindex="-1"></a><span class="do">## (1: 69) (2: 86) (3: 69) (4: 51) </span></span>
+<span id="cb3-55"><a href="classification-example.html#cb3-55" tabindex="-1"></a><span class="do">## DONE BART</span></span>
+<span id="cb3-56"><a href="classification-example.html#cb3-56" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="classification-example.html#cb3-57" tabindex="-1"></a>trees <span class="ot">&lt;-</span> <span class="fu">extract</span>(p.bartFit, <span class="st">&quot;trees&quot;</span>)</span>
+<span id="cb3-58"><a href="classification-example.html#cb3-58" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="classification-example.html#cb3-59" tabindex="-1"></a> <span class="co"># Looking at some examples of trees from model</span></span>
+<span id="cb3-60"><a href="classification-example.html#cb3-60" tabindex="-1"></a>p.bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">112</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-1.png" width="600" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="classification-example.html#cb4-1" tabindex="-1"></a>p.bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">140</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-2.png" width="600" style="display: block; margin: auto;" /></p>
+<p><br />
+<br />
+</p>
+</div>
+<div id="bartman-package-1" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> <code>bartMan</code> package<a href="classification-example.html#bartman-package-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="classification-example.html#cb5-1" tabindex="-1"></a><span class="fu">bartDiag</span>(<span class="at">model =</span> p.bartFit, <span class="at">data =</span> penguins, <span class="at">response =</span> <span class="st">&quot;species&quot;</span>, <span class="at">burnIn =</span> <span class="dv">0</span>)</span></code></pre></div>
+<p><img src="image/class-diag.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Shown above are six general diagnostic plots for the BART regression fit on our dataset. Top left: A QQ-plot of the residuals after fitting the model. Top right: trace plot of <span class="math inline">\(\sigma\)</span> from MCMC iteration. Middle left: Residuals versus fitted values with 95% credible intervals. Middle right: A histogram of the residuals. Bottom Left: Actual values versus fitted values with 95% credible intervals. (This is unfornately not working properly due to unknown reasons). Bottom right: Variable importance plot with 25 to 75% quantile interval shown. In our case, the BART model decides that the body mass variable is the least important to predict penguin species.</p>
+<p>Then, we want to visualize all the trees we fitted across all iterations. For less computational time and simplicity, we reduce the number of trees as well as the number of iterations for each tree. With <code>dbarts</code>, we fit a new model with the same variables with 50 trees for 10 iterations.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="classification-example.html#cb6-1" tabindex="-1"></a><span class="co"># Fitting another BART model with fewer trees and less iterations</span></span>
+<span id="cb6-2"><a href="classification-example.html#cb6-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4343</span>)</span>
+<span id="cb6-3"><a href="classification-example.html#cb6-3" tabindex="-1"></a>p.bartFit50 <span class="ot">&lt;-</span> <span class="fu">bart</span>(<span class="at">x.train =</span> <span class="fu">as.matrix</span>(penguin_train[,<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>]), <span class="at">y.train =</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(penguin_train[,<span class="dv">1</span>])), <span class="at">keeptrees =</span> <span class="cn">TRUE</span>, <span class="at">ntree =</span> <span class="dv">50</span>, <span class="at">ndpost =</span> <span class="dv">10</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="classification-example.html#cb7-1" tabindex="-1"></a> <span class="co"># Extracting the tree data</span></span>
+<span id="cb7-2"><a href="classification-example.html#cb7-2" tabindex="-1"></a>p.trees_data <span class="ot">&lt;-</span> <span class="fu">extractTreeData</span>(p.bartFit50, penguins)</span>
+<span id="cb7-3"><a href="classification-example.html#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="classification-example.html#cb7-4" tabindex="-1"></a> <span class="co"># Visualizing what each of the 50 trees look like over their 10 iterations</span></span>
+<span id="cb7-5"><a href="classification-example.html#cb7-5" tabindex="-1"></a><span class="fu">plotTrees</span>(<span class="at">trees =</span> p.trees_data, <span class="at">fillBy =</span> <span class="cn">NULL</span>, <span class="at">sizeNodes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="image/class-all-tree.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>In the plot above, each little box represents a single tree. There are 500 boxes, thus 500 = 50 <span class="math inline">\(\cdot\)</span> 10 trees, because it is showing all the trees (50 trees) built in all iterations after the burn-in period (10 iterations) in the reduced model. Different colors represent different variables that a tree is splitting on, and the gray represents a stump/leaf, or a terminal node.</p>
+<p>While this plot is useful, it is hard to get insight from it because that is too much to look at at one time. To deal with that, we can specify one tree to look at all the iterations (10) of it. Here we are using the <span class="math inline">\(13^{th}\)</span> as an example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="classification-example.html#cb8-1" tabindex="-1"></a><span class="co"># Viewing all 10 iterations of one tree</span></span>
+<span id="cb8-2"><a href="classification-example.html#cb8-2" tabindex="-1"></a><span class="fu">plotTrees</span>(<span class="at">trees =</span> p.trees_data, <span class="at">treeNo =</span> <span class="dv">13</span>)</span></code></pre></div>
+<p><img src="image/class-one-tree.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>However, that is only the information of one tree. An even better alternative to grab information efficiently is to use the <code>treeBarPlot</code> function in the <code>bartMan</code> package. This function creates a bar plot that shows how many times each specific structure of tree, including which variable the tree splits on (but not its splitting rule value), shows up within the model. We also create a density plot that shows the splitting variables and the frequency at which each splitting rule value is chosen.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="classification-example.html#cb9-1" tabindex="-1"></a> <span class="co"># Creating bar plot showing frequency of 10 most common trees from model</span></span>
+<span id="cb9-2"><a href="classification-example.html#cb9-2" tabindex="-1"></a><span class="fu">treeBarPlot</span>(p.trees_data, <span class="at">iter =</span> <span class="cn">NULL</span>, <span class="at">topTrees =</span> <span class="dv">10</span>, <span class="at">removeStump =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-3"><a href="classification-example.html#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="classification-example.html#cb9-4" tabindex="-1"></a> <span class="co"># Creating density plot of variable split levels values</span></span>
+<span id="cb9-5"><a href="classification-example.html#cb9-5" tabindex="-1"></a><span class="fu">splitDensity</span>(<span class="at">trees =</span> p.trees_data, <span class="at">data =</span> df_tidy, <span class="at">display =</span> <span class="st">&#39;ridge&#39;</span>)</span></code></pre></div>
+<p><img src="image/class-bar.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="image/class-dens.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Note: These visuals can be interesting to look at and interpret, but there is a discrepancy in the colors that are shown between the 500-tree plot, the density plot, and the bar plot. There is no legend argument for the <code>treeBarPlot</code>, so we manually added in the legends for these later plots. We made sure that the variables match the colors as described in the legend by checking <a href="https://github.com/AlanInglis/bartMan/blob/master/R/treeBarPlot.R">original code</a> of the function <code>treeBarPlot</code>.</p>
+</div>
+<div id="tidymodels-package-1" class="section level3 hasAnchor" number="4.3.3">
+<h3><span class="header-section-number">4.3.3</span> <code>tidymodels</code> package<a href="classification-example.html#tidymodels-package-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Next, we decide to use the <code>tidymodels</code> package to fit our BART model and assess its overall performance. This is because <code>tidymodels</code> is more comprehensive and provides an standardized workflow for not only training and testing the model, but also performing cross-validation on the model. The steps for this package are universal for machine learning in R.</p>
+<p>When we are fitting our model using <code>tidymodels</code>, we use a very similar layout to the code from our regression model in the last chapter. However, we need to change the mode to classification rather than regression and change to classification evaluation metrics. Using the bottom-right diagnostic plot from the <code>dbarts</code> model, we decide to take out the body mass variable to fit our new BART model with <code>tidymodels</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="classification-example.html#cb10-1" tabindex="-1"></a><span class="co">#Preprocessing</span></span>
+<span id="cb10-2"><a href="classification-example.html#cb10-2" tabindex="-1"></a>penguin_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(species <span class="sc">~</span> bill_length_mm <span class="sc">+</span> bill_depth_mm <span class="sc">+</span> flipper_length_mm , <span class="at">data =</span> penguin_train) </span>
+<span id="cb10-3"><a href="classification-example.html#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="classification-example.html#cb10-4" tabindex="-1"></a><span class="co">#Modeling with BART</span></span>
+<span id="cb10-5"><a href="classification-example.html#cb10-5" tabindex="-1"></a>penguin_spec <span class="ot">&lt;-</span> </span>
+<span id="cb10-6"><a href="classification-example.html#cb10-6" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">bart</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-7"><a href="classification-example.html#cb10-7" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;dbarts&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-8"><a href="classification-example.html#cb10-8" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)  </span>
+<span id="cb10-9"><a href="classification-example.html#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="classification-example.html#cb10-10" tabindex="-1"></a><span class="co">#Workflow</span></span>
+<span id="cb10-11"><a href="classification-example.html#cb10-11" tabindex="-1"></a>penguin_wf <span class="ot">&lt;-</span> </span>
+<span id="cb10-12"><a href="classification-example.html#cb10-12" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-13"><a href="classification-example.html#cb10-13" tabindex="-1"></a>  <span class="fu">add_recipe</span>(penguin_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="classification-example.html#cb10-14" tabindex="-1"></a>  <span class="fu">add_model</span>(penguin_spec)</span>
+<span id="cb10-15"><a href="classification-example.html#cb10-15" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="classification-example.html#cb10-16" tabindex="-1"></a><span class="co">#cross-validation for resamples</span></span>
+<span id="cb10-17"><a href="classification-example.html#cb10-17" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb10-18"><a href="classification-example.html#cb10-18" tabindex="-1"></a>penguin_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(penguin_train)</span>
+<span id="cb10-19"><a href="classification-example.html#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="classification-example.html#cb10-20" tabindex="-1"></a>classification_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy)</span>
+<span id="cb10-21"><a href="classification-example.html#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="classification-example.html#cb10-22" tabindex="-1"></a><span class="co"># Resampling for the classification metrics</span></span>
+<span id="cb10-23"><a href="classification-example.html#cb10-23" tabindex="-1"></a>penguin_rs <span class="ot">&lt;-</span> </span>
+<span id="cb10-24"><a href="classification-example.html#cb10-24" tabindex="-1"></a>  penguin_wf <span class="sc">%&gt;%</span> </span>
+<span id="cb10-25"><a href="classification-example.html#cb10-25" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> penguin_folds, <span class="at">metrics =</span> classification_metrics)</span>
+<span id="cb10-26"><a href="classification-example.html#cb10-26" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="classification-example.html#cb10-27" tabindex="-1"></a><span class="co"># Compute the classification metrics</span></span>
+<span id="cb10-28"><a href="classification-example.html#cb10-28" tabindex="-1"></a><span class="fu">collect_metrics</span>(penguin_rs)</span>
+<span id="cb10-29"><a href="classification-example.html#cb10-29" tabindex="-1"></a><span class="do">## # A tibble: 1 × 6</span></span>
+<span id="cb10-30"><a href="classification-example.html#cb10-30" tabindex="-1"></a><span class="do">##   .metric  .estimator  mean     n std_err .config             </span></span>
+<span id="cb10-31"><a href="classification-example.html#cb10-31" tabindex="-1"></a><span class="do">##   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb10-32"><a href="classification-example.html#cb10-32" tabindex="-1"></a><span class="do">## 1 accuracy multiclass 0.642    10  0.0211 Preprocessor1_Model1</span></span></code></pre></div>
+<p>The accuracy of this model shows that our model correctly classifies species of penguin 64% of the time.</p>
+<p><br />
+<br />
+</p>
+<p>In our methodology chapter, we discussed BART probit, which is specifically for binary outputs. Thus, we fit a model that takes the same set of attributes to predict penguins’ sex.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="classification-example.html#cb11-1" tabindex="-1"></a><span class="co">#Preprocessing</span></span>
+<span id="cb11-2"><a href="classification-example.html#cb11-2" tabindex="-1"></a>penguin_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(sex <span class="sc">~</span> bill_length_mm <span class="sc">+</span> bill_depth_mm<span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguin_train) </span>
+<span id="cb11-3"><a href="classification-example.html#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="classification-example.html#cb11-4" tabindex="-1"></a><span class="co">#Modeling with BART</span></span>
+<span id="cb11-5"><a href="classification-example.html#cb11-5" tabindex="-1"></a>penguin_spec <span class="ot">&lt;-</span> </span>
+<span id="cb11-6"><a href="classification-example.html#cb11-6" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">bart</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-7"><a href="classification-example.html#cb11-7" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;dbarts&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-8"><a href="classification-example.html#cb11-8" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)  </span>
+<span id="cb11-9"><a href="classification-example.html#cb11-9" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="classification-example.html#cb11-10" tabindex="-1"></a><span class="co">#Workflow</span></span>
+<span id="cb11-11"><a href="classification-example.html#cb11-11" tabindex="-1"></a>penguin_wf <span class="ot">&lt;-</span> </span>
+<span id="cb11-12"><a href="classification-example.html#cb11-12" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-13"><a href="classification-example.html#cb11-13" tabindex="-1"></a>  <span class="fu">add_recipe</span>(penguin_rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-14"><a href="classification-example.html#cb11-14" tabindex="-1"></a>  <span class="fu">add_model</span>(penguin_spec)</span>
+<span id="cb11-15"><a href="classification-example.html#cb11-15" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="classification-example.html#cb11-16" tabindex="-1"></a><span class="co">#cross-validation for resamples</span></span>
+<span id="cb11-17"><a href="classification-example.html#cb11-17" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb11-18"><a href="classification-example.html#cb11-18" tabindex="-1"></a>penguin_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(penguin_train)</span>
+<span id="cb11-19"><a href="classification-example.html#cb11-19" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="classification-example.html#cb11-20" tabindex="-1"></a>classification_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, precision)</span>
+<span id="cb11-21"><a href="classification-example.html#cb11-21" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="classification-example.html#cb11-22" tabindex="-1"></a><span class="co"># Resampling for the classification metrics</span></span>
+<span id="cb11-23"><a href="classification-example.html#cb11-23" tabindex="-1"></a>penguin_rs <span class="ot">&lt;-</span> </span>
+<span id="cb11-24"><a href="classification-example.html#cb11-24" tabindex="-1"></a>  penguin_wf <span class="sc">%&gt;%</span> </span>
+<span id="cb11-25"><a href="classification-example.html#cb11-25" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> penguin_folds, <span class="at">metrics =</span> classification_metrics)</span>
+<span id="cb11-26"><a href="classification-example.html#cb11-26" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="classification-example.html#cb11-27" tabindex="-1"></a><span class="co"># Compute the classification metrics</span></span>
+<span id="cb11-28"><a href="classification-example.html#cb11-28" tabindex="-1"></a><span class="fu">collect_metrics</span>(penguin_rs)</span>
+<span id="cb11-29"><a href="classification-example.html#cb11-29" tabindex="-1"></a><span class="do">## # A tibble: 2 × 6</span></span>
+<span id="cb11-30"><a href="classification-example.html#cb11-30" tabindex="-1"></a><span class="do">##   .metric   .estimator  mean     n std_err .config             </span></span>
+<span id="cb11-31"><a href="classification-example.html#cb11-31" tabindex="-1"></a><span class="do">##   &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb11-32"><a href="classification-example.html#cb11-32" tabindex="-1"></a><span class="do">## 1 accuracy  binary     0.871    10  0.0245 Preprocessor1_Model1</span></span>
+<span id="cb11-33"><a href="classification-example.html#cb11-33" tabindex="-1"></a><span class="do">## 2 precision binary     0.867    10  0.0340 Preprocessor1_Model1</span></span></code></pre></div>
+<p>We are able to view both accuracy and precision estimates for this model as it has a binary response variable. From the overall accuracy, we can see that this model correctly classifies a penguin’s sex 87.1% of the time, which is pretty good.</p>
+<p>The precision is calculated using <span class="math inline">\(\frac{\text{True Positive}}{\text{True Positive + False Positive}}\)</span>. In our context, it measures the proportion of true predictions among all female predictions. With the observed precision value, when the model predicts a penguin to be a female, it is correct about 86.7% of the time.</p>
+</div>
+</div>
+<div id="references-2" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> References<a href="classification-example.html#references-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>AlanInglis. (n.d.). GitHub - AlanInglis/bartMan: Visualisations for posterior evaluation of BART models. GitHub. <a href="https://github.com/AlanInglis/bartMan?tab=readme-ov-file" class="uri">https://github.com/AlanInglis/bartMan?tab=readme-ov-file</a></p></li>
+<li><p>Bayesian additive regression trees (BART) - bart. - bart • parsnip. (n.d.). <a href="https://parsnip.tidymodels.org/reference/bart.html" class="uri">https://parsnip.tidymodels.org/reference/bart.html</a></p></li>
+<li><p>Disci, S. (2022, December 8). The effect of childhood education on wealth: Modeling with bayesian additive regression trees (BART): R-bloggers. R. <a href="https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette" class="uri">https://www.r-bloggers.com/2022/12/the-effect-of-childhood-education-on-wealth-modeling-with-bayesian-additive-regression-trees-bart/#google_vignette</a></p></li>
+<li><p>Inglis, A., Parnell, A. C., &amp; Hurley, C. (2024). Visualisations for Bayesian Additive Regression Trees. Journal of Data Science, Statistics, and Visualisation, 4(1). <a href="https://doi.org/10.52933/jdssv.v4i1.79" class="uri">https://doi.org/10.52933/jdssv.v4i1.79</a></p></li>
+<li><p>Introduction to palmerpenguins. (n.d.). <a href="https://allisonhorst.github.io/palmerpenguins/articles/intro.html" class="uri">https://allisonhorst.github.io/palmerpenguins/articles/intro.html</a></p></li>
+<li><p>OECD (2024), Enrolment rate in early childhood education (indicator). doi: 10.1787/ce02d0f9-en (Accessed on 30 April 2024)</p></li>
+<li><p>OECD (2024), Household net worth (indicator). doi: 10.1787/2cc2469a-en (Accessed on 30 April 2024)</p></li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regression-example.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/04-classification.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/04-classification.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
