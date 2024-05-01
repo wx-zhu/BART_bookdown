@@ -13,11 +13,13 @@ knitr::opts_chunk$set(
 ```
 
 
-This example is inspired by the blog post “The Effect of Childhood Education on Wealth: Modeling with Bayesian Additive Regression Trees (BART)” on R-bloggers by Selcuk Disci. We aimed to explore how enrollment rates in early childhood education are associated with household net worth across all countries involved in the organisation of economic co-operation and development (OECD), using datasets provided by this organization. The OECD collects data on enrollment rates in early childhood education and household net worth from its member countries every year from 2000 to 2020 through standardized surveys and national statistics, ensuring consistent and comparable data across all countries involved.
+This example is inspired by the blog post “The Effect of Childhood Education on Wealth: Modeling with Bayesian Additive Regression Trees (BART)” on R-bloggers by Selcuk Disci. We aimed to explore how enrollment rates in early childhood education are associated with household net worth for all countries involved in the Organisation of Economic Co-operation and Development (OECD), using datasets provided by this organization. The OECD collects data on enrollment rates in early childhood education and household net worth from its member countries every year from 2000 to 2020 through standardized surveys and national statistics, ensuring consistent and comparable data across all countries involved.
 
-According to OECD, the enrollment rates for each childhood age group, 3-year-old, 4-year-old, and 5-year-old are calculated by dividing the number of students enrolled in early childhood education and care (ECEC) of a particular age group by the total population of that age group. This calculation does not distinguish between full-time and part-time enrollment.
+According to OECD, the **enrollment rates** for each childhood age group, 3-year-old, 4-year-old, and 5-year-old are calculated by dividing the number of children enrolled in early childhood education and care (ECEC) of a particular age group by the total population of that age group. This calculation does not distinguish between full-time and part-time enrollment.
 
-The household net worth indicator first calculates the overall financial status of households by measuring the total value of their assets (both financial, like stocks and savings, and non-financial, like real estate) and subtracting the total value of their outstanding debts (such as loans and mortgages). This result is then presented as a percentage of the households’ annual income. Essentially, this indicator provides a snapshot of the economic health and financial stability of households by showing how much wealth they have in relation to how much they earn each year.
+The **household net worth** indicator first calculates the overall financial status of households by measuring the total value of their assets (both financial, like stocks and savings, and non-financial, like real estate) and subtracting the total value of their outstanding debts (such as loans and mortgages). This result is then presented as a percentage of the households’ annual income. Essentially, this indicator provides a snapshot of the economic health and financial stability of households by showing how much wealth they have in relation to how much they earn each year.
+
+Here, we demonstrate how to use the Bayesian Additive Regression Trees (BART) model to capture the relationship between enrollment rates in early childhood education in a country and its average household net worth.
 
 \
 \
@@ -26,8 +28,6 @@ We start here by loading some packages for the data and modeling, as well as cle
 
 
 ```{r}
-# install.packages("countrycode")
-# install.packages("DALEXtra")
 library(tidyverse)
 library(tidymodels)
 library(ggplot2)
@@ -101,7 +101,17 @@ font <- list(
   family= "Henny Penny", 
   size =5
   )
+```
 
+Let's take a look at the cleaned dataset:
+
+```{r}
+head(df_tidy)
+```
+
+Before modeling the relationship between average household net worth and the education rate for each of the ages, we can plot those information together to get some initial insights.
+
+```{r}
 #Plotly chart
 ggplotly(p, tooltip = c("text")) %>% 
   #Hover text of the line
@@ -109,19 +119,15 @@ ggplotly(p, tooltip = c("text")) %>%
   layout(font=font)
 ```
 
-This graph can show us what the household net worth looks like based on the education rate for each of the ages in the data set. Yellow represents age 3, teal is age 4, and purple is age 5. The blue trend line shows the household net worth for each country in the data.
+In the graph above, yellow portions of the bars represents childhood enrollment rate for 3-year-olds, teal represents that for 4-year-olds, and purple represents that for 5-year-old. The blue trend line shows the average household net worth for each country in the data. Before modeling anything, a vague and general takeaway from it is that the childhood enrollment rate seems to be positively related to the average household net worth in that country.
 
 \
 \
-
-
-```{r}
-head(df_tidy)
-```
+With that in mind, let's model this relationship with BART.
 
 \
 
-In order to run the two different packages we use in this tutorial, `dbarts` and `tidymodels`, we start by splitting our data into a training set and and a test set. This way we can train the model and evaluate the performance on the test set.
+BART has been implemented in various R packages. In order to run the two packages we use in this tutorial, `dbarts` and `tidymodels`, we start by splitting our data into a training set and and a test set. This way we can train the model and evaluate the performance on the test set with cross validation.
 
 ```{r}
 #Splitting the data into train and test sets
@@ -138,16 +144,16 @@ df_train <- training(df_split)
 df_test <- testing(df_split)
 ```
 
-```{r}
-df_train
-```
-
 
 ## `dbarts` package
 
-Using the `dbarts` package, we can fit a model using the column numbers from our data. Our response variables called `x.train` is formed using the columns for age 3, age 4, and age 5 while `y.train` is formed using our response variable column.
+The function we are using under the `dbarts` package is `bart`. To fit a BART model, we need to feed in the independent variables for the `x.train` parameter and the response variable for the `y.train`.
 
-We can also set `keeptrees = TRUE` in order to view some examples of what variable a tree chose, what the split rule is, and how long before the tree terminates.
+In our case, the independent variables are the age 3, age 4, and age 5 education enrollment rates, and the response variable is the household net income. To input these information into the `bart` function, we specify their column indices to access them.
+
+We also set `keeptrees = TRUE` in order for the resulted fitted model to store the splitting information and the configuration of each single tree that we have. We did this because we would like to view some examples of what variable a tree chose, what the split rule is, and how long before the tree terminates.
+
+The parameter `ndpost` specifies the number of iterations we want after the burn-in period, while the default number of iterations inside the burn-in period is 100.
 
 ```{r}
  # Fitting a BART model with default 1,000 iterations of 200 trees
@@ -186,7 +192,8 @@ knitr::include_graphics("image/regr-diag.png")
 
 \
 \
-For less computational time and simplicity, we reduce the number of trees as well as the number of iterations for each tree. We fit a new model with the same variables with 50 trees for 10 iterations.
+
+For less computational time and simplicity, we reduce the number of trees as well as the number of iterations for each tree. With `dbarts`, we fit a new model with the same variables with 50 trees for 10 iterations.
 
 ```{r}
  # Fitting another BART model with fewer trees and less iterations
@@ -199,7 +206,6 @@ bartFit50 <- bart(x.train = as.matrix(df_train[,5:7]), y.train = as.numeric(unli
  # Extracting the tree data
 trees_data50 <- extractTreeData(bartFit50, df_tidy)
 
-
  # Visualizing what each of the 50 trees look like over their 10 iterations
 plotTrees(trees = trees_data50, fillBy = NULL, sizeNodes = TRUE)
 
@@ -211,22 +217,17 @@ plotTrees(trees = trees_data50, treeNo = 13)
 
 ```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("image/regr-all-tree.png")
-
 ```
+
+In the plot above, each little box represents a single tree. There are 500 boxes, thus 500 = 50 $\cdot$ 10 trees shown in the plot because it is showing all the trees (50 trees) built in all iterations after the burn-in period (10 iterations) in the reduced model. Different colors represent the different variables that a tree is splitting on, and the gray represents a stump/leaf, or a terminal node.
+
+While this plot is useful, we can't get too much information from it because that is too much to look at at one time. To deal with that, we can specify to look at all the iterations (10) for any single tree. Here we are using the $13^{th}$ as an example:
 
 ```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("image/regr-one-tree.png")
-
 ```
-\
 
-This plot shows us all of the iterations of the trees fit in the reduced model. Each color represents the variable that the tree is splitting on, and the gray represents a stump/leaf, or a terminal node.
-
-\
-\
-
-
-Now, we are creating a couple more visuals of the trees using our model with 50 trees and 10 iterations. To start, we use `bartMan` again to create a bar plot that shows how many times each specific structure of tree, including which variable the tree splits on (but not its splitting rule value), shows up within the model. We also create a density plot that shows the splitting variables and the frequency at which each splitting rule value is chosen.
+However, that is only the information of one tree. An even better alternative is to grab the information from the 500-tree plot efficiently is to use the `treeBarPlot` function in the `bartMan` package to create a bar plot that shows how many times each specific structure of tree, including which variable the tree splits on (but not its splitting rule value), shows up within the model. We also create a density plot that shows the splitting variables and the frequency at which each splitting rule value is chosen.
 
 ```{r, eval = FALSE}
  # Creating bar plot showing frequency of 8 most common trees from model
@@ -234,28 +235,25 @@ treeBarPlot(trees_data50, topTrees = 8, iter = NULL)
 
  # Creating density plot of variable split levels values
 splitDensity(trees = trees_data50, data = df_tidy, display = 'ridge')
-
-
 ```
 
 ```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("image/regr-bar.png")
-
 ```
 
 ```{r, echo=FALSE,, out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("image/regr-dens.png")
-
 ```
 
-These visuals can be interesting to look at and interpret, but there is a discrepancy in the colors that are shown between the before tree plots, the density plot, and the bar plot. There is no legend argument for the `treeBarPlot`, so we do not actually know which variables are most commonly split on and where in the tree.
+Note: These visuals can be interesting to look at and interpret, but there is a discrepancy in the colors that are shown between the 500-tree plot, the density plot, and the bar plot. There is no legend argument for the `treeBarPlot`, so we manually added in the legends for these later plots.
+
 
 \
 \
 
 ## `tidymodels` package
 
-Now we are using the `tidymodels` package to fit our BART models. There are different steps to this package than there are for `dbarts`, but if you are familiar with machine learning in R, you should be able to follow along better.
+Now, we use the `tidymodels` package to fit our BART models and conduct a cross-validation on it to assess the performance of it. The steps for this package is universal for machine learning in R.
 
 ```{r}
 #Preprocessing
@@ -289,9 +287,9 @@ collect_metrics(df_rs)
 
 ```
 
-The output we see above are quality metrics for our model. Our RMSE average value shows the difference between the observed and predicted values of household net worth to be 85.2. The variable for household net worth ranges from 134 to 824. Given this context, our model has an could be considered to have a decent performance, but it could be better. 
+The output we see above are quality metrics for our model. Our RMSE average value shows the average difference between the observed and predicted values of household net worth to be 85.2 percent, since the household net worth is a percentage by its definition. That is, the prediction we get from this built BART model is off by 85.2 percent on average. Given that the household net worth ranges from 134 percent to 824 percent in our dataset, we think the BART model has a decent performance. 
 
-The $R^2$ value indicates the model fit. We observe a value of 0.528, which we would like to be closer to 1 in order for the model to explain more variability in the data.
+Besides, the $R^2$ value indicates the model fit. We observe a value of 0.528, which we would like to be closer to 1 in order for the model to explain more variability in the data.
 
 \
 \
@@ -373,9 +371,9 @@ These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the Palmer
 
 ```{r}
 # Loading data 
+# install.packages("palmerpenguins")
 library(palmerpenguins)
 data(penguins)
-
 head(penguins)
 ```
 
