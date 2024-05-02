@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-05-01" />
+<meta name="date" content="2024-05-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,11 +200,11 @@ the number of trees we will build in a sum-of-trees model. For a fixed
 <span class="math inline">\(m\)</span> , a sum of tree model is determined by
 <span class="math inline">\(T = \{T_1, T_2, T_3, ...,T_m\}\)</span>, <span class="math inline">\(M = \{M_1, M_2, M_3, ..., M_m\}\)</span>, and
 <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be:
-Priors over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> and the prior over <span class="math inline">\(\sigma\)</span>. For all those priors, we have their joint probability function as:
+priors over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> and the prior over <span class="math inline">\(\sigma\)</span>. For all those priors, we have their joint probability function as:
 <span class="math display">\[ \begin{align*} &amp; P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\
 &amp; = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \;\; \text{by assumption of iid trees}\\
 &amp; = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma)\;\; \text{law of total probability} \\
-&amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma)\;\;  \text{independence of parameters associated with nodes in a specific tree}\\
+&amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma)\;\;  \text{iid parameters of terminal nodes in a specific tree}\\
 &amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} \]</span>
 Thus, after those calculation, we figured that there are only <span class="math inline">\(4\)</span>
 priors that we need to think about, which are <span class="math inline">\(T_j, \mu_{ij}|T_j\)</span>, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(m\)</span>. We will talk about them one by one in the next section.</p>

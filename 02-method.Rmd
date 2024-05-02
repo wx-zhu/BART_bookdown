@@ -56,11 +56,11 @@ the number of trees we will build in a sum-of-trees model. For a fixed
 $m$ , a sum of tree model is determined by
 $T = \{T_1, T_2, T_3, ...,T_m\}$, $M = \{M_1, M_2, M_3, ..., M_m\}$, and
 $\sigma$. Thus, all the priors that we need in this setting would be:
-Priors over $(T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)$ and the prior over $\sigma$. For all those priors, we have their joint probability function as: 
+priors over $(T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)$ and the prior over $\sigma$. For all those priors, we have their joint probability function as: 
 $$ \begin{align*} & P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\ 
 & = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \;\; \text{by assumption of iid trees}\\ 
 & = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma)\;\; \text{law of total probability} \\ 
-& = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma)\;\;  \text{independence of parameters associated with nodes in a specific tree}\\ 
+& = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma)\;\;  \text{iid parameters of terminal nodes in a specific tree}\\ 
 & = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} $$
 Thus, after those calculation, we figured that there are only $4$
 priors that we need to think about, which are $T_j, \mu_{ij}|T_j$, $\sigma$ and $m$. We will talk about them one by one in the next section.
