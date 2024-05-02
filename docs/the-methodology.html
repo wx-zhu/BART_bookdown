@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 The Methodology | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -155,7 +155,7 @@ inputs <span class="math inline">\(x = (x_1, ..., x_p)\)</span> when
 <span class="math display">\[Y = f(x) + \epsilon, \text{with } \epsilon \sim N(0, σ^2).\]</span></p>
 <p>To do this, we consider modeling or at least approximating
 <span class="math inline">\(f(x) = E(Y | x)\)</span>, the mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, by a sum of <span class="math inline">\(m\)</span> regression
-trees <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x) \]</span> ,where each <span class="math inline">\(g_j\)</span>
+trees <span class="math display">\[f(x) \approx h(x) ≡ \sum_{j=1}^m g_j(x), \]</span> where each <span class="math inline">\(g_j\)</span>
 denotes the mapping function associated with the <span class="math inline">\(j_{th}\)</span> tree.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
 <img src="image/simple_g.jpg" alt="A visual representation of $g(x;T_j, M_j)$ . Square boxes represent the splitting rules, while circles denote the terminal nodes. " width="60%" />
@@ -166,9 +166,10 @@ Figure 2.1: A visual representation of <span class="math inline">\(g(x;T_j, M_j)
 <p>Getting into more details, let <span class="math inline">\(T\)</span> denote the set of all binary
 regression trees, and a full list of <span class="math inline">\(m\)</span> trees can be denoted as the set
 <span class="math inline">\(T = \{T_1, T_2, T_3, ...\}\)</span> For a specific binary regression tree <span class="math inline">\(T_j\)</span>
-that has <span class="math inline">\(b\)</span> terminal nodes, let <span class="math inline">\(M_j = \{\mu_{1j}, \mu_{2j}, \mu_{3j}, ..., \mu_{bj}\}\)</span>
-denote the parameters for those <span class="math inline">\(b\)</span> terminal nodes of this tree <span class="math inline">\(T_j\)</span>.
-Under this setting,
+that has <span class="math inline">\(b\)</span> terminal nodes, let
+<span class="math inline">\(M_j = \{\mu_{1j}, \mu_{2j}, \mu_{3j}, ..., \mu_{bj}\}\)</span> denote the
+parameters for those <span class="math inline">\(b\)</span> terminal nodes of this tree <span class="math inline">\(T_j.\)</span> Under this
+setting,
 <span class="math display">\[ \begin{align*} Y &amp; = \sum^{m}_{j = 1} g_j(x) + \epsilon\\ &amp; = \sum^{m}_{j = 1} g(x; T_j, M_j) + \epsilon \end{align*} \]</span>
 where <span class="math inline">\(g(x; T_j, M_j)\)</span> is a function that assigns <span class="math inline">\(\mu_{ij}\in M_j\)</span> to
 <span class="math inline">\(x\)</span>. The expected value of the output <span class="math inline">\(Y\)</span> given <span class="math inline">\(x\)</span>, <span class="math inline">\(E(Y | x)\)</span>, is the
@@ -200,14 +201,17 @@ the number of trees we will build in a sum-of-trees model. For a fixed
 <span class="math inline">\(m\)</span> , a sum of tree model is determined by
 <span class="math inline">\(T = \{T_1, T_2, T_3, ...,T_m\}\)</span>, <span class="math inline">\(M = \{M_1, M_2, M_3, ..., M_m\}\)</span>, and
 <span class="math inline">\(\sigma\)</span>. Thus, all the priors that we need in this setting would be:
-priors over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> and the prior over <span class="math inline">\(\sigma\)</span>. For all those priors, we have their joint probability function as:
+priors over <span class="math inline">\((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m)\)</span> and the
+prior over <span class="math inline">\(\sigma\)</span>. For all those priors, we have their joint
+probability function as:
 <span class="math display">\[ \begin{align*} &amp; P((T_1, M_1), (T_2, M_2), (T_3, M_3), ... (T_m, M_m), \sigma) \\
 &amp; = \prod^{m}_{j=1} (T_j, M_j)P(\sigma) \;\; \text{by assumption of iid trees}\\
 &amp; = [\prod^{m}_{j=1} P(M_j|T_j)P(T_j)]P(\sigma)\;\; \text{law of total probability} \\
-&amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma)\;\;  \text{iid parameters of terminal nodes in a specific tree}\\
-&amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma) \end{align*} \]</span>
-Thus, after those calculation, we figured that there are only <span class="math inline">\(4\)</span>
-priors that we need to think about, which are <span class="math inline">\(T_j, \mu_{ij}|T_j\)</span>, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(m\)</span>. We will talk about them one by one in the next section.</p>
+&amp; = [\prod^{m}_{j=1} P(\mu_{1j}|T_{j})P(\mu_{2j}|T_{j})...P(\mu_{bj}|T_{j})]P(\sigma) \\
+&amp; = [\prod^{m}_{j=1} \prod^{b_j}_{i=1} P(\mu_{ij}|T_j)P(T_j)]P(\sigma)  \;\; \text{iid parameters of terminal nodes in a specific tree}\end{align*}\]</span>
+Thus, after those calculation, we figured that there are only <span class="math inline">\(4\)</span> priors
+that we need to think about, which are <span class="math inline">\(T_j, \mu_{ij}|T_j\)</span>, <span class="math inline">\(\sigma\)</span> and
+<span class="math inline">\(m\)</span>. We will talk about them one by one in the next section.</p>
 </div>
 <div id="prior-models-and-tuning" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Prior models and tuning<a href="the-methodology.html#prior-models-and-tuning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -219,14 +223,15 @@ specifically how they make splits at each non-terminal node.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Depth-based stopping</strong>: The deeper a node in the tree, the less
 likely it is to continue branching. This is controlled by
-manipulating the probability that a node at depth <span class="math inline">\(d\)</span> (= 0, 1, 2, …) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are
-controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial
+manipulating the probability that a node at depth <span class="math inline">\(d\)</span> (= 0, 1, 2,
+…) is nonterminal. Specifically, parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>
+are controlling this probability, where <span class="math inline">\(\alpha\)</span> affects the initial
 likelihood of branching and <span class="math inline">\(\beta\)</span> controls how quickly this
 likelihood decreases as the tree gets deeper.</p>
 <p><span class="math display">\[
 P(\text{node of depth d is nonterminal}) = \alpha(1 + d)^{-\beta} \text{ where } \alpha \in (0, 1), \beta \in [0, \infty)
 \]</span></p>
-<p>In order to keep the m trees small so they can be summed, we can
+<p>In order to keep the <span class="math inline">\(m\)</span> trees small so they can be summed, we can
 choose to use values <span class="math inline">\(\alpha = 0.95\)</span> and <span class="math inline">\(\beta = 2\)</span></p></li>
 <li><p><strong>Variable selection</strong>: Each time the tree decides to split, it
 randomly chooses which variable (or feature) to split on. This
@@ -237,14 +242,17 @@ the splitting variable assignments at each interior node.</p></li>
 splits (i.e., the rule it uses to divide the data) is also chosen
 randomly. This is controlled by setting the distribution on the
 splitting rule assignment in each interior node, conditional on the
-splitting variable. The distribution on the splitting rule assignment
-in each interior node, conditional on the splitting variable</p></li>
+splitting variable. The distribution on the splitting rule
+assignment in each interior node, conditional on the splitting
+variable</p>
+<p>For quantitative variable <span class="math inline">\(x_q\)</span>,
+<span class="math display">\[\text{splitting rule | variable } x_q \sim Unif(min(x_q), max(x_q))\]</span>
+For categorical variable <span class="math inline">\(x_c\)</span>, each category has the same chance of
+being chosen.</p></li>
 </ol>
-<p>For quantitative variable <span class="math inline">\(l_q\)</span>,
-<span class="math display">\[\text{splitting rule | variable } l_q \sim Unif(min(l_q), max(l_q))\]</span>
-For categorical variable <span class="math inline">\(l_c\)</span>, each category has the same chance of being chosen.</p>
 <p>All these prior settings about <span class="math inline">\(T_j\)</span> help ensure that the trees remain
-<strong>small</strong> and manageable, which is important when they are combined to form the sum of trees model.</p>
+<strong>small</strong> and manageable, which is important when they are combined to
+form the sum of trees model.</p>
 </div>
 <div id="the-mu_ij-t_j-prior" class="section level3 hasAnchor" number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span> The <span class="math inline">\(\mu_{ij} | T_j\)</span> prior<a href="the-methodology.html#the-mu_ij-t_j-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -255,9 +263,10 @@ For categorical variable <span class="math inline">\(l_c\)</span>, each category
 <p>The individual predictions <span class="math inline">\(\mu_{ij}\)</span> ’s are assumed to be independent
 and identically distributed (apriori i.i.d.).</p>
 <p><span class="math display">\[
-E(Y|x) \sim N(m\mu_\mu, m\sigma_\mu^2)
+E(Y|x) \sim N(m\mu_\mu, m\sigma_\mu^2),
 \]</span></p>
-<p>, where it is highly probable for <span class="math inline">\(E(Y|x)\)</span> to fall between <span class="math inline">\(y_{min}\)</span> and <span class="math inline">\(y_{max}\)</span>.</p>
+<p>where it is highly probable for <span class="math inline">\(E(Y|x)\)</span> to fall between <span class="math inline">\(y_{min}\)</span> and
+<span class="math inline">\(y_{max}\)</span>.</p>
 <p>Because of this, we want to choose values of <span class="math inline">\(\mu_\mu\)</span> and <span class="math inline">\(\sigma_\mu\)</span>
 so that <span class="math inline">\(E(Y|x) \sim N(m\mu_\mu, m\sigma_\mu^2)\)</span> is most plausible in
 the interval of (<span class="math inline">\(y_{min}\)</span>, <span class="math inline">\(y_{max}\)</span>). We can do this by choosing
@@ -276,7 +285,8 @@ is <span class="math inline">\((-0.5, 0.5)\)</span> which gives</p>
 \sigma_\mu &amp; = \frac{0.5}{k\sqrt{m}}
 \end{align*}
 \]</span></p>
-<p>The value <span class="math inline">\(k=2\)</span> is a good default choice as this would yield a 95% prior probability that <span class="math inline">\(E(Y|x) \in (y_{min}, y_{max})\)</span>.</p>
+<p>The value <span class="math inline">\(k=2\)</span> is a good default choice as this would yield a 95% prior
+probability that <span class="math inline">\(E(Y|x) \in (y_{min}, y_{max})\)</span>.</p>
 </div>
 <div id="the-sigma-prior" class="section level3 hasAnchor" number="2.2.3">
 <h3><span class="header-section-number">2.2.3</span> The <span class="math inline">\(\sigma\)</span> prior<a href="the-methodology.html#the-sigma-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -301,7 +311,8 @@ model.</p>
 <p>To select an optimal <span class="math inline">\(m\)</span>, people often use cross-validation (CV), but
 this process can be time-consuming.</p>
 <p>An alternative to CV is to default to <span class="math inline">\(m = 200\)</span>, as the algorithm’s
-predictive performance significantly improves from <span class="math inline">\(m = 1\)</span> to around 200 trees. However, excessively large <span class="math inline">\(m\)</span> values can lead to a gradual
+predictive performance significantly improves from <span class="math inline">\(m = 1\)</span> to around 200
+trees. However, excessively large <span class="math inline">\(m\)</span> values can lead to a gradual
 degradation in BART’s performance.</p>
 </div>
 </div>
@@ -316,20 +327,19 @@ generalization of the backfitting algorithm for such models. For this
 reason, Chipman et al. (2010) refer to their algorithm as backfitting
 MCMC.</p>
 <p>Given the observed data <span class="math inline">\(y\)</span> and unknown parameters
-<span class="math inline">\((T_1, M_1), ..., (T_m, M_m)\)</span> and <span class="math inline">\(\sigma\)</span>, the posterior distribution of
-these parameters can be represented as
+<span class="math inline">\((T_1, M_1), ..., (T_m, M_m)\)</span> and <span class="math inline">\(\sigma\)</span>, the posterior distribution
+of these parameters can be represented as
 <span class="math display">\[p((T_1, M_1), ..., (T_m, M_m), \sigma|y),\]</span>which determine the
 sum-of-trees model.</p>
 <p>Generally speaking, this backfitting algorithm iteratively updates each
-parameter in <span class="math inline">\((T_1, M_1), ...(T_m, M_m)\)</span> and <span class="math inline">\(\sigma\)</span> using the most current
-knowledge of the other parameters, which is just the idea of Gibbs
-sampler.</p>
-<p>Specifically, let <span class="math inline">\(T_{(j)}\)</span> represent all trees except <span class="math inline">\(T_j\)</span>, and let <span class="math inline">\(M_{(j)}\)</span>
-represent all terminal nodes parameters except <span class="math inline">\(M_j\)</span>. In this Gibbs
-sampler, we loop from <span class="math inline">\(j = 1\)</span> to <span class="math inline">\(j = m\)</span> to draw <span class="math inline">\((T_j, M_j)\)</span> given
-<span class="math inline">\((T_{(j)}, M_{(j)}), \sigma, y\)</span>. That is,
-<span class="math display">\[(T_j, M_j) |T_{(j)}, M_{(j)}, \sigma, y\]</span>
-We also need to update
+parameter in <span class="math inline">\((T_1, M_1), ...(T_m, M_m)\)</span> and <span class="math inline">\(\sigma\)</span> using the most
+current knowledge of the other parameters, which is just the idea of
+Gibbs sampler.</p>
+<p>Specifically, let <span class="math inline">\(T_{(j)}\)</span> represent all trees except <span class="math inline">\(T_j\)</span>, and let
+<span class="math inline">\(M_{(j)}\)</span> represent all terminal nodes parameters except <span class="math inline">\(M_j\)</span>. In this
+Gibbs sampler, we loop from <span class="math inline">\(j = 1\)</span> to <span class="math inline">\(j = m\)</span> to draw <span class="math inline">\((T_j, M_j)\)</span>
+given <span class="math inline">\((T_{(j)}, M_{(j)}), \sigma, y\)</span>. That is,
+<span class="math display">\[(T_j, M_j) |T_{(j)}, M_{(j)}, \sigma, y\]</span> We also need to update
 <span class="math inline">\(\sigma\)</span> based on the most recent knowledge of
 <span class="math inline">\((T_1, M_1), ...(T_m, M_m)\)</span>: <span class="math display">\[\sigma|T_1,...T_m, M_1, ...M_m, y\]</span></p>
 <p>The posterior distribution <span class="math inline">\(p(T_j, M_j|T_{(j)}, M_{(j)}, \sigma, y)\)</span>
@@ -341,13 +351,11 @@ and the current estimate, where the current estimate is just the sum of
 the partial results gotten from all but the <span class="math inline">\(j_{th}\)</span> trees.</p>
 <p>Consequently, drawing <span class="math inline">\((T_j, M_j)\)</span> given <span class="math inline">\(T_{(j)}, M_{(j)}, \sigma, y\)</span>
 can be regarded as equivalent to drawing from <span class="math inline">\(R_j, \sigma\)</span>, expressed
-as:
-<span class="math display">\[(T_j, M_j)|R_j, \sigma\]</span></p>
+as: <span class="math display">\[(T_j, M_j)|R_j, \sigma\]</span></p>
 <p>Here, <span class="math inline">\(R_j\)</span> can be understood as the target value that the single tree
 model <span class="math inline">\(T_j\)</span> aims to get at, essentially acting as the “data” for this
 purpose. Formally, <span class="math display">\[R_j = g(x;T_j, M_j)+\epsilon.\]</span></p>
-<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows:
-<span class="math display">\[
+<p>The calculation for <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> is detailed as follows: <span class="math display">\[
 \begin{align*}
 p(T_j|R_j, \sigma) &amp;= p(T_j)p(R_j|T_j,\sigma) \\
 &amp;\propto p(T_j)\int p(R_j,M_j|T_j,\sigma)dM_j \\
@@ -357,8 +365,8 @@ p(T_j|R_j, \sigma) &amp;= p(T_j)p(R_j|T_j,\sigma) \\
 <p>Given the use of a conjugate prior for <span class="math inline">\(M_j\)</span>, we can derive
 <span class="math inline">\(p(T_j|R_j, \sigma)\)</span> in a closed form up to a normalization constant.</p>
 <p>In summary, the whole backfitting algorithm utilizing the idea of Gibbs
-sampler is to successively draw <span class="math inline">\(T_1, M_1, ..., T_m, M_m, \sigma\)</span> in each
-full iteration. Thus, each interation is consists of <span class="math inline">\(2m+1\)</span> steps:</p>
+sampler is to successively draw <span class="math inline">\(T_1, M_1, ..., T_m, M_m, \sigma\)</span> in
+each full iteration. Thus, each interation is consists of <span class="math inline">\(2m+1\)</span> steps:</p>
 <p><span class="math display">\[
 \begin{align*}
 T_j &amp; |R_j, \sigma\\
@@ -368,10 +376,10 @@ M_j &amp; |T_j, R_j, \sigma \\
 \]</span></p>
 <p>Tree drawings <span class="math inline">\(T_j\)</span> are facilitated using the Metropolis-Hastings
 algorithm, which proposes new tree configurations based on the current
-tree through 4 modifications: growing a terminal node, pruning a
-pair of terminal nodes, changing a nonterminal rule, and swapping rules
-between parent and child nodes, with associated probabilities of 0.25,
-0.25, 0.40, and 0.10 respectively.</p>
+tree through 4 modifications: growing a terminal node, pruning a pair of
+terminal nodes, changing a nonterminal rule, and swapping rules between
+parent and child nodes, with associated probabilities of 0.25, 0.25,
+0.40, and 0.10 respectively.</p>
 <p>Subsequently, <span class="math inline">\(M_j\)</span> is drawn independently for the terminal nodes
 <span class="math inline">\(\mu_{ij}\)</span> from a normal distribution, facilitating the calculation of
 the next residual <span class="math inline">\(R_{j+1}\)</span>, which is crucial for the upcoming draw of
@@ -380,8 +388,8 @@ the next residual <span class="math inline">\(R_{j+1}\)</span>, which is crucial
 <div id="posterior-inference-statistics" class="section level3 hasAnchor" number="2.3.2">
 <h3><span class="header-section-number">2.3.2</span> Posterior inference statistics<a href="the-methodology.html#posterior-inference-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Every output from the algorithm can be used to build a tree-based model.
-Summing up all the tree outputs from each draw (indexed by <span class="math inline">\(j\)</span>), we get a
-sequence of models that gradually approach the true underlying model,
+Summing up all the tree outputs from each draw (indexed by <span class="math inline">\(j\)</span>), we get
+a sequence of models that gradually approach the true underlying model,
 <span class="math inline">\(f(·)\)</span>. This is noted as: <span class="math display">\[ f^*(·) = \sum_{j=1}^m g(·; T^*_j, M^*_j) \]</span></p>
 <p>By running the algorithm for a sufficient number of iterations,
 especially after a preliminary ‘burn-in’ period, the sequence of <span class="math inline">\(f^{∗}\)</span>
@@ -431,7 +439,7 @@ the standard normal distribution <span class="math inline">\(N(0,1)\)</span>.</p
 <h3><span class="header-section-number">2.4.2</span> Setup BART for Classification<a href="the-methodology.html#setup-bart-for-classification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Thus, BART model extends to be
 <span class="math display">\[p(x) \equiv P [Y = 1 \mid x] = \Phi[G(x)]\]</span> where
-<span class="math display">\[G(x) \equiv \sum_{j=1}^{m} g(x; T_j, M_j)\]</span> , our sum of regression
+<span class="math display">\[G(x) \equiv \sum_{j=1}^{m} g(x; T_j, M_j),\]</span> our sum of regression
 trees.</p>
 </div>
 <div id="modification-of-regularization-priors" class="section level3 hasAnchor" number="2.4.3">
@@ -442,21 +450,17 @@ posterior computation. Fortunately, these can be obtained with only
 minor modifications of the methods for continuous <span class="math inline">\(Y\)</span>. Since we use
 probit model distribution, we implicitly assume <span class="math inline">\(\sigma = 1\)</span> and so only
 a prior on <span class="math inline">\((T_1, M_1), \ldots, (T_m, M_m)\)</span> is needed. Proceeding
-exactly as BART for continuous <span class="math inline">\(Y\)</span>, we consider a prior of the form:
-<span class="math display">\[
+exactly as BART for continuous <span class="math inline">\(Y\)</span>, we consider a prior of the form: <span class="math display">\[
 p((T_1,M_1),\ldots,(T_m,M_m)) = \prod_j \left[ p(T_j) \prod_i p(\mu_{ij}|T_j) \right]
-\]</span>
-where each tree prior <span class="math inline">\(p(T_j)\)</span> is the same as tree prior for
+\]</span> where each tree prior <span class="math inline">\(p(T_j)\)</span> is the same as tree prior for
 continuous <span class="math inline">\(Y\)</span>. So we need to figure out the updated prior on
 <span class="math inline">\(p(\mu_{ij}|T_j)\)</span>. We choose <span class="math inline">\(p(\mu_{ij}|T_j)\)</span> to cover most of the
 relevant <span class="math inline">\(p(x)\)</span> values by considering the interval
 <span class="math inline">\((\Phi[-3.0], \Phi[3.0])\)</span>, which is often practical. Following the
 motivation of <span class="math inline">\(\mu_{ij}\)</span> when having continuous <span class="math inline">\(Y\)</span>, we recommend the
-choice:
-<span class="math display">\[
+choice: <span class="math display">\[
 \mu_{ij} \sim N \left(0, \sigma_{\mu}^2 \right)
-\]</span>
-where <span class="math inline">\(\sigma_{\mu} = \frac{3.0}{k\sqrt{m}}\)</span>, and <span class="math inline">\(k\)</span> is chosen such
+\]</span> where <span class="math inline">\(\sigma_{\mu} = \frac{3.0}{k\sqrt{m}}\)</span>, and <span class="math inline">\(k\)</span> is chosen such
 that <span class="math inline">\(G(x)\)</span> will likely fall within the interval <span class="math inline">\((-3.0, 3.0)\)</span>.
 Therefore, this prior can also limit the effect of the individual tree
 components of <span class="math inline">\(G(x)\)</span> as <span class="math inline">\(\mu_{ij}\)</span> is shrinking towards zero. Thus,
