@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Classification Example | Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-05-01" />
+<meta name="date" content="2024-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,7 +56,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -66,7 +66,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -299,7 +299,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-35"><a href="classification-example.html#cb3-35" tabindex="-1"></a><span class="do">## iteration: 800 (of 1000)</span></span>
 <span id="cb3-36"><a href="classification-example.html#cb3-36" tabindex="-1"></a><span class="do">## iteration: 900 (of 1000)</span></span>
 <span id="cb3-37"><a href="classification-example.html#cb3-37" tabindex="-1"></a><span class="do">## iteration: 1000 (of 1000)</span></span>
-<span id="cb3-38"><a href="classification-example.html#cb3-38" tabindex="-1"></a><span class="do">## total seconds in loop: 0.497049</span></span>
+<span id="cb3-38"><a href="classification-example.html#cb3-38" tabindex="-1"></a><span class="do">## total seconds in loop: 0.477895</span></span>
 <span id="cb3-39"><a href="classification-example.html#cb3-39" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb3-40"><a href="classification-example.html#cb3-40" tabindex="-1"></a><span class="do">## Tree sizes, last iteration:</span></span>
 <span id="cb3-41"><a href="classification-example.html#cb3-41" tabindex="-1"></a><span class="do">## [1] 2 2 2 2 1 2 3 2 2 2 2 2 2 5 2 2 2 1 </span></span>
@@ -322,9 +322,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-58"><a href="classification-example.html#cb3-58" tabindex="-1"></a></span>
 <span id="cb3-59"><a href="classification-example.html#cb3-59" tabindex="-1"></a> <span class="co"># Looking at some examples of trees from model</span></span>
 <span id="cb3-60"><a href="classification-example.html#cb3-60" tabindex="-1"></a>p.bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">112</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-1.png" width="600" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="classification-example.html#cb4-1" tabindex="-1"></a>p.bartFit<span class="sc">$</span>fit<span class="sc">$</span><span class="fu">plotTree</span>(<span class="at">chainNum =</span> <span class="dv">1</span>, <span class="at">sampleNum =</span> <span class="dv">3</span>, <span class="at">treeNum =</span> <span class="dv">140</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-2.png" width="600" style="display: block; margin: auto;" /></p>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-2.png" width="600" style="display: block; margin: auto;" /></p>
 <p><br />
 <br />
 </p>

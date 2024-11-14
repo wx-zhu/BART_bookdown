@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Intro to Bayesian Addictive Regression Trees (BART)</title>
   <meta name="description" content="Intro to Bayesian Addictive Regression Trees (BART)" />
-  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Intro to Bayesian Addictive Regression Trees (BART)" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Jingyi Guan, Alayna Johnson, Wenxuan Zhu" />
 
 
-<meta name="date" content="2024-05-01" />
+<meta name="date" content="2024-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -89,7 +89,7 @@
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="the-methodology.html"><a href="the-methodology.html#backfitting-with-mcmc-algorithm"><i class="fa fa-check"></i><b>2.3</b> Backfitting with MCMC Algorithm</a>
 <ul>
-<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#the-algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> The algorithm set-up</a></li>
+<li class="chapter" data-level="2.3.1" data-path="the-methodology.html"><a href="the-methodology.html#algorithm-set-up"><i class="fa fa-check"></i><b>2.3.1</b> Algorithm set-up</a></li>
 <li class="chapter" data-level="2.3.2" data-path="the-methodology.html"><a href="the-methodology.html#posterior-inference-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Posterior inference statistics</a></li>
 <li class="chapter" data-level="2.3.3" data-path="the-methodology.html"><a href="the-methodology.html#conclusion"><i class="fa fa-check"></i><b>2.3.3</b> Conclusion</a></li>
 </ul></li>
@@ -101,15 +101,29 @@
 </ul></li>
 <li class="chapter" data-level="2.5" data-path="the-methodology.html"><a href="the-methodology.html#references"><i class="fa fa-check"></i><b>2.5</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i><b>3</b> Examples</a>
+<li class="chapter" data-level="3" data-path="regression-example.html"><a href="regression-example.html"><i class="fa fa-check"></i><b>3</b> Regression Example</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="examples.html"><a href="examples.html#example-1-regression"><i class="fa fa-check"></i><b>3.1</b> Example 1: Regression</a></li>
-<li class="chapter" data-level="3.2" data-path="examples.html"><a href="examples.html#dbarts-package"><i class="fa fa-check"></i><b>3.2</b> <code>dbarts</code> package</a></li>
-<li class="chapter" data-level="3.3" data-path="examples.html"><a href="examples.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3</b> <code>tidymodels</code> package</a></li>
-<li class="chapter" data-level="3.4" data-path="examples.html"><a href="examples.html#example-2-classification"><i class="fa fa-check"></i><b>3.4</b> Example 2: Classification</a></li>
-<li class="chapter" data-level="3.5" data-path="examples.html"><a href="examples.html#dbarts-package-1"><i class="fa fa-check"></i><b>3.5</b> <code>dbarts</code> package</a></li>
-<li class="chapter" data-level="3.6" data-path="examples.html"><a href="examples.html#tidymodels-package-1"><i class="fa fa-check"></i><b>3.6</b> <code>tidymodels</code> package</a></li>
-<li class="chapter" data-level="3.7" data-path="examples.html"><a href="examples.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+<li class="chapter" data-level="3.1" data-path="regression-example.html"><a href="regression-example.html#background-data"><i class="fa fa-check"></i><b>3.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="3.2" data-path="regression-example.html"><a href="regression-example.html#data-wrangling"><i class="fa fa-check"></i><b>3.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="3.3" data-path="regression-example.html"><a href="regression-example.html#implementation"><i class="fa fa-check"></i><b>3.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="regression-example.html"><a href="regression-example.html#dbarts-package"><i class="fa fa-check"></i><b>3.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="3.3.2" data-path="regression-example.html"><a href="regression-example.html#bartman-package"><i class="fa fa-check"></i><b>3.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="3.3.3" data-path="regression-example.html"><a href="regression-example.html#tidymodels-package"><i class="fa fa-check"></i><b>3.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="regression-example.html"><a href="regression-example.html#references-1"><i class="fa fa-check"></i><b>3.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="classification-example.html"><a href="classification-example.html"><i class="fa fa-check"></i><b>4</b> Classification Example</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="classification-example.html"><a href="classification-example.html#background-data-1"><i class="fa fa-check"></i><b>4.1</b> Background &amp; Data</a></li>
+<li class="chapter" data-level="4.2" data-path="classification-example.html"><a href="classification-example.html#data-wrangling-1"><i class="fa fa-check"></i><b>4.2</b> Data Wrangling</a></li>
+<li class="chapter" data-level="4.3" data-path="classification-example.html"><a href="classification-example.html#implementation-1"><i class="fa fa-check"></i><b>4.3</b> Implementation</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="classification-example.html"><a href="classification-example.html#dbarts-package-1"><i class="fa fa-check"></i><b>4.3.1</b> <code>dbarts</code> package</a></li>
+<li class="chapter" data-level="4.3.2" data-path="classification-example.html"><a href="classification-example.html#bartman-package-1"><i class="fa fa-check"></i><b>4.3.2</b> <code>bartMan</code> package</a></li>
+<li class="chapter" data-level="4.3.3" data-path="classification-example.html"><a href="classification-example.html#tidymodels-package-1"><i class="fa fa-check"></i><b>4.3.3</b> <code>tidymodels</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="classification-example.html"><a href="classification-example.html#references-2"><i class="fa fa-check"></i><b>4.4</b> References</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -134,7 +148,7 @@
 <div id="header">
 <h1 class="title">Intro to Bayesian Addictive Regression Trees (BART)</h1>
 <p class="author"><em>Jingyi Guan, Alayna Johnson, Wenxuan Zhu</em></p>
-<p class="date"><em>2024-05-01</em></p>
+<p class="date"><em>2024-11-14</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
